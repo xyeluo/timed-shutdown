@@ -1,0 +1,12 @@
+{
+	"main": "./index.html",
+	"logo": "./logo.png",
+  "preload":"preload.js",
+	"features": [
+		{
+		  "code": "gj",
+		  "explain": "自动关机重启",
+			"cmds":["关机", "重启"]
+		}
+	]
+}
