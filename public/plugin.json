@@ -1,13 +1,13 @@
 {
-	"main": "./index.html",
-	"logo": "./logo.png",
-  "preload":"index.js",
-	"features": [
-		{
-		  "code": "gj",
-		  "explain": "自动关机重启",
-			"cmds":["关机", "重启"]
-		}
-	],
+  "main": "./index.html",
+  "logo": "./logo.png",
+  "preload": "index.js",
+  "features": [
+    {
+      "code": "timedShutdown",
+      "explain": "自动关机重启",
+      "cmds": ["定时关机", "定时重启", "定时休眠", "计划", "自动关机重启"]
+    }
+  ],
   "platform": ["win32"]
 }
