@@ -11,6 +11,7 @@ module.exports = {
     resolve: {
       alias: {
         '@cpts': '@/components',
+        '@mix': '@/mixin',
       }
     }
   }

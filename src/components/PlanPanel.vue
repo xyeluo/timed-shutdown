@@ -15,7 +15,7 @@
     <div class="item">
       <label class="instruct" for="planName">任务名称</label>
       <el-input
-        placeholder="必填"
+        placeholder="例：每日关机"
         size="small"
         v-model="plan.name"
         clearable
@@ -54,7 +54,7 @@
       </div>
     </div>
     <div class="item">
-      <el-button type="primary" @click="addPlan">创建计划</el-button>
+      <el-button type="primary" @click="addRow">创建计划</el-button>
     </div>
   </div>
 </template>
@@ -74,11 +74,11 @@ export default {
         // 周期
         cycle: [{ label: "每天", value: "daily" }],
         // 可选时间
-        // start_Date: {
-        //   disabledDate(time) {
-        //     return time.getTime() < Date.now() - 24 * 3600 * 1000;
-        //   },
-        // },
+        /* start_Date: {
+          disabledDate(time) {
+            return time.getTime() < Date.now() - 24 * 3600 * 1000;
+          },
+        }, */
       },
       // 初始化计划所需参数
       plan: {
@@ -90,6 +90,10 @@ export default {
     };
   },
   methods: {
+    /**
+     * @Description: 验证任务名称和日期是否完整
+     * @return {boolen} true:验证通过;false:缺少信息，验证不通过
+     */
     _checkPlan() {
       const { name, datetime } = this.plan,
         warning = {
@@ -110,37 +114,51 @@ export default {
       }
       return temp;
     },
-    addPlan() {
-      if (!this._checkPlan()) {
-        return;
-      }
-      // 确定命令执行类型，关机|重启|休眠
+    _isRepeatPlan() {},
+    // 执行添加计划命令
+    _addPlan() {
+      // 确定命令执行参数，关机|重启|休眠
       const types = {
           shutdown: "-s",
           reboot: "-r",
           dormancy: "-h",
         },
         { type, name, cycle, datetime } = this.plan,
-        msgParm = {
-          type: "success",
-          duration: 3000,
-        },
         // 定义命令
         cmd = `schtasks /create /sc ${cycle} /tn "${name}" /tr "shutdown ${types[type]} -t 00" /st ${datetime}`;
       // 执行命令
-      window.execCmd(cmd, (result) => {
-        if (result.indexOf("成功") == -1) {
-          msgParm = {
-            type: "error",
-            duration: 10000,
-          };
-        }
-        this.$message({
-          ...msgParm,
-          showClose: true,
-          message: result,
+      return window
+        .execCmd(cmd)
+        .then((result) => {
+          return Promise.resolve(result);
+        })
+        .catch((reason) => {
+          return Promise.reject(reason);
         });
-      });
+    },
+    // 增加计划列表行数
+    addRow() {
+      if (!this._checkPlan()) {
+        return;
+      }
+      const result = this._addPlan();
+      result
+        .then((msg) => {
+          this.$message({
+            type: "success",
+            message: msg,
+            showClose: true,
+          });
+          this.$bus.$emit("getPlan", { ...this.plan });
+        })
+        .catch((reason) => {
+          this.$message({
+            type: "error",
+            message: reason,
+            duration: 10000,
+            showClose: true,
+          });
+        });
     },
   },
   beforeMount() {
@@ -151,6 +169,7 @@ export default {
 </script>
 
 <style scoped>
+/* element-ui样式微调 */
 .el-select {
   width: 100px;
 }
@@ -165,11 +184,6 @@ export default {
 }
 #plan-panel {
   flex-direction: column;
-  min-width: var(--panel-min_w);
-  background-color: var(--panel-bg);
-  border-radius: var(--radius);
-  padding: var(--panel-padding);
-  box-sizing: border-box;
   margin-bottom: var(--panel-between);
 }
 #planTime {
@@ -180,7 +194,7 @@ export default {
   margin: 10px;
 }
 .item .el-button {
-  margin: 0 auto;
+  margin-left: 70px;
 }
 .instruct {
   margin-right: 5px;

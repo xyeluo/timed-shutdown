@@ -1,24 +1,99 @@
 <template>
   <div id="plan-list">
     <h2 id="title">计划列表</h2>
-    <p id="result">{{ result }}</p>
+    <el-table :data="plans" max-height="280">
+      <el-table-column fixed prop="name" label="任务名称"> </el-table-column>
+      <el-table-column fixed prop="type" label="任务类型"> </el-table-column>
+      <el-table-column fixed prop="cycle" label="执行周期"> </el-table-column>
+      <el-table-column fixed prop="datetime" label="执行日期">
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button
+            @click.native.prevent="deleteRow(scope, plans)"
+            type="text"
+            size="small"
+          >
+            移除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 
 <script>
+import { _localStorageRead } from "@mix/mixin.js";
 export default {
   name: "PlanList",
   data() {
     return {
-      result: "",
-      height: "",
+      plans: [],
+      planInfo: {
+        type: {
+          reboot: "重启",
+          shutdown: "关机",
+          dormancy: "休眠",
+        },
+        cycle: {
+          daily: "每天",
+        },
+      },
     };
   },
+  mixins: [_localStorageRead],
+  methods: {
+    // 计划列表存储到本地
+    _localStorageSave(parms) {
+      localStorage.setItem("plans", JSON.stringify(parms));
+    },
+    // 执行删除计划命令
+    _deletePlan(planName) {
+      const cmd = `schtasks /delete /tn "${planName}" /f`;
+      return window
+        .execCmd(cmd)
+        .then((result) => {
+          return Promise.resolve(result);
+        })
+        .catch((reason) => {
+          return Promise.reject(reason);
+        });
+    },
+    // 删除相应行的计划列表
+    deleteRow(scope, rows) {
+      const result = this._deletePlan(scope.row.name);
+      result
+        .then((msg) => {
+          this.$message({
+            type: "success",
+            message: msg,
+            showClose: true,
+          });
+          // 删除行
+          rows.splice(scope.$index, 1);
+          // 每次移除都覆盖一次计划列表
+          this._localStorageSave(this.plans);
+        })
+        .catch((reason) => {
+          this.$message({
+            type: "error",
+            message: reason,
+            duration: 10000,
+            showClose: true,
+          });
+        });
+    },
+  },
   mounted() {
-    this.$bus.$on("showResult", (result) => {
-      this.result = result;
-      this.height = "100px";
+    this.plans = this._localStorageRead();
+    this.$bus.$on("getPlan", (plan) => {
+      plan.type = this.planInfo.type[plan.type];
+      plan.cycle = this.planInfo.cycle[plan.cycle];
+      this.plans.unshift(plan);
+      // 每次添加都覆盖一次计划列表
+      this._localStorageSave(this.plans);
     });
+    // console.log(this.plans);
   },
   destroyed() {
     this.$bus.$off("showResult");
@@ -28,17 +103,14 @@ export default {
 
 <style scoped>
 #plan-list {
-  min-width: var(--panel-min_w);
-  background-color: var(--panel-bg);
-  border-radius: var(--radius);
-  padding: var(--panel-padding);
+  margin-top: var(--panel-between);
   box-sizing: border-box;
 }
-#title{
+#title {
   font-weight: 600;
   font-size: 16px;
 }
-#result {
+#plan {
   white-space: pre-wrap;
 }
 </style>

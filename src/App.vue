@@ -18,6 +18,7 @@ export default {
 </script>
 
 <style>
+/* 通用样式 */
 * {
   margin: 0;
   padding: 0;
@@ -25,24 +26,33 @@ export default {
 :root {
   --app-bg: #2d2e30;
   --panel-bg: #fff;
-  --panel-min_w: 750px; /* Panel和List宽度 */
+  --panel-min_w: 750px; /* Panel和List最小宽度 */
+  --panel-max_w: 90%; /* Panel和List最大宽度 */
   --panel-padding: 15px; /* Panel和List内边距 */
   --panel-between: 15px; /* Panel和List间隔 */
   --radius: 5px;
 }
-
 html,
 body,
 #app {
   width: 100%;
   height: 100%;
 }
-
 #app {
   background-color: var(--app-bg);
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
+}
+
+#plan-panel,
+#plan-list {
+  /* max-width: var(--panel-max_w); */
+  min-width: var(--panel-min_w);
+  background-color: var(--panel-bg);
+  border-radius: var(--radius);
+  padding: var(--panel-padding);
+  box-sizing: border-box;
 }
 </style>
