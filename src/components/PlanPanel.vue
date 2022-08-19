@@ -119,13 +119,13 @@ export default {
     _addPlan() {
       // 确定命令执行参数，关机|重启|休眠
       const types = {
-          shutdown: "-s",
-          reboot: "-r",
+          shutdown: "-s -t 00",
+          reboot: "-r -t 00",
           dormancy: "-h",
         },
         { type, name, cycle, datetime } = this.plan,
         // 定义命令
-        cmd = `schtasks /create /sc ${cycle} /tn "${name}" /tr "shutdown ${types[type]} -t 00" /st ${datetime}`;
+        cmd = `schtasks /create /sc ${cycle} /tn "${name}" /tr "shutdown ${types[type]}" /st ${datetime}`;
       // 执行命令
       return window
         .execCmd(cmd)
