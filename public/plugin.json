@@ -1,7 +1,7 @@
 {
 	"main": "./index.html",
 	"logo": "./logo.png",
-  "preload":"preload.js",
+  "preload":"index.js",
 	"features": [
 		{
 		  "code": "gj",
