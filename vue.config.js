@@ -12,7 +12,8 @@ module.exports = {
       alias: {
         '@cpts': '@/components',
         '@mix': '@/mixin',
+        '@pln': '@/plugin',
       }
     }
-  }
+  },
 }
