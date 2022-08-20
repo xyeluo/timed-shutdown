@@ -23,7 +23,7 @@
 </template>
 
 <script>
-const { localStorageRead, localStorageSave, execCmd } = window.utils;
+const utils = window.utils;
 
 export default {
   name: "PlanList",
@@ -46,7 +46,8 @@ export default {
     // 执行删除计划命令
     _deletePlan(planName) {
       const cmd = `schtasks /delete /tn "${planName}" /f`;
-      return execCmd(cmd)
+      return utils
+        .execCmd(cmd)
         .then((result) => {
           return Promise.resolve(result);
         })
@@ -67,7 +68,7 @@ export default {
           // 删除行
           rows.splice(scope.$index, 1);
           // 每次移除都覆盖一次计划列表
-          localStorageSave(this.plans);
+          utils.dbStorageSave(this.plans);
         })
         .catch((reason) => {
           this.$message({
@@ -80,15 +81,15 @@ export default {
     },
   },
   mounted() {
-    this.plans = localStorageRead();
+    // 先读取storage
+    this.plans = utils.dbStorageRead();
     this.$bus.$on("getPlan", (plan) => {
       plan.type = this.planInfo.type[plan.type];
       plan.cycle = this.planInfo.cycle[plan.cycle];
       this.plans.unshift(plan);
       // 每次添加都覆盖一次计划列表
-      localStorageSave(this.plans);
+      utils.dbStorageSave(this.plans);
     });
-    // console.log(this.plans);
   },
   destroyed() {
     this.$bus.$off("showResult");

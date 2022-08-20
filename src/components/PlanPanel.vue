@@ -60,6 +60,8 @@
 </template>
 
 <script>
+const utils = window.utils;
+
 export default {
   name: "PlanPanel",
   data() {
@@ -91,17 +93,17 @@ export default {
   },
   methods: {
     /**
-     * @Description: 验证任务名称和日期是否完整
-     * @return {boolen} true:验证通过;false:缺少信息，验证不通过
+     * @Description: 检查任务名称和日期是否完整
+     * @return {boolen} true:验证通过; false:缺少信息，验证不通过
      */
     _checkPlan() {
+      let temp = true;
       const { name, datetime } = this.plan,
         warning = {
           showClose: true,
           type: "warning",
           duration: 5000,
         };
-      let temp = true;
       if (name === "") {
         temp = false;
         setTimeout(() => {
@@ -110,12 +112,32 @@ export default {
       }
       if (datetime === "") {
         temp = false;
-        this.$message({ ...warning, message: "执行周期缺少参数" });
+        this.$message({ ...warning, message: "执行周期缺少时间" });
       }
       return temp;
     },
-    // 任务名称是否重名
-    _isRepeatPlan() {},
+    /**
+     * @Description: 检查任务名称是否重名
+     * @return {boolen} true:存在重名; false:没有重名
+     */
+    _repeatPlan() {
+      let temp = false;
+      const plans = utils.dbStorageRead(),
+        result = plans.find((item) => {
+          return item.name === this.plan.name;
+        });
+      // 查询到同名的任务
+      if (result !== undefined) {
+        this.$message({
+          type: "warning",
+          showClose: true,
+          message: `“${result.name}”任务已存在`,
+          duration: 5000,
+        });
+        temp = true;
+      }
+      return temp;
+    },
     // 执行添加计划命令
     _addPlan() {
       // 确定命令执行参数，关机|重启|休眠
@@ -128,7 +150,7 @@ export default {
         // 定义命令
         cmd = `schtasks /create /sc ${cycle} /tn "${name}" /tr "shutdown ${types[type]}" /st ${datetime}`;
       // 执行命令
-      return window.exports
+      return utils
         .execCmd(cmd)
         .then((result) => {
           return Promise.resolve(result);
@@ -140,6 +162,9 @@ export default {
     // 增加计划列表行数
     addRow() {
       if (!this._checkPlan()) {
+        return;
+      }
+      if (this._repeatPlan()) {
         return;
       }
       const result = this._addPlan();

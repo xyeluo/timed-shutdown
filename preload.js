@@ -21,11 +21,11 @@ function execCmd(command) {
   })
 }
 
-function localStorageSave(value) {
+function dbStorageSave(value) {
   utools.dbStorage.setItem(Id, value);
 }
 
-function localStorageRead() {
+function dbStorageRead() {
   const plans = utools.dbStorage.getItem(Id);
   if (plans === null) {
     return [];
@@ -35,6 +35,6 @@ function localStorageRead() {
 
 window.utils = {
   execCmd,
-  localStorageSave,
-  localStorageRead
+  dbStorageSave,
+  dbStorageRead
 }
