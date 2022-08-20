@@ -114,6 +114,7 @@ export default {
       }
       return temp;
     },
+    // 任务名称是否重名
     _isRepeatPlan() {},
     // 执行添加计划命令
     _addPlan() {
@@ -127,7 +128,7 @@ export default {
         // 定义命令
         cmd = `schtasks /create /sc ${cycle} /tn "${name}" /tr "shutdown ${types[type]}" /st ${datetime}`;
       // 执行命令
-      return window
+      return window.exports
         .execCmd(cmd)
         .then((result) => {
           return Promise.resolve(result);
@@ -149,6 +150,7 @@ export default {
             message: msg,
             showClose: true,
           });
+          // 数据传递给List，由List添加到dbStroage
           this.$bus.$emit("getPlan", { ...this.plan });
         })
         .catch((reason) => {
@@ -175,6 +177,10 @@ export default {
 }
 .el-input {
   width: 200px;
+}
+#planTime:deep() input::selection {
+  background-color: #409eff;
+  color: #fff;
 }
 .flex,
 .item,

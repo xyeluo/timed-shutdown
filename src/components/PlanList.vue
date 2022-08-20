@@ -23,7 +23,8 @@
 </template>
 
 <script>
-import { _localStorageRead } from "@mix/mixin.js";
+const { localStorageRead, localStorageSave, execCmd } = window.utils;
+
 export default {
   name: "PlanList",
   data() {
@@ -41,17 +42,11 @@ export default {
       },
     };
   },
-  mixins: [_localStorageRead],
   methods: {
-    // 计划列表存储到本地
-    _localStorageSave(parms) {
-      localStorage.setItem("plans", JSON.stringify(parms));
-    },
     // 执行删除计划命令
     _deletePlan(planName) {
       const cmd = `schtasks /delete /tn "${planName}" /f`;
-      return window
-        .execCmd(cmd)
+      return execCmd(cmd)
         .then((result) => {
           return Promise.resolve(result);
         })
@@ -72,7 +67,7 @@ export default {
           // 删除行
           rows.splice(scope.$index, 1);
           // 每次移除都覆盖一次计划列表
-          this._localStorageSave(this.plans);
+          localStorageSave(this.plans);
         })
         .catch((reason) => {
           this.$message({
@@ -85,13 +80,13 @@ export default {
     },
   },
   mounted() {
-    this.plans = this._localStorageRead();
+    this.plans = localStorageRead();
     this.$bus.$on("getPlan", (plan) => {
       plan.type = this.planInfo.type[plan.type];
       plan.cycle = this.planInfo.cycle[plan.cycle];
       this.plans.unshift(plan);
       // 每次添加都覆盖一次计划列表
-      this._localStorageSave(this.plans);
+      localStorageSave(this.plans);
     });
     // console.log(this.plans);
   },

@@ -54,5 +54,6 @@ body,
   border-radius: var(--radius);
   padding: var(--panel-padding);
   box-sizing: border-box;
+  user-select: none;
 }
 </style>

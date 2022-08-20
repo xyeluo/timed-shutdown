@@ -9,5 +9,8 @@
       "cmds": ["定时关机", "定时重启", "定时休眠", "计划", "自动关机重启"]
     }
   ],
-  "platform": ["win32"]
+  "platform": ["win32"],
+  "development": {
+    "main": "http://localhost:8080"
+  }
 }
