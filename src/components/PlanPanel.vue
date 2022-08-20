@@ -17,7 +17,7 @@
       <el-input
         placeholder="例：每日关机"
         size="small"
-        v-model="plan.name"
+        v-model.trim="plan.name"
         clearable
       ></el-input>
     </div>
@@ -46,7 +46,7 @@
         <el-time-picker
           placeholder="执行时间"
           size="small"
-          v-model="plan.datetime"
+          v-model.trim="plan.datetime"
           format="HH:mm"
           value-format="HH:mm"
         >
@@ -177,6 +177,8 @@ export default {
           });
           // 数据传递给List，由List添加到dbStroage
           this.$bus.$emit("getPlan", { ...this.plan });
+          this.plan.name = "";
+          this.plan.datetime = "";
         })
         .catch((reason) => {
           this.$message({
