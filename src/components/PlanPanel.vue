@@ -33,20 +33,20 @@
         </el-option>
       </el-select>
       <div id="planTime">
-        <!-- <el-date-picker
-          v-model="plan.datetime"
-          type="datetime"
-          placeholder="选择日期时间"
+        <el-date-picker
+          v-show="plan.cycle === 'once' ? true : false"
+          v-model.trim="plan.day"
+          type="date"
+          placeholder="具体日期"
           size="small"
           :picker-options="task.start_Date"
-          format="MM-dd HH:mm"
-          value-format="MM-dd HH:mm"
+          value-format="yyyy-MM-dd"
         >
-        </el-date-picker> -->
+        </el-date-picker>
         <el-time-picker
+          v-model.trim="plan.datetime"
           placeholder="执行时间"
           size="small"
-          v-model.trim="plan.datetime"
           format="HH:mm"
           value-format="HH:mm"
         >
@@ -74,31 +74,41 @@ export default {
           { label: "休眠", value: "dormancy" },
         ],
         // 周期
-        cycle: [{ label: "每天", value: "daily" }],
-        // 可选时间
-        /* start_Date: {
+        cycle: [
+          { label: "仅一次", value: "once" },
+          { label: "每天", value: "daily" },
+        ],
+        // 可选日期，从系统当前日期开始
+        start_Date: {
           disabledDate(time) {
             return time.getTime() < Date.now() - 24 * 3600 * 1000;
           },
-        }, */
+        },
       },
       // 初始化计划所需参数
       plan: {
         type: "",
         name: "",
         cycle: "",
+        day: "",
         datetime: "",
       },
     };
   },
   methods: {
+    // 处理多个$message同时触发时显示异常
+    _showMessage(option) {
+      setTimeout(() => {
+        this.$message(option);
+      }, 0);
+    },
     /**
      * @Description: 检查任务名称和日期是否完整
      * @return {boolen} true:验证通过; false:缺少信息，验证不通过
      */
     _checkPlan() {
       let temp = true;
-      const { name, datetime } = this.plan,
+      const { name, datetime, cycle, day } = this.plan,
         warning = {
           showClose: true,
           type: "warning",
@@ -106,13 +116,15 @@ export default {
         };
       if (name === "") {
         temp = false;
-        setTimeout(() => {
-          this.$message({ ...warning, message: "任务名称未填写" });
-        }, 0);
+        this._showMessage({ ...warning, message: "任务名称未填写！" });
       }
       if (datetime === "") {
         temp = false;
-        this.$message({ ...warning, message: "执行周期缺少时间" });
+        this._showMessage({ ...warning, message: "执行周期缺少时间！" });
+      }
+      if (cycle === "once" && (day === "" || day === null)) {
+        temp = false;
+        this._showMessage({ ...warning, message: "执行周期缺少具体日期！" });
       }
       return temp;
     },
@@ -146,9 +158,13 @@ export default {
           reboot: "-r -t 00",
           dormancy: "-h",
         },
-        { type, name, cycle, datetime } = this.plan,
-        // 定义命令
-        cmd = `schtasks /create /sc ${cycle} /tn "${name}" /tr "shutdown ${types[type]}" /st ${datetime}`;
+        { type, name, cycle, datetime } = this.plan;
+      // 定义命令
+      let cmd = `schtasks /create /sc ${cycle} /tn "${name}" /tr "shutdown ${types[type]}" /st ${datetime}`;
+      // 执行周期若为一次，则补充命令
+      if (cycle === "once") {
+        cmd += ` /sd ${this.plan.day.replace(/-/g, "/")}`; //日期修改为yyyy/mm/dd格式
+      }
       // 执行命令
       return utils
         .execCmd(cmd)
@@ -179,6 +195,7 @@ export default {
           this.$bus.$emit("getPlan", { ...this.plan });
           this.plan.name = "";
           this.plan.datetime = "";
+          this.plan.day = "";
         })
         .catch((reason) => {
           this.$message({
@@ -209,6 +226,10 @@ export default {
   background-color: #409eff;
   color: #fff;
 }
+#planTime:deep() .el-date-editor {
+  width: 150px;
+  margin-left: 20px;
+}
 .flex,
 .item,
 #plan-panel,
@@ -218,10 +239,6 @@ export default {
 #plan-panel {
   flex-direction: column;
   margin-bottom: var(--panel-between);
-}
-#planTime {
-  width: 150px;
-  margin-left: 20px;
 }
 .item {
   margin: 10px;

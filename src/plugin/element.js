@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { Table, TableColumn, Button, Select, Option, Input, TimePicker, Message } from "element-ui";
+import { Table, TableColumn, Button, Select, Option, Input, TimePicker, DatePicker, Message } from "element-ui";
 
 const coms = [
   Table,
@@ -8,7 +8,8 @@ const coms = [
   Select,
   Option,
   Input,
-  TimePicker
+  TimePicker,
+  DatePicker
 ];
 
 Vue.prototype.$message = Message;

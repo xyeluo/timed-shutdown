@@ -30,16 +30,6 @@ export default {
   data() {
     return {
       plans: [],
-      planInfo: {
-        type: {
-          reboot: "重启",
-          shutdown: "关机",
-          dormancy: "休眠",
-        },
-        cycle: {
-          daily: "每天",
-        },
-      },
     };
   },
   methods: {
@@ -84,8 +74,22 @@ export default {
     // 先读取storage
     this.plans = utils.dbStorageRead();
     this.$bus.$on("getPlan", (plan) => {
-      plan.type = this.planInfo.type[plan.type];
-      plan.cycle = this.planInfo.cycle[plan.cycle];
+      const planInfo = {
+        type: {
+          reboot: "重启",
+          shutdown: "关机",
+          dormancy: "休眠",
+        },
+        cycle: {
+          daily: "每天",
+          once: "仅一次",
+        },
+      };
+      plan.type = planInfo.type[plan.type];
+      plan.cycle = planInfo.cycle[plan.cycle];
+      if (plan.cycle === "once") {
+        plan.datetime = `${plan.day} ${plan.datetime}`;
+      }
       this.plans.unshift(plan);
       // 每次添加都覆盖一次计划列表
       utils.dbStorageSave(this.plans);
