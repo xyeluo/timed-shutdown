@@ -96,18 +96,11 @@ export default {
     };
   },
   methods: {
-    // 处理多个$message同时触发时显示异常
-    _showMessage(option) {
-      setTimeout(() => {
-        this.$message(option);
-      }, 0);
-    },
     /**
      * @Description: 检查任务名称和日期是否完整
      * @return {boolen} true:验证通过; false:缺少信息，验证不通过
      */
     _checkPlan() {
-      let temp = true;
       const { name, datetime, cycle, day } = this.plan,
         warning = {
           showClose: true,
@@ -115,18 +108,18 @@ export default {
           duration: 5000,
         };
       if (name === "") {
-        temp = false;
-        this._showMessage({ ...warning, message: "任务名称未填写！" });
-      }
-      if (datetime === "") {
-        temp = false;
-        this._showMessage({ ...warning, message: "执行周期缺少时间！" });
+        this.$message({ ...warning, message: "任务名称未填写！" });
+        return false;
       }
       if (cycle === "once" && (day === "" || day === null)) {
-        temp = false;
-        this._showMessage({ ...warning, message: "执行周期缺少具体日期！" });
+        this.$message({ ...warning, message: "执行周期缺少具体日期！" });
+        return false;
       }
-      return temp;
+      if (datetime === "") {
+        this.$message({ ...warning, message: "执行周期缺少时间！" });
+        return false;
+      }
+      return true;
     },
     /**
      * @Description: 检查任务名称是否重名
