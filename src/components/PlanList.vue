@@ -74,6 +74,10 @@ export default {
     // 先读取storage
     this.plans = utils.dbStorageRead();
     this.$bus.$on("getPlan", (plan) => {
+      if (plan.cycle === "once") {
+        // 仅一次周期下把日期、时间拼接到执行日期一起显示
+        plan.datetime = `${plan.day} ${plan.datetime}`;
+      }
       const planInfo = {
         type: {
           reboot: "重启",
@@ -87,9 +91,7 @@ export default {
       };
       plan.type = planInfo.type[plan.type];
       plan.cycle = planInfo.cycle[plan.cycle];
-      if (plan.cycle === "once") {
-        plan.datetime = `${plan.day} ${plan.datetime}`;
-      }
+
       this.plans.unshift(plan);
       // 每次添加都覆盖一次计划列表
       utils.dbStorageSave(this.plans);
