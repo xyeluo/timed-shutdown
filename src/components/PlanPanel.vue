@@ -156,6 +156,11 @@ export default {
       let cmd = `schtasks /create /sc ${cycle} /tn "${name}" /tr "shutdown ${types[type]}" /st ${datetime}`;
       // 执行周期若为一次，则补充命令
       if (cycle === "once") {
+        let dayTime = `${this.plan.day} ${datetime}`;
+        // 如果计划时间小于当前时间，则失败
+        if (Date.parse(new Date()) >= Date.parse(dayTime)) {
+          return Promise.reject("计划时间小于当前时间！");
+        }
         cmd += ` /sd ${this.plan.day.replace(/-/g, "/")}`; //日期修改为yyyy/mm/dd格式
       }
       // 执行命令
