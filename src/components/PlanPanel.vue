@@ -93,9 +93,24 @@ export default {
         day: "",
         datetime: "",
       },
+      flag: true,
     };
   },
   methods: {
+    /**
+     * @Description: 给创建计划按钮添加节流
+     * @return {boolen} true:可以执行添加功能，false:不能执行添加功能
+     */
+    _isAddPlan() {
+      if (this.flag) {
+        this.flag = false;
+        setTimeout(() => {
+          this.flag = true;
+        }, 800);
+        return true;
+      }
+      return false;
+    },
     /**
      * @Description: 检查任务名称和日期是否完整
      * @return {boolen} true:验证通过; false:缺少信息，验证不通过
@@ -175,10 +190,8 @@ export default {
     },
     // 增加计划列表行数
     addRow() {
-      if (!this._checkPlan()) {
-        return;
-      }
-      if (this._repeatPlan()) {
+      // 频繁点击创建计划按钮、表单缺少参数、存在同名计划，则return
+      if (!this._isAddPlan() || !this._checkPlan() || this._repeatPlan()) {
         return;
       }
       const result = this._addPlan();
