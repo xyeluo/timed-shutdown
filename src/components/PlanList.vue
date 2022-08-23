@@ -55,8 +55,10 @@ export default {
             message: msg,
             showClose: true,
           });
+
           // 删除行
           rows.splice(scope.$index, 1);
+
           // 每次移除都覆盖一次计划列表
           utils.dbStorageSave(this.plans);
         })
@@ -78,6 +80,18 @@ export default {
         // 仅一次周期下把日期、时间拼接到执行日期一起显示
         plan.datetime = `${plan.day} ${plan.datetime}`;
       }
+      if (plan.cycle === "weekly") {
+        const weekly = {
+          sun: "日",
+          mon: "一",
+          tue: "二",
+          wed: "三",
+          thu: "四",
+          fri: "五",
+          sat: "六",
+        };
+        plan.datetime = `星期${weekly[plan.weekly]} ${plan.datetime}`;
+      }
       const planInfo = {
         type: {
           reboot: "重启",
@@ -87,12 +101,14 @@ export default {
         cycle: {
           daily: "每天",
           once: "仅一次",
+          weekly: "每周",
         },
       };
       plan.type = planInfo.type[plan.type];
       plan.cycle = planInfo.cycle[plan.cycle];
 
       this.plans.unshift(plan);
+
       // 每次添加都覆盖一次计划列表
       utils.dbStorageSave(this.plans);
     });

@@ -1,8 +1,10 @@
 const { exec } = require('child_process'),
   iconv = require('iconv-lite'),
+
   // 设置编码
   encoding = 'gbk',
   binaryEncoding = 'binary',
+
   // 设置存储id，存储的计划列表只与当前设备相关
   Id = utools.getNativeId() + "TimedPlan";
 

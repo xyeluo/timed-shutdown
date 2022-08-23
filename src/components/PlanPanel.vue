@@ -33,6 +33,7 @@
         </el-option>
       </el-select>
       <div id="planTime">
+        <!-- 执行周期为仅一次显示 -->
         <el-date-picker
           v-show="plan.cycle === 'once' ? true : false"
           v-model.trim="plan.day"
@@ -43,6 +44,21 @@
           value-format="yyyy-MM-dd"
         >
         </el-date-picker>
+        <!-- 执行周期为每周显示 -->
+        <el-select
+          v-show="plan.cycle === 'weekly' ? true : false"
+          v-model="plan.weekly"
+          size="small"
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="item in task.weekly"
+            :key="item.value"
+            :value="item.value"
+            :label="item.label"
+          >
+          </el-option>
+        </el-select>
         <el-time-picker
           v-model.trim="plan.datetime"
           placeholder="执行时间"
@@ -66,6 +82,7 @@ export default {
   name: "PlanPanel",
   data() {
     return {
+      // 任务提供的可选参数
       task: {
         // 类型
         types: [
@@ -77,7 +94,10 @@ export default {
         cycle: [
           { label: "仅一次", value: "once" },
           { label: "每天", value: "daily" },
+          { label: "每周", value: "weekly" },
         ],
+        // 星期数,在beforeMount中渲染
+        weekly: [],
         // 可选日期，从系统当前日期开始
         start_Date: {
           disabledDate(time) {
@@ -91,6 +111,7 @@ export default {
         name: "",
         cycle: "",
         day: "",
+        weekly: "",
         datetime: "",
       },
       flag: true,
@@ -146,6 +167,7 @@ export default {
         result = plans.find((item) => {
           return item.name === this.plan.name;
         });
+
       // 查询到同名的任务
       if (result !== undefined) {
         this.$message({
@@ -158,26 +180,45 @@ export default {
       }
       return temp;
     },
-    // 执行添加计划命令
-    _addPlan() {
-      // 确定命令执行参数，关机|重启|休眠
+    /**
+     * @Description: 根据任务类型、执行周期，返回对应命令
+     */
+    _setCmd() {
+      // 根据任务类型确定命令执行参数，关机|重启|休眠
       const types = {
           shutdown: "-s -t 00",
           reboot: "-r -t 00",
           dormancy: "-h",
         },
-        { type, name, cycle, datetime } = this.plan;
-      // 定义命令
+        { type, name, cycle, datetime, day, weekly } = this.plan;
+
+      // 定义基础命令
       let cmd = `schtasks /create /sc ${cycle} /tn "${name}" /tr "shutdown ${types[type]}" /st ${datetime}`;
+
       // 执行周期若为一次，则补充命令
-      if (cycle === "once") {
-        let dayTime = `${this.plan.day} ${datetime}`;
-        // 如果计划时间小于当前时间，则失败
-        if (Date.parse(new Date()) >= Date.parse(dayTime)) {
-          return Promise.reject("计划时间小于当前时间！");
-        }
-        cmd += ` /sd ${this.plan.day.replace(/-/g, "/")}`; //日期修改为yyyy/mm/dd格式
+      switch (cycle) {
+        case "once":
+          let tempTime = `${day} ${datetime}`;
+
+          // 如果计划时间小于当前时间，则失败
+          if (Date.parse(new Date()) >= Date.parse(tempTime)) {
+            return Promise.reject("计划时间小于当前时间！");
+          }
+          cmd += ` /sd ${day.replace(/-/g, "/")}`; //日期修改为yyyy/mm/dd格式
+          break;
+        case "weekly":
+          // schtasks /create /sc weekly /tn "test" /tr "calc.exe" /st "08:30" /d fri
+          cmd += ` /d ${weekly}`;
+          break;
+        default:
+          break;
       }
+      return cmd;
+    },
+    // 执行添加计划命令
+    _addPlan() {
+      const cmd = this._setCmd();
+      console.log(cmd);
       // 执行命令
       return utils
         .execCmd(cmd)
@@ -194,14 +235,14 @@ export default {
       if (!this._isAddPlan() || !this._checkPlan() || this._repeatPlan()) {
         return;
       }
-      const result = this._addPlan();
-      result
+      this._addPlan()
         .then((msg) => {
           this.$message({
             type: "success",
             message: msg,
             showClose: true,
           });
+
           // 数据传递给List，由List添加到dbStroage
           this.$bus.$emit("getPlan", { ...this.plan });
           this.plan.name = "";
@@ -221,6 +262,19 @@ export default {
   beforeMount() {
     this.plan.type = this.task.types[0].value;
     this.plan.cycle = this.task.cycle[0].value;
+    const weekly = [
+      ["日", "sun"],
+      ["一", "mon"],
+      ["二", "tue"],
+      ["三", "wed"],
+      ["四", "thu"],
+      ["五", "fri"],
+      ["六", "sat"],
+    ];
+    weekly.forEach((item) => {
+      this.task.weekly.push({ label: `星期${item[0]}`, value: item[1] });
+    });
+    this.plan.weekly = this.task.weekly[0].value;
   },
 };
 </script>
@@ -237,10 +291,16 @@ export default {
   background-color: #409eff;
   color: #fff;
 }
-#planTime:deep() .el-date-editor {
-  width: 150px;
+#planTime:deep() > div {
   margin-left: 20px;
 }
+#planTime:deep() .el-date-editor {
+  width: 150px;
+}
+#planTime:deep() .el-select {
+  width: 90px;
+}
+/* panel样式 */
 .flex,
 .item,
 #plan-panel,
