@@ -143,7 +143,7 @@ export default {
           type: "warning",
           duration: 5000,
         };
-      if (name === "") {
+      if (name === "" || name === null) {
         this.$message({ ...warning, message: "任务名称未填写！" });
         return false;
       }
@@ -151,7 +151,7 @@ export default {
         this.$message({ ...warning, message: "执行周期缺少具体日期！" });
         return false;
       }
-      if (datetime === "") {
+      if (datetime === "" || datetime === null) {
         this.$message({ ...warning, message: "执行周期缺少时间！" });
         return false;
       }
