@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { Table, TableColumn, Button, Select, Option, Input, TimePicker, DatePicker, Message } from "element-ui";
+import { Table, TableColumn, Button, Select, Option, Input, TimePicker, DatePicker, MessageBox, Message } from "element-ui";
 
 const coms = [
   Table,
@@ -13,6 +13,7 @@ const coms = [
 ];
 
 Vue.prototype.$message = Message;
+Vue.prototype.$confirm = MessageBox.confirm;
 coms.map((c) => {
   Vue.use(c);
 })

@@ -119,6 +119,23 @@ export default {
   },
   methods: {
     /**
+     * @Description: 判断是否是windows系统
+     * @return {boolen} true:是 false:不是
+     */
+    _isWin() {
+      const resutl = utools.isWindows();
+      if (!resutl) {
+        this.$confirm("<p>该插件仅支持<b>Windows</b>系统</p>", "提醒", {
+          type: 'warning',
+          center:true,
+          dangerouslyUseHTMLString: true,
+          showCancelButton:false,
+          closeOnClickModal:false,
+        });
+      }
+      return resutl;
+    },
+    /**
      * @Description: 给创建计划按钮添加节流
      * @return {boolen} true:可以执行添加功能，false:不能执行添加功能
      */
@@ -233,8 +250,13 @@ export default {
     },
     // 增加计划列表行数
     addRow() {
-      // 频繁点击创建计划按钮、表单缺少参数、存在同名计划，则return
-      if (!this._isAddPlan() || !this._checkPlan() || this._repeatPlan()) {
+      // 不是windows系统、频繁点击创建计划按钮、表单缺少参数、存在同名计划，则return
+      if (
+        !this._isWin() ||
+        !this._isAddPlan() ||
+        !this._checkPlan() ||
+        this._repeatPlan()
+      ) {
         return;
       }
       this._addPlan()
@@ -262,6 +284,7 @@ export default {
     },
   },
   beforeMount() {
+    this._isWin();
     this.plan.type = this.task.types[0].value;
     this.plan.cycle = this.task.cycle[0].value;
     const weekly = [
