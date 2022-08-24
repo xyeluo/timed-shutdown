@@ -135,8 +135,30 @@ export default {
     },
     // 改变任务状态
     changeStatus({ row }) {
-      row.status = !row.status;
-      let status = "/";
+      let status = "/disable";
+      if (!row.status) {
+        status = "/enable";
+      }
+      const cmd = `schtasks /change /tn "${row.name}" ${status}`;
+      return utils
+        .execCmd(cmd)
+        .then((result) => {
+          this.$message({
+            type: "success",
+            message: `<p class="msg">${result}</p>`,
+            dangerouslyUseHTMLString: true,
+          });
+          row.status = !row.status;
+          utils.dbStorageSave(this.plans);
+        })
+        .catch((reason) => {
+          this.$message({
+            type: "error",
+            message: reason,
+            duration: 10000,
+            showClose: true,
+          });
+        });
     },
   },
   mounted() {

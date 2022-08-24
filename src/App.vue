@@ -18,6 +18,10 @@ export default {
 </script>
 
 <style>
+/* $message中html片段样式 */
+.msg {
+  white-space: pre-wrap;
+}
 /* 通用样式 */
 * {
   margin: 0;
