@@ -186,8 +186,8 @@ export default {
     _setCmd() {
       // 根据任务类型确定命令执行参数，关机|重启|休眠
       const types = {
-          shutdown: "-s -t 00",
-          reboot: "-r -t 00",
+          shutdown: "-s -t 00 -f",
+          reboot: "-r -t 00 -f",
           dormancy: "-h",
         },
         { type, name, cycle, datetime, day, weekly } = this.plan;
@@ -202,7 +202,7 @@ export default {
 
           // 如果计划时间小于当前时间，则失败
           if (Date.parse(new Date()) >= Date.parse(tempTime)) {
-            return Promise.reject("计划时间小于当前时间！");
+            return;
           }
           cmd += ` /sd ${day.replace(/-/g, "/")}`; //日期修改为yyyy/mm/dd格式
           break;
@@ -218,7 +218,9 @@ export default {
     // 执行添加计划命令
     _addPlan() {
       const cmd = this._setCmd();
-      console.log(cmd);
+      if (!cmd) {
+        return Promise.reject("计划时间小于当前时间！");
+      }
       // 执行命令
       return utils
         .execCmd(cmd)
