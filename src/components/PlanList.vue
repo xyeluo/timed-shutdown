@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import throotle from "@mix/index.js";
 const utils = window.utils;
 
 export default {
@@ -55,6 +56,7 @@ export default {
       plans: [],
     };
   },
+  mixins: [throotle],
   methods: {
     // 执行删除计划命令
     _deletePlan(planName) {
@@ -135,6 +137,9 @@ export default {
     },
     // 改变任务状态
     changeStatus({ row }) {
+      if (!this.throotle()) {
+        return;
+      }
       let status = "/disable";
       if (!row.status) {
         status = "/enable";

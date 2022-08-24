@@ -76,6 +76,7 @@
 </template>
 
 <script>
+import throotle from "@mix/index.js";
 const utils = window.utils;
 
 export default {
@@ -114,9 +115,9 @@ export default {
         weekly: "",
         datetime: "",
       },
-      flag: true,
     };
   },
+  mixins: [throotle],
   methods: {
     /**
      * @Description: 判断是否是windows系统
@@ -126,28 +127,14 @@ export default {
       const resutl = utools.isWindows();
       if (!resutl) {
         this.$confirm("<p>该插件仅支持<b>Windows</b>系统</p>", "提醒", {
-          type: 'warning',
-          center:true,
+          type: "warning",
+          center: true,
           dangerouslyUseHTMLString: true,
-          showCancelButton:false,
-          closeOnClickModal:false,
+          showCancelButton: false,
+          closeOnClickModal: false,
         });
       }
       return resutl;
-    },
-    /**
-     * @Description: 给创建计划按钮添加节流
-     * @return {boolen} true:可以执行添加功能，false:不能执行添加功能
-     */
-    _isAddPlan() {
-      if (this.flag) {
-        this.flag = false;
-        setTimeout(() => {
-          this.flag = true;
-        }, 800);
-        return true;
-      }
-      return false;
     },
     /**
      * @Description: 检查任务名称和日期是否完整
@@ -253,7 +240,7 @@ export default {
       // 不是windows系统、频繁点击创建计划按钮、表单缺少参数、存在同名计划，则return
       if (
         !this._isWin() ||
-        !this._isAddPlan() ||
+        !this.throotle() ||
         !this._checkPlan() ||
         this._repeatPlan()
       ) {
