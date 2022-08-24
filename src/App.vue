@@ -27,16 +27,21 @@ export default {
   --app-bg: #2d2e30;
   --panel-bg: #fff;
   --panel-min_w: 750px; /* Panel和List最小宽度 */
-  --panel-max_w: 90%; /* Panel和List最大宽度 */
+  --panel-max_w: 1000px; /* Panel和List最大宽度 */
   --panel-padding: 15px; /* Panel和List内边距 */
   --panel-between: 15px; /* Panel和List间隔 */
   --radius: 5px;
+  --status-enable: #69b2fe; /* 状态按钮颜色 */
+  --status-disable: #f56c6c;
 }
 html,
 body,
 #app {
   width: 100%;
   height: 100%;
+}
+body::-webkit-scrollbar {
+  display: none;
 }
 #app {
   background-color: var(--app-bg);
@@ -48,7 +53,8 @@ body,
 
 #plan-panel,
 #plan-list {
-  /* max-width: var(--panel-max_w); */
+  max-width: var(--panel-max_w);
+  width: 90%;
   min-width: var(--panel-min_w);
   background-color: var(--panel-bg);
   border-radius: var(--radius);

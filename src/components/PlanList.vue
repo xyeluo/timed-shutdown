@@ -5,13 +5,36 @@
       <el-table-column fixed prop="name" label="任务名称"> </el-table-column>
       <el-table-column fixed prop="type" label="任务类型"> </el-table-column>
       <el-table-column fixed prop="cycle" label="执行周期"> </el-table-column>
-      <el-table-column fixed prop="datetime" label="执行日期">
+      <el-table-column fixed prop="datetime" label="执行日期" width="150">
+      </el-table-column>
+      <el-table-column fixed label="状态">
+        <template slot-scope="scope">
+          <div
+            class="status enable"
+            v-if="scope.row.status"
+            @click="changeStatus(scope)"
+          >
+            <span>运行中</span>
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M15 24V11.8756L25.5 17.9378L36 24L25.5 30.0622L15 36.1244V24Z"
+              />
+            </svg>
+          </div>
+          <div class="status disable" v-else @click="changeStatus(scope)">
+            <span>已暂停</span>
+            <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 12V36" />
+              <path d="M32 12V36" />
+            </svg>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button
             @click.native.prevent="deleteRow(scope, plans)"
-            type="text"
+            type="danger"
             size="small"
           >
             移除
@@ -71,11 +94,8 @@ export default {
           });
         });
     },
-  },
-  mounted() {
-    // 先读取storage
-    this.plans = utils.dbStorageRead();
-    this.$bus.$on("getPlan", (plan) => {
+    // 添加计划列表
+    _getPlan(plan) {
       if (plan.cycle === "once") {
         // 仅一次周期下把日期、时间拼接到执行日期一起显示
         plan.datetime = `${plan.day} ${plan.datetime}`;
@@ -104,14 +124,25 @@ export default {
           weekly: "每周",
         },
       };
+      this.$set(plan, "status", true);
       plan.type = planInfo.type[plan.type];
       plan.cycle = planInfo.cycle[plan.cycle];
-
       this.plans.unshift(plan);
 
       // 每次添加都覆盖一次计划列表
       utils.dbStorageSave(this.plans);
-    });
+      console.log(plan, this.plans);
+    },
+    // 改变任务状态
+    changeStatus({ row }) {
+      row.status = !row.status;
+      let status = "/";
+    },
+  },
+  mounted() {
+    // 先读取storage
+    this.plans = utils.dbStorageRead();
+    this.$bus.$on("getPlan", this._getPlan);
   },
   destroyed() {
     this.$bus.$off("showResult");
@@ -120,6 +151,13 @@ export default {
 </script>
 
 <style scoped>
+.el-table:deep() td,
+.el-table:deep() th {
+  text-align: center;
+}
+.el-table:deep() .el-table__fixed-body-wrapper {
+  user-select: text;
+}
 #plan-list {
   margin-top: var(--panel-between);
   box-sizing: border-box;
@@ -130,5 +168,36 @@ export default {
 }
 #plan {
   white-space: pre-wrap;
+}
+.status {
+  display: flex;
+  justify-content: center;
+  cursor: default;
+}
+.status svg {
+  --w-h: 24px;
+  width: var(--w-h);
+  height: var(--w-h);
+  stroke-width: 4;
+}
+.enable {
+  color: var(--status-enable);
+}
+.enable svg path {
+  fill: var(--status-enable);
+  stroke: var(--status-enable);
+  stroke-linejoin: round;
+}
+.disable {
+  color: var(--status-disable);
+}
+.disable svg path {
+  fill: var(--status-disable);
+  stroke: var(--status-disable);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.status:hover {
+  text-decoration: underline;
 }
 </style>

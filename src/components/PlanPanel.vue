@@ -266,7 +266,6 @@ export default {
             message: msg,
             showClose: true,
           });
-
           // 数据传递给List，由List添加到dbStroage
           this.$bus.$emit("getPlan", { ...this.plan });
           this.plan.name = "";
