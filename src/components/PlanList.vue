@@ -75,10 +75,8 @@ export default {
       const result = this._deletePlan(scope.row.name);
       result
         .then((msg) => {
-          this.$message({
-            type: "success",
+          this.msg({
             message: msg,
-            showClose: true,
           });
 
           // 删除行
@@ -88,11 +86,9 @@ export default {
           utils.dbStorageSave(this.plans);
         })
         .catch((reason) => {
-          this.$message({
+          this.msg({
             type: "error",
             message: reason,
-            duration: 10000,
-            showClose: true,
           });
         });
     },
@@ -133,7 +129,6 @@ export default {
 
       // 每次添加都覆盖一次计划列表
       utils.dbStorageSave(this.plans);
-      console.log(plan, this.plans);
     },
     // 改变任务状态
     changeStatus({ row }) {
@@ -148,20 +143,20 @@ export default {
       return utils
         .execCmd(cmd)
         .then((result) => {
-          this.$message({
-            type: "success",
-            message: `<p class="msg">${result}</p>`,
-            dangerouslyUseHTMLString: true,
-          });
+          // this.$message({
+          //   type: "success",
+          //   message: `<p class="msg">${result}</p>`,
+
+          //   showClose
+          // });
+          this.msg({ message: result });
           row.status = !row.status;
           utils.dbStorageSave(this.plans);
         })
         .catch((reason) => {
-          this.$message({
+          this.msg({
             type: "error",
             message: reason,
-            duration: 10000,
-            showClose: true,
           });
         });
     },
@@ -200,6 +195,7 @@ export default {
   display: flex;
   justify-content: center;
   cursor: default;
+  user-select: none;
 }
 .status svg {
   --w-h: 24px;

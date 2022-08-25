@@ -4,9 +4,19 @@
   "preload": "index.js",
   "features": [
     {
-      "code": "timedShutdown",
-      "explain": "自动关机重启",
-      "cmds": ["定时关机", "定时重启", "定时休眠", "计划", "自动关机重启"]
+      "code": "shutdown",
+      "explain": "设置关机任务",
+      "cmds": ["定时关机", "自动关机"]
+    },
+    {
+      "code": "reboot",
+      "explain": "设置重启任务",
+      "cmds": ["定时重启", "自动重启"]
+    },
+    {
+      "code": "dormancy",
+      "explain": "设置休眠任务",
+      "cmds": ["定时休眠", "自动休眠"]
     }
   ],
   "platform": ["win32"],

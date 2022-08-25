@@ -141,22 +141,17 @@ export default {
      * @return {boolen} true:验证通过; false:缺少信息，验证不通过
      */
     _checkPlan() {
-      const { name, datetime, cycle, day } = this.plan,
-        warning = {
-          showClose: true,
-          type: "warning",
-          duration: 5000,
-        };
+      const { name, datetime, cycle, day } = this.plan;
       if (name === "" || name === null) {
-        this.$message({ ...warning, message: "任务名称未填写！" });
+        this.msg({ type: "warning", message: "任务名称未填写！" });
         return false;
       }
       if (cycle === "once" && (day === "" || day === null)) {
-        this.$message({ ...warning, message: "执行周期缺少具体日期！" });
+        this.msg({ type: "warning", message: "执行周期缺少具体日期！" });
         return false;
       }
       if (datetime === "" || datetime === null) {
-        this.$message({ ...warning, message: "执行周期缺少时间！" });
+        this.msg({ type: "warning", message: "执行周期缺少时间！" });
         return false;
       }
       return true;
@@ -174,11 +169,9 @@ export default {
 
       // 查询到同名的任务
       if (result !== undefined) {
-        this.$message({
+        this.msg({
           type: "warning",
-          showClose: true,
           message: `“${result.name}”任务已存在`,
-          duration: 5000,
         });
         temp = true;
       }
@@ -248,11 +241,7 @@ export default {
       }
       this._addPlan()
         .then((msg) => {
-          this.$message({
-            type: "success",
-            message: msg,
-            showClose: true,
-          });
+          this.msg({ message: msg });
           // 数据传递给List，由List添加到dbStroage
           this.$bus.$emit("getPlan", { ...this.plan });
           this.plan.name = "";
@@ -260,18 +249,18 @@ export default {
           this.plan.day = "";
         })
         .catch((reason) => {
-          this.$message({
+          this.msg({
             type: "error",
             message: reason,
-            duration: 10000,
-            showClose: true,
           });
         });
     },
   },
   beforeMount() {
     this._isWin();
-    this.plan.type = this.task.types[0].value;
+    utools.onPluginEnter(({ code }) => {
+      this.plan.type = code;
+    });
     this.plan.cycle = this.task.cycle[0].value;
     const weekly = [
       ["日", "sun"],
