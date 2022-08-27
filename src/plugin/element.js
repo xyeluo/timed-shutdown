@@ -12,23 +12,36 @@ const coms = [
   DatePicker
 ];
 
-Vue.prototype.msg = function msg(parms) {
+Vue.prototype.$message = function msg(option) {
   const time = {
     success: 3000,
     error: 10000,
     warning: 5000,
   },
-    type = parms.type ?? "success",
+    type = option.type ?? "success",
     duration = time[type]
   Message({
     showClose: true,
     dangerouslyUseHTMLString: true,
     type: type,
     duration: duration,
-    message: `<p class="msg">${parms.message}</p>`
+    message: `<p class="msg">${option.message}</p>`
   })
 };
-Vue.prototype.$confirm = MessageBox.confirm;
+Vue.prototype.$confirm = function confirm(option) {
+  const { msg, title } = option;
+  delete option.msg;
+  delete option.title;
+  return new Promise((resolve, reject) => {
+    MessageBox.confirm(msg, title, {
+      ...option,
+      type: "warning",
+      dangerouslyUseHTMLString: true
+    }).then(() => {
+      resolve();
+    }).catch(() => { })
+  })
+}
 coms.map((c) => {
   Vue.use(c);
 })

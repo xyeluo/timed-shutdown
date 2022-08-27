@@ -129,10 +129,10 @@ export default {
     _isWin() {
       const resutl = utools.isWindows();
       if (!resutl) {
-        this.$confirm("<p>该插件仅支持<b>Windows</b>系统</p>", "提醒", {
-          type: "warning",
+        this.$confirm({
+          msg: "<p>该插件仅支持<b>Windows</b>系统</p>",
+          title: "提醒",
           center: true,
-          dangerouslyUseHTMLString: true,
           showCancelButton: false,
           closeOnClickModal: false,
         });
@@ -146,15 +146,15 @@ export default {
     _checkPlan() {
       const { name, datetime, cycle, day } = this.plan;
       if (name === "" || name === null) {
-        this.msg({ type: "warning", message: "任务名称未填写！" });
+        this.$message({ type: "warning", message: "任务名称未填写！" });
         return false;
       }
       if (cycle === "once" && (day === "" || day === null)) {
-        this.msg({ type: "warning", message: "执行周期缺少具体日期！" });
+        this.$message({ type: "warning", message: "执行周期缺少具体日期！" });
         return false;
       }
       if (datetime === "" || datetime === null) {
-        this.msg({ type: "warning", message: "执行周期缺少时间！" });
+        this.$message({ type: "warning", message: "执行周期缺少时间！" });
         return false;
       }
       return true;
@@ -172,7 +172,7 @@ export default {
 
       // 查询到同名的任务
       if (result !== undefined) {
-        this.msg({
+        this.$message({
           type: "warning",
           message: `“${result.name}”任务已存在`,
         });
@@ -244,13 +244,13 @@ export default {
       }
       this._addPlan()
         .then((msg) => {
-          this.msg({ message: msg });
+          this.$message({ message: msg });
           // 数据传递给List，由List添加到dbStroage
           this.$bus.$emit("getPlan", { ...this.plan });
           this.plan.name = this.plan.datetime = this.plan.day = "";
         })
         .catch((reason) => {
-          this.msg({
+          this.$message({
             type: "error",
             message: reason,
           });

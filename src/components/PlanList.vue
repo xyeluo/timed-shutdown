@@ -75,7 +75,7 @@ export default {
       const result = this._deletePlan(scope.row.name);
       result
         .then((msg) => {
-          this.msg({
+          this.$message({
             message: msg,
           });
 
@@ -86,9 +86,13 @@ export default {
           utils.dbStorageSave(this.plans);
         })
         .catch((reason) => {
-          this.msg({
-            type: "error",
-            message: reason,
+          this.$confirm({
+            msg: "<p>是否强制从<b>插件计划列表</b>中移除</p>",
+            title: reason,
+            customClass: "danger",
+          }).then(() => {
+            rows.splice(scope.$index, 1);
+            utils.dbStorageSave(this.plans);
           });
         });
     },
@@ -143,12 +147,12 @@ export default {
       return utils
         .execCmd(cmd)
         .then((result) => {
-          this.msg({ message: result });
+          this.$message({ message: result });
           row.status = !row.status;
           utils.dbStorageSave(this.plans);
         })
         .catch((reason) => {
-          this.msg({
+          this.$message({
             type: "error",
             message: reason,
           });
@@ -165,7 +169,13 @@ export default {
   },
 };
 </script>
-
+<style>
+.danger .el-message-box__btns .el-button--primary {
+  color: var(--danger-color);
+  background-color: var(--button-danger);
+  border-color: var(--button-danger);
+}
+</style>
 <style scoped>
 .el-table:deep() td,
 .el-table:deep() th {

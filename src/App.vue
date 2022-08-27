@@ -37,6 +37,8 @@ export default {
   --radius: 5px;
   --button-enable: #69b2fe; /* 状态按钮颜色 */
   --button-disable: #f56c6c;
+  --button-danger: var(--button-disable);
+  --danger-color: var(--panel-bg);
 }
 html,
 body,
