@@ -35,8 +35,8 @@ export default {
   --panel-padding: 15px; /* Panel和List内边距 */
   --panel-between: 15px; /* Panel和List间隔 */
   --radius: 5px;
-  --status-enable: #69b2fe; /* 状态按钮颜色 */
-  --status-disable: #f56c6c;
+  --button-enable: #69b2fe; /* 状态按钮颜色 */
+  --button-disable: #f56c6c;
 }
 html,
 body,

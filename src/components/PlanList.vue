@@ -143,12 +143,6 @@ export default {
       return utils
         .execCmd(cmd)
         .then((result) => {
-          // this.$message({
-          //   type: "success",
-          //   message: `<p class="msg">${result}</p>`,
-
-          //   showClose
-          // });
           this.msg({ message: result });
           row.status = !row.status;
           utils.dbStorageSave(this.plans);
@@ -204,19 +198,19 @@ export default {
   stroke-width: 4;
 }
 .enable {
-  color: var(--status-enable);
+  color: var(--button-enable);
 }
 .enable svg path {
-  fill: var(--status-enable);
-  stroke: var(--status-enable);
+  fill: var(--button-enable);
+  stroke: var(--button-enable);
   stroke-linejoin: round;
 }
 .disable {
-  color: var(--status-disable);
+  color: var(--button-disable);
 }
 .disable svg path {
-  fill: var(--status-disable);
-  stroke: var(--status-disable);
+  fill: var(--button-disable);
+  stroke: var(--button-disable);
   stroke-linecap: round;
   stroke-linejoin: round;
 }

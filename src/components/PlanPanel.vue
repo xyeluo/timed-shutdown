@@ -11,6 +11,9 @@
         >
         </el-option>
       </el-select>
+      <div class="remote" @click="callRemote">
+        <p>呼出系统自带远程关机（局域网内）</p>
+      </div>
     </div>
     <div class="item">
       <label class="instruct" for="planName">任务名称</label>
@@ -244,9 +247,7 @@ export default {
           this.msg({ message: msg });
           // 数据传递给List，由List添加到dbStroage
           this.$bus.$emit("getPlan", { ...this.plan });
-          this.plan.name = "";
-          this.plan.datetime = "";
-          this.plan.day = "";
+          this.plan.name = this.plan.datetime = this.plan.day = "";
         })
         .catch((reason) => {
           this.msg({
@@ -254,6 +255,12 @@ export default {
             message: reason,
           });
         });
+    },
+    callRemote() {
+      if (!this.throotle()) {
+        return;
+      }
+      utils.execCmd("shutdown -i");
     },
   },
   beforeMount() {
@@ -311,15 +318,24 @@ export default {
   flex-direction: column;
   margin-bottom: var(--panel-between);
 }
+.remote {
+  margin-left: auto;
+  color: var(--button-enable);
+  text-decoration: underline;
+}
+.remote:hover {
+  filter: brightness(0.8);
+  cursor: pointer;
+}
 .item {
   margin: 10px;
+  line-height: 32px;
 }
 .item .el-button {
   margin-left: 70px;
 }
 .instruct {
   margin-right: 5px;
-  line-height: 32px;
 }
 input[type="number"] {
   width: 50px;
