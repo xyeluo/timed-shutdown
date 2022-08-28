@@ -75,9 +75,7 @@ export default {
       const result = this._deletePlan(scope.row.name);
       result
         .then((msg) => {
-          this.$message({
-            message: msg,
-          });
+          this.$message({ message: msg });
 
           // 删除行
           rows.splice(scope.$index, 1);
