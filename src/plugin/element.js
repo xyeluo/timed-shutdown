@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { Table, TableColumn, Button, Select, Option, Input, TimePicker, DatePicker, MessageBox, Message } from "element-ui";
+import { Table, TableColumn, Button, Select, Option, Input, TimePicker, DatePicker, Switch, MessageBox, Message } from "element-ui";
 
 const coms = [
   Table,
@@ -8,6 +8,7 @@ const coms = [
   Select,
   Option,
   Input,
+  Switch,
   TimePicker,
   DatePicker
 ];

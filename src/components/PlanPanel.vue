@@ -24,7 +24,7 @@
         clearable
       ></el-input>
     </div>
-    <div class="item">
+    <div class="item" :class="{ only: plan.cycle === 'once' ? true : false }">
       <span class="instruct">执行周期</span>
       <el-select v-model="plan.cycle" size="small" placeholder="请选择">
         <el-option
@@ -35,6 +35,12 @@
         >
         </el-option>
       </el-select>
+      <el-switch
+        v-model="plan.autoDelete"
+        active-color="#13ce66"
+        active-text="删除过期任务"
+      >
+      </el-switch>
       <div id="planTime">
         <!-- 执行周期为仅一次显示 -->
         <el-date-picker
@@ -117,6 +123,7 @@ export default {
         day: "",
         weekly: "",
         datetime: "",
+        autoDelete: true,
       },
     };
   },
@@ -256,6 +263,7 @@ export default {
           });
         });
     },
+    // 打开远程关机对话框
     callRemote() {
       if (!this.throotle()) {
         return;
@@ -294,6 +302,12 @@ export default {
 .el-input {
   width: 200px;
 }
+.el-switch {
+  display: none;
+}
+:deep() .el-switch__label {
+  color: #bdc3c7;
+}
 #planTime:deep() input::selection {
   background-color: #409eff;
   color: #fff;
@@ -306,6 +320,14 @@ export default {
 }
 #planTime:deep() .el-select {
   width: 90px;
+}
+.only .el-switch {
+  display: inline-block;
+  margin: 4.5px 0 0 20px;
+}
+.only #planTime {
+  width: 100%;
+  margin: 20px 0 0 40px;
 }
 /* panel样式 */
 .flex,
@@ -330,6 +352,7 @@ export default {
 .item {
   margin: 10px;
   line-height: 32px;
+  flex-wrap: wrap;
 }
 .item .el-button {
   margin-left: 70px;
