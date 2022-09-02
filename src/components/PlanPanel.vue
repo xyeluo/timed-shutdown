@@ -320,9 +320,12 @@ export default {
 :deep() .el-switch__label {
   color: #bdc3c7;
 }
+:deep() .el-switch__label.is-active {
+  color: var(--button-enable);
+}
 #planTime:deep() input::selection {
-  background-color: #409eff;
-  color: #fff;
+  background-color: var(--button-enable);
+  color: var(--panel-bg);
 }
 #planTime:deep() > div {
   margin-left: 20px;
