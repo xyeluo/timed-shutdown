@@ -19,5 +19,8 @@
       "cmds": ["定时休眠", "自动休眠"]
     }
   ],
-  "platform": ["win32"]
+  "platform": ["win32"],
+  "development": {
+    "main": "http://localhost:8080"
+  }
 }
