@@ -36,8 +36,9 @@
             @click.native.prevent="deleteRow(scope, plans)"
             type="danger"
             size="small"
+            :disabled="scope.row.autoDelete"
           >
-            移除
+            {{ scope.row.autoDelete ? "自动删除" : "移除" }}
           </el-button>
         </template>
       </el-table-column>
@@ -55,6 +56,14 @@ export default {
     return {
       plans: [],
     };
+  },
+  watch: {
+    plans: {
+      deep: true,
+      handler() {
+        utils.dbStorageSave(this.plans);
+      },
+    },
   },
   mixins: [throotle],
   methods: {
@@ -79,9 +88,6 @@ export default {
 
           // 删除行
           rows.splice(scope.$index, 1);
-
-          // 每次移除都覆盖一次计划列表
-          utils.dbStorageSave(this.plans);
         })
         .catch((reason) => {
           this.$confirm({
@@ -90,7 +96,6 @@ export default {
             customClass: "danger",
           }).then(() => {
             rows.splice(scope.$index, 1);
-            utils.dbStorageSave(this.plans);
           });
         });
     },
@@ -128,9 +133,6 @@ export default {
       plan.type = planInfo.type[plan.type];
       plan.cycle = planInfo.cycle[plan.cycle];
       this.plans.unshift(plan);
-
-      // 每次添加都覆盖一次计划列表
-      utils.dbStorageSave(this.plans);
     },
     // 改变任务状态
     changeStatus({ row }) {
@@ -147,7 +149,6 @@ export default {
         .then((result) => {
           this.$message({ message: result });
           row.status = !row.status;
-          utils.dbStorageSave(this.plans);
         })
         .catch((reason) => {
           this.$message({
@@ -156,10 +157,24 @@ export default {
           });
         });
     },
+    // 删除过期任务
+    _deleteTypeOncePlan() {
+      this.plans = this.plans.filter((item) => {
+        // 保留没有开启自动删除，或者开启自动删除但计划时间大于当前时间的任务
+        if (
+          !item.autoDelete ||
+          (item.autoDelete && new Date(item.datetime) > Date.now())
+        ) {
+          return true;
+        }
+        this._deletePlan(item.name).catch(() => {});
+      });
+    },
   },
-  mounted() {
+  beforeMount() {
     // 先读取storage
     this.plans = utils.dbStorageRead();
+    this._deleteTypeOncePlan();
     this.$bus.$on("getPlan", this._getPlan);
   },
   destroyed() {

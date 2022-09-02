@@ -38,7 +38,7 @@
       <el-switch
         v-model="plan.autoDelete"
         active-color="#13ce66"
-        active-text="删除过期任务"
+        active-text="自动删除过期任务"
       >
       </el-switch>
       <div id="planTime">
@@ -126,6 +126,18 @@ export default {
         autoDelete: true,
       },
     };
+  },
+  watch: {
+    "plan.cycle": {
+      immediate: true,
+      handler(newVal) {
+        if (newVal !== "once") {
+          this.plan.autoDelete = false;
+          return;
+        }
+        this.plan.autoDelete = true;
+      },
+    },
   },
   mixins: [throotle],
   methods: {
