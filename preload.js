@@ -44,7 +44,9 @@ function dbStorageRead() {
 // 插件应用退出的同时退出进程
 function exit() {
   utools.onPluginOut(() => {
-    process.exit(0);
+    setTimeout(() => {
+      process.exit(0);
+    }, 20000);
   })
 }
 

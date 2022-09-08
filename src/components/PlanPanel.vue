@@ -41,42 +41,46 @@
         active-text="自动删除过期任务"
       >
       </el-switch>
-      <div id="planTime">
-        <!-- 执行周期为仅一次显示 -->
-        <el-date-picker
-          v-show="plan.cycle === 'once' ? true : false"
-          v-model.trim="plan.day"
-          type="date"
-          placeholder="具体日期"
-          size="small"
-          :picker-options="task.start_Date"
-          value-format="yyyy-MM-dd"
+    </div>
+    <div id="planTime">
+      <!-- 执行周期为仅一次显示 -->
+      <el-date-picker
+        class="item"
+        v-show="plan.cycle === 'once' ? true : false"
+        v-model.trim="plan.day"
+        type="date"
+        placeholder="具体日期"
+        size="small"
+        :picker-options="task.start_Date"
+        value-format="yyyy-MM-dd"
+      >
+      </el-date-picker>
+      <!-- 执行周期为每周显示 -->
+      <el-select
+        class="item"
+        v-show="plan.cycle === 'weekly' ? true : false"
+        v-model="plan.weekly"
+        size="small"
+        multiple
+        placeholder="请选择"
+      >
+        <el-option
+          v-for="item in task.weekly"
+          :key="item.value"
+          :value="item.value"
+          :label="item.label"
         >
-        </el-date-picker>
-        <!-- 执行周期为每周显示 -->
-        <el-select
-          v-show="plan.cycle === 'weekly' ? true : false"
-          v-model="plan.weekly"
-          size="small"
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="item in task.weekly"
-            :key="item.value"
-            :value="item.value"
-            :label="item.label"
-          >
-          </el-option>
-        </el-select>
-        <el-time-picker
-          v-model.trim="plan.datetime"
-          placeholder="执行时间"
-          size="small"
-          format="HH:mm"
-          value-format="HH:mm"
-        >
-        </el-time-picker>
-      </div>
+        </el-option>
+      </el-select>
+      <el-time-picker
+        class="item"
+        v-model.trim="plan.datetime"
+        placeholder="执行时间"
+        size="small"
+        format="HH:mm"
+        value-format="HH:mm"
+      >
+      </el-time-picker>
     </div>
     <div class="item">
       <el-button type="primary" @click="addRow">创建计划</el-button>
@@ -120,7 +124,7 @@ export default {
         name: "",
         cycle: "",
         day: "",
-        weekly: "",
+        weekly: [],
         datetime: "",
         autoDelete: true,
       },
@@ -162,13 +166,17 @@ export default {
      * @return {boolen} true:验证通过; false:缺少信息，验证不通过
      */
     _checkPlan() {
-      const { name, datetime, cycle, day } = this.plan;
+      const { name, datetime, cycle, day, weekly } = this.plan;
       if (name === "" || name === null) {
         this.$message({ type: "warning", message: "任务名称未填写！" });
         return false;
       }
       if (cycle === "once" && (day === "" || day === null)) {
         this.$message({ type: "warning", message: "执行周期缺少具体日期！" });
+        return false;
+      }
+      if (cycle === "weekly" && weekly.length === 0) {
+        this.$message({ type: "warning", message: "执行周期缺少星期！" });
         return false;
       }
       if (datetime === "" || datetime === null) {
@@ -226,7 +234,7 @@ export default {
           break;
         case "weekly":
           // schtasks /create /sc weekly /tn "test" /tr "calc.exe" /st "08:30" /d fri
-          cmd += ` /d ${weekly}`;
+          cmd += ` /d ${weekly.toString()}`;
           break;
         default:
           break;
@@ -266,6 +274,7 @@ export default {
           // 数据传递给List，由List添加到dbStroage
           this.$bus.$emit("getPlan", { ...this.plan });
           this.plan.name = this.plan.datetime = this.plan.day = "";
+          this.plan.weekly = [];
         })
         .catch((reason) => {
           this.$message({
@@ -300,7 +309,6 @@ export default {
     weekly.forEach((item) => {
       this.task.weekly.push({ label: `星期${item[0]}`, value: item[1] });
     });
-    this.plan.weekly = this.task.weekly[0].value;
   },
 };
 </script>
@@ -327,21 +335,17 @@ export default {
   color: var(--button-enable);
 }
 
-#planTime:deep() input::selection {
+#planTime input::selection {
   background-color: var(--button-enable);
   color: var(--panel-bg);
 }
 
-#planTime:deep() > div {
-  margin-left: 20px;
-}
-
-#planTime:deep() .el-date-editor {
+#planTime .el-date-editor {
   width: 150px;
 }
 
-#planTime:deep() .el-select {
-  width: 90px;
+#planTime .el-select {
+  width: 240px;
 }
 
 .only .el-switch {
@@ -349,16 +353,19 @@ export default {
   margin: 4.5px 0 0 20px;
 }
 
-.only #planTime {
+#planTime > div {
+  display: block;
+  margin-left: 70px;
+}
+/* .only #planTime {
   width: 100%;
   margin: 20px 0 0 40px;
-}
+} */
 
 /* panel样式 */
 .flex,
 .item,
-#plan-panel,
-#planTime {
+#plan-panel {
   display: flex;
 }
 
@@ -381,7 +388,6 @@ export default {
 .item {
   margin: 10px;
   line-height: 32px;
-  flex-wrap: wrap;
 }
 
 .item .el-button {

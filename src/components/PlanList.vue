@@ -5,7 +5,7 @@
       <el-table-column fixed prop="name" label="任务名称"> </el-table-column>
       <el-table-column fixed prop="type" label="任务类型"> </el-table-column>
       <el-table-column fixed prop="cycle" label="执行周期"> </el-table-column>
-      <el-table-column fixed prop="datetime" label="执行日期" width="150">
+      <el-table-column fixed prop="datetime" label="执行日期" width="190">
       </el-table-column>
       <el-table-column fixed label="状态">
         <template slot-scope="scope">
@@ -113,7 +113,25 @@ export default {
           fri: "五",
           sat: "六",
         };
-        plan.datetime = `星期${weekly[plan.weekly]} ${plan.datetime}`;
+        // 存储转化、排序后的星期
+        let tempWeekly = [];
+        plan.weekly.forEach((week) => {
+          tempWeekly.push({
+            no: Object.keys(weekly).findIndex((item) => item === week),
+            week: weekly[week],
+          });
+        });
+        tempWeekly = tempWeekly.sort((prev, next) => {
+          return prev.no - next.no;
+        });
+        tempWeekly.forEach((item, index) => {
+          tempWeekly[index] = `星期${item.week}`;
+        });
+        tempWeekly = tempWeekly.join("、")+" ";
+        if (plan.weekly.length >= 2) {
+          tempWeekly += "\n";
+        }
+        plan.datetime = `${tempWeekly}${plan.datetime}`;
       }
       const planInfo = {
         type: {
@@ -191,6 +209,9 @@ export default {
 .el-table:deep() td,
 .el-table:deep() th {
   text-align: center;
+}
+.el-table:deep() tbody .el-table_1_column_4 .cell {
+  white-space: pre-line;
 }
 .el-table:deep() .el-table__fixed-body-wrapper {
   user-select: text;
