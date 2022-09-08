@@ -41,8 +41,16 @@ function dbStorageRead() {
   return plans;
 }
 
+// 插件应用退出的同时退出进程
+function exit() {
+  utools.onPluginOut(() => {
+    process.exit(0);
+  })
+}
+
 window.utils = {
   execCmd,
   dbStorageSave,
-  dbStorageRead
+  dbStorageRead,
+  exit,
 }

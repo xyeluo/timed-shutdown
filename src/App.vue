@@ -14,6 +14,9 @@ export default {
     PlanPanel,
     PlanList,
   },
+  mounted() {
+    this.$utils.exit();
+  },
 };
 </script>
 
@@ -22,33 +25,43 @@ export default {
 .msg {
   white-space: pre-wrap;
 }
+
 /* 通用样式 */
 * {
   margin: 0;
   padding: 0;
 }
+
 :root {
   --app-bg: #2d2e30;
   --panel-bg: #fff;
-  --panel-min_w: 750px; /* Panel和List最小宽度 */
-  --panel-max_w: 1000px; /* Panel和List最大宽度 */
-  --panel-padding: 15px; /* Panel和List内边距 */
-  --panel-between: 15px; /* Panel和List间隔 */
+  --panel-min_w: 750px;
+  /* Panel和List最小宽度 */
+  --panel-max_w: 1000px;
+  /* Panel和List最大宽度 */
+  --panel-padding: 15px;
+  /* Panel和List内边距 */
+  --panel-between: 15px;
+  /* Panel和List间隔 */
   --radius: 5px;
-  --button-enable: #69b2fe; /* 状态按钮颜色 */
+  --button-enable: #69b2fe;
+  /* 状态按钮颜色 */
   --button-disable: #f56c6c;
   --button-danger: var(--button-disable);
   --danger-color: var(--panel-bg);
 }
+
 html,
 body,
 #app {
   width: 100%;
   height: 100%;
 }
+
 body::-webkit-scrollbar {
   display: none;
 }
+
 #app {
   background-color: var(--app-bg);
   display: flex;

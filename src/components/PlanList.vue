@@ -36,7 +36,6 @@
             @click.native.prevent="deleteRow(scope, plans)"
             type="danger"
             size="small"
-            :disabled="scope.row.autoDelete"
           >
             {{ scope.row.autoDelete ? "自动删除" : "移除" }}
           </el-button>
@@ -48,7 +47,6 @@
 
 <script>
 import throotle from "@mix/index.js";
-const utils = window.utils;
 
 export default {
   name: "PlanList",
@@ -61,7 +59,7 @@ export default {
     plans: {
       deep: true,
       handler() {
-        utils.dbStorageSave(this.plans);
+        this.$utils.dbStorageSave(this.plans);
       },
     },
   },
@@ -70,7 +68,7 @@ export default {
     // 执行删除计划命令
     _deletePlan(planName) {
       const cmd = `schtasks /delete /tn "${planName}" /f`;
-      return utils
+      return this.$utils
         .execCmd(cmd)
         .then((result) => {
           return Promise.resolve(result);
@@ -144,7 +142,7 @@ export default {
         status = "/enable";
       }
       const cmd = `schtasks /change /tn "${row.name}" ${status}`;
-      return utils
+      return this.$utils
         .execCmd(cmd)
         .then((result) => {
           this.$message({ message: result });
@@ -173,7 +171,7 @@ export default {
   },
   beforeMount() {
     // 先读取storage
-    this.plans = utils.dbStorageRead();
+    this.plans = this.$utils.dbStorageRead();
     this._deleteTypeOncePlan();
     this.$bus.$on("getPlan", this._getPlan);
   },
@@ -239,5 +237,6 @@ export default {
 }
 .status:hover {
   text-decoration: underline;
+  cursor: pointer;
 }
 </style>

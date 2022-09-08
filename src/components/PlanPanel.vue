@@ -86,7 +86,6 @@
 
 <script>
 import throotle from "@mix/index.js";
-const utils = window.utils;
 
 export default {
   name: "PlanPanel",
@@ -184,7 +183,7 @@ export default {
      */
     _repeatPlan() {
       let temp = false;
-      const plans = utils.dbStorageRead(),
+      const plans = this.$utils.dbStorageRead(),
         result = plans.find((item) => {
           return item.name === this.plan.name;
         });
@@ -241,7 +240,7 @@ export default {
         return Promise.reject("计划时间小于当前时间！");
       }
       // 执行命令
-      return utils
+      return this.$utils
         .execCmd(cmd)
         .then((result) => {
           return Promise.resolve(result);
@@ -280,7 +279,7 @@ export default {
       if (!this.throotle()) {
         return;
       }
-      utils.execCmd("shutdown -i");
+      this.$utils.execCmd("shutdown -i");
     },
   },
   beforeMount() {
@@ -311,39 +310,50 @@ export default {
 .el-select {
   width: 100px;
 }
+
 .el-input {
   width: 200px;
 }
+
 .el-switch {
   display: none;
 }
+
 :deep() .el-switch__label {
   color: #bdc3c7;
 }
+
 :deep() .el-switch__label.is-active {
   color: var(--button-enable);
 }
+
 #planTime:deep() input::selection {
   background-color: var(--button-enable);
   color: var(--panel-bg);
 }
+
 #planTime:deep() > div {
   margin-left: 20px;
 }
+
 #planTime:deep() .el-date-editor {
   width: 150px;
 }
+
 #planTime:deep() .el-select {
   width: 90px;
 }
+
 .only .el-switch {
   display: inline-block;
   margin: 4.5px 0 0 20px;
 }
+
 .only #planTime {
   width: 100%;
   margin: 20px 0 0 40px;
 }
+
 /* panel样式 */
 .flex,
 .item,
@@ -351,30 +361,37 @@ export default {
 #planTime {
   display: flex;
 }
+
 #plan-panel {
   flex-direction: column;
   margin-bottom: var(--panel-between);
 }
+
 .remote {
   margin-left: auto;
   color: var(--button-enable);
   text-decoration: underline;
 }
+
 .remote:hover {
   filter: brightness(0.8);
   cursor: pointer;
 }
+
 .item {
   margin: 10px;
   line-height: 32px;
   flex-wrap: wrap;
 }
+
 .item .el-button {
   margin-left: 70px;
 }
+
 .instruct {
   margin-right: 5px;
 }
+
 input[type="number"] {
   width: 50px;
 }
