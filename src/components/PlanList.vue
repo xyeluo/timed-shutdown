@@ -1,7 +1,7 @@
 <template>
   <div id="plan-list">
     <h2 id="title">计划列表</h2>
-    <el-table :data="plans" max-height="280">
+    <el-table :data="plans" max-height="300">
       <el-table-column fixed prop="name" label="任务名称"> </el-table-column>
       <el-table-column fixed prop="type" label="任务类型"> </el-table-column>
       <el-table-column fixed prop="cycle" label="执行周期"> </el-table-column>

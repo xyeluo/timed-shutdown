@@ -65,7 +65,6 @@ body::-webkit-scrollbar {
 #app {
   background-color: var(--app-bg);
   display: flex;
-  justify-content: center;
   flex-direction: column;
   align-items: center;
 }
