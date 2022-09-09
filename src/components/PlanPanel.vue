@@ -35,6 +35,7 @@
         >
         </el-option>
       </el-select>
+      <!-- 执行周期为仅一次显示 -->
       <el-switch
         v-show="plan.cycle === 'once' ? true : false"
         v-model="plan.autoDelete"
@@ -42,6 +43,19 @@
         active-text="自动删除过期任务"
       >
       </el-switch>
+      <!-- 执行周期为每月显示 -->
+      <div class="notice">
+        <el-tooltip content="例：9月没有31日，当天的任务将顺延到下个月31日" placement="top-end">
+          <el-alert
+            v-show="plan.cycle === 'monthly' ? true : false"
+            title="当月没有的日期任务将会顺延到下个月"
+            type="info"
+            show-icon
+            :closable="false"
+          >
+          </el-alert>
+        </el-tooltip>
+      </div>
     </div>
     <div id="planTime">
       <!-- 执行周期为仅一次显示 -->
@@ -438,5 +452,9 @@ label.el-checkbox.el-checkbox--mini.is-bordered {
 }
 input[type="number"] {
   width: 50px;
+}
+.notice {
+  line-height: 18px;
+  margin-left: 20px;
 }
 </style>

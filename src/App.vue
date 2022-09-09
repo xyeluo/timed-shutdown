@@ -55,7 +55,6 @@ html,
 body,
 #app {
   width: 100%;
-  height: 100%;
 }
 
 body::-webkit-scrollbar {
@@ -67,7 +66,7 @@ body::-webkit-scrollbar {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 20px;
+  padding: 20px 0;
 }
 
 #plan-panel,

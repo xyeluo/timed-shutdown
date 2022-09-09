@@ -7,7 +7,7 @@ const { exec } = require('child_process'),
   binaryEncoding = 'binary',
   // 设置存储id，存储的计划列表只与当前设备相关
   Id = utools.getNativeId() + "TimedPlan",
-  xmlName = "timed-shutdonwV0.6.xml",
+  xmlName = "timed-shutdonw_UtoolsPlugin.xml",
   xmlPath = resolve(utools.getPath('home'), xmlName);
 
 iconv.skipDecodeWarning = true; //忽略warining

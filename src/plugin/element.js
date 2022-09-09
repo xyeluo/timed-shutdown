@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { Table, TableColumn, Button, Select, Option, Input, TimePicker, DatePicker, Switch, MessageBox, Checkbox, CheckboxGroup, Message } from "element-ui";
+import { Table, TableColumn, Button, Select, Option, Input, TimePicker, DatePicker, Switch, MessageBox, Checkbox, CheckboxGroup, Message, Alert,Tooltip } from "element-ui";
 
 const coms = [
   Table,
@@ -13,6 +13,8 @@ const coms = [
   DatePicker,
   Checkbox,
   CheckboxGroup,
+  Alert,
+  Tooltip
 ];
 
 Vue.prototype.$message = function msg(option) {
