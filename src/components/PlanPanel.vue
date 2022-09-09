@@ -252,7 +252,7 @@ export default {
           // 如果计划时间小于当前时间，则失败
           if (Date.parse(new Date()) >= Date.parse(tempTime)) {
             return {
-              line: "248",
+              line: "~253",
               message: "计划时间小于当前时间！",
             };
           }
@@ -272,7 +272,7 @@ export default {
             cmd = `schtasks /create /tn "${name}" /xml "${path}"`;
           } catch (error) {
             return {
-              line: "262",
+              line: "~267",
               message: error,
             };
           }

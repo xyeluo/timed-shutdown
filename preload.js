@@ -7,7 +7,7 @@ const { exec } = require('child_process'),
   binaryEncoding = 'binary',
   // 设置存储id，存储的计划列表只与当前设备相关
   Id = utools.getNativeId() + "TimedPlan",
-  xmlName = "timed-shutdonw.xml",
+  xmlName = "timed-shutdonwV0.6.xml",
   xmlPath = resolve(utools.getPath('home'), xmlName);
 
 iconv.skipDecodeWarning = true; //忽略warining
@@ -41,6 +41,7 @@ function createDaysOfMonth(daysOfMonth) {
   });
   return temp += "</DaysOfMonth></ScheduleByMonth>";
 }
+// 创建xml文件用于导入到系统计划任务
 function createXML(plan) {
   let daysOfMonth = createDaysOfMonth(plan.daysOfMonth);
   const xmlTemplete = `<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
@@ -73,6 +74,13 @@ function createXML(plan) {
   })
 }
 
+// 删除xml文件
+function deleteXML() {
+  fs.access(xmlPath, fs.constants.F_OK, (err) => {
+    err ? '' : fs.unlink(xmlPath, (err) => { });
+  });
+}
+
 // 读取本地数据
 function dbStorageRead() {
   const plans = utools.dbStorage.getItem(Id);
@@ -85,6 +93,7 @@ function dbStorageRead() {
 // 插件应用退出的同时退出进程
 function exit() {
   utools.onPluginOut(() => {
+    deleteXML()
     setTimeout(() => {
       process.exit(0);
     }, 20000);
