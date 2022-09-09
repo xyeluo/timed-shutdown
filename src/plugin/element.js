@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { Table, TableColumn, Button, Select, Option, Input, TimePicker, DatePicker, Switch, MessageBox, Message } from "element-ui";
+import { Table, TableColumn, Button, Select, Option, Input, TimePicker, DatePicker, Switch, MessageBox, Checkbox, CheckboxGroup, Message } from "element-ui";
 
 const coms = [
   Table,
@@ -10,7 +10,9 @@ const coms = [
   Input,
   Switch,
   TimePicker,
-  DatePicker
+  DatePicker,
+  Checkbox,
+  CheckboxGroup,
 ];
 
 Vue.prototype.$message = function msg(option) {
@@ -33,7 +35,7 @@ Vue.prototype.$confirm = function confirm(option) {
   const { msg, title } = option;
   delete option.msg;
   delete option.title;
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     MessageBox.confirm(msg, title, {
       ...option,
       type: "warning",
@@ -43,6 +45,4 @@ Vue.prototype.$confirm = function confirm(option) {
     }).catch(() => { })
   })
 }
-coms.map((c) => {
-  Vue.use(c);
-})
+coms.forEach((c) => { Vue.use(c) })

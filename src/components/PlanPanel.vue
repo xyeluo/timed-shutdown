@@ -24,7 +24,7 @@
         clearable
       ></el-input>
     </div>
-    <div class="item" :class="{ only: plan.cycle === 'once' ? true : false }">
+    <div class="item">
       <span class="instruct">执行周期</span>
       <el-select v-model="plan.cycle" size="small" placeholder="请选择">
         <el-option
@@ -36,6 +36,7 @@
         </el-option>
       </el-select>
       <el-switch
+        v-show="plan.cycle === 'once' ? true : false"
         v-model="plan.autoDelete"
         active-color="#13ce66"
         active-text="自动删除过期任务"
@@ -45,7 +46,7 @@
     <div id="planTime">
       <!-- 执行周期为仅一次显示 -->
       <el-date-picker
-        class="item"
+        class="item tag"
         v-show="plan.cycle === 'once' ? true : false"
         v-model.trim="plan.day"
         type="date"
@@ -57,7 +58,7 @@
       </el-date-picker>
       <!-- 执行周期为每周显示 -->
       <el-select
-        class="item"
+        class="item tag"
         v-show="plan.cycle === 'weekly' ? true : false"
         v-model="plan.weekly"
         size="small"
@@ -72,13 +73,28 @@
         >
         </el-option>
       </el-select>
+      <!-- 执行周期为每月显示 -->
+      <div
+        class="item monthly"
+        v-show="plan.cycle === 'monthly' ? true : false"
+      >
+        <span class="instruct">日期</span>
+        <el-checkbox-group size="mini" v-model="plan.daysOfMonth">
+          <el-checkbox
+            border
+            v-for="(item, index) in 31"
+            :key="index"
+            :label="item"
+          ></el-checkbox>
+        </el-checkbox-group>
+      </div>
       <el-time-picker
-        class="item"
+        class="item tag"
         v-model.trim="plan.datetime"
         placeholder="执行时间"
         size="small"
         format="HH:mm"
-        value-format="HH:mm"
+        :value-format="plan.cycle === 'monthly' ? 'yyyy-MM-ddTHH:mm' : 'HH:mm'"
       >
       </el-time-picker>
     </div>
@@ -89,7 +105,7 @@
 </template>
 
 <script>
-import throotle from "@mix/index.js";
+import { throotle } from "@mix/index.js";
 
 export default {
   name: "PlanPanel",
@@ -108,6 +124,7 @@ export default {
           { label: "仅一次", value: "once" },
           { label: "每天", value: "daily" },
           { label: "每周", value: "weekly" },
+          { label: "每月", value: "monthly" },
         ],
         // 星期数,在beforeMount中渲染
         weekly: [],
@@ -124,6 +141,7 @@ export default {
         name: "",
         cycle: "",
         day: "",
+        daysOfMonth: [],
         weekly: [],
         datetime: "",
         autoDelete: true,
@@ -134,6 +152,7 @@ export default {
     "plan.cycle": {
       immediate: true,
       handler(newVal) {
+        this.plan.datetime = "";
         if (newVal !== "once") {
           this.plan.autoDelete = false;
           return;
@@ -166,7 +185,7 @@ export default {
      * @return {boolen} true:验证通过; false:缺少信息，验证不通过
      */
     _checkPlan() {
-      const { name, datetime, cycle, day, weekly } = this.plan;
+      const { name, datetime, cycle, day, weekly, daysOfMonth } = this.plan;
       if (name === "" || name === null) {
         this.$message({ type: "warning", message: "任务名称未填写！" });
         return false;
@@ -177,6 +196,10 @@ export default {
       }
       if (cycle === "weekly" && weekly.length === 0) {
         this.$message({ type: "warning", message: "执行周期缺少星期！" });
+        return false;
+      }
+      if (cycle === "monthly" && daysOfMonth.length === 0) {
+        this.$message({ type: "warning", message: "执行周期缺少日期！" });
         return false;
       }
       if (datetime === "" || datetime === null) {
@@ -209,14 +232,14 @@ export default {
     /**
      * @Description: 根据任务类型、执行周期，返回对应命令
      */
-    _setCmd() {
+    async _setCmd() {
       // 根据任务类型确定命令执行参数，关机|重启|休眠
       const types = {
           shutdown: "-s -t 00 -f",
           reboot: "-r -t 00 -f",
           dormancy: "-h",
         },
-        { type, name, cycle, datetime, day, weekly } = this.plan;
+        { type, name, cycle, datetime, day, weekly, daysOfMonth } = this.plan;
 
       // 定义基础命令
       let cmd = `schtasks /create /sc ${cycle} /tn "${name}" /tr "shutdown ${types[type]}" /st ${datetime}`;
@@ -228,7 +251,10 @@ export default {
 
           // 如果计划时间小于当前时间，则失败
           if (Date.parse(new Date()) >= Date.parse(tempTime)) {
-            return;
+            return {
+              line: "248",
+              message: "计划时间小于当前时间！",
+            };
           }
           cmd += ` /sd ${day.replace(/-/g, "/")}`; //日期修改为yyyy/mm/dd格式
           break;
@@ -236,16 +262,31 @@ export default {
           // schtasks /create /sc weekly /tn "test" /tr "calc.exe" /st "08:30" /d fri
           cmd += ` /d ${weekly.toString()}`;
           break;
+        case "monthly":
+          try {
+            let path = await this.$utils.createXML({
+              daysOfMonth,
+              datetime,
+              argu: types[type],
+            });
+            cmd = `schtasks /create /tn "${name}" /xml "${path}"`;
+          } catch (error) {
+            return {
+              line: "262",
+              message: error,
+            };
+          }
+          break;
         default:
           break;
       }
       return cmd;
     },
     // 执行添加计划命令
-    _addPlan() {
-      const cmd = this._setCmd();
-      if (!cmd) {
-        return Promise.reject("计划时间小于当前时间！");
+    async _addPlan() {
+      const cmd = await this._setCmd();
+      if (typeof cmd === "object") {
+        return Promise.reject(`${cmd.message}(${cmd.line})`);
       }
       // 执行命令
       return this.$utils
@@ -273,8 +314,9 @@ export default {
           this.$message({ message: msg });
           // 数据传递给List，由List添加到dbStroage
           this.$bus.$emit("getPlan", { ...this.plan });
+          // 任务置空
           this.plan.name = this.plan.datetime = this.plan.day = "";
-          this.plan.weekly = [];
+          this.plan.weekly = this.plan.daysOfMonth = [];
         })
         .catch((reason) => {
           this.$message({
@@ -322,11 +364,6 @@ export default {
 .el-input {
   width: 200px;
 }
-
-.el-switch {
-  display: none;
-}
-
 :deep() .el-switch__label {
   color: #bdc3c7;
 }
@@ -348,19 +385,12 @@ export default {
   width: 240px;
 }
 
-.only .el-switch {
-  display: inline-block;
+.el-switch {
   margin: 4.5px 0 0 20px;
 }
-
-#planTime > div {
-  display: block;
-  margin-left: 70px;
+label.el-checkbox.el-checkbox--mini.is-bordered {
+  margin-left: 0;
 }
-/* .only #planTime {
-  width: 100%;
-  margin: 20px 0 0 40px;
-} */
 
 /* panel样式 */
 .flex,
@@ -372,6 +402,11 @@ export default {
 #plan-panel {
   flex-direction: column;
   margin-bottom: var(--panel-between);
+}
+
+#planTime > .tag {
+  display: block;
+  margin-left: 70px;
 }
 
 .remote {
@@ -391,13 +426,16 @@ export default {
 }
 
 .item .el-button {
-  margin-left: 70px;
+  margin-left: 42px;
 }
 
 .instruct {
   margin-right: 5px;
 }
-
+.monthly .instruct {
+  margin: 0 10px 0 22px;
+  white-space: nowrap;
+}
 input[type="number"] {
   width: 50px;
 }

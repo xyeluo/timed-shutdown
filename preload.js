@@ -1,12 +1,14 @@
 const { exec } = require('child_process'),
   iconv = require('iconv-lite'),
-
+  fs = require("fs"),
+  { resolve } = require("path"),
   // 设置编码
   encoding = 'gbk',
   binaryEncoding = 'binary',
-
   // 设置存储id，存储的计划列表只与当前设备相关
-  Id = utools.getNativeId() + "TimedPlan";
+  Id = utools.getNativeId() + "TimedPlan",
+  xmlName = "timed-shutdonw.xml",
+  xmlPath = resolve(utools.getPath('home'), xmlName);
 
 iconv.skipDecodeWarning = true; //忽略warining
 
@@ -32,6 +34,45 @@ function dbStorageSave(value) {
   utools.dbStorage.setItem(Id, value);
 }
 
+function createDaysOfMonth(daysOfMonth) {
+  let temp = "<ScheduleByMonth><DaysOfMonth>";
+  daysOfMonth.forEach(day => {
+    temp += `<Day>${day}</Day>`;
+  });
+  return temp += "</DaysOfMonth></ScheduleByMonth>";
+}
+function createXML(plan) {
+  let daysOfMonth = createDaysOfMonth(plan.daysOfMonth);
+  const xmlTemplete = `<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+  <RegistrationInfo>
+    <Author>timed-shutdown UtoolsPlugin</Author>
+  </RegistrationInfo>
+  <Triggers>
+    <CalendarTrigger>
+      <StartBoundary>${plan.datetime}</StartBoundary>
+      <Enabled>true</Enabled>
+        ${daysOfMonth}
+    </CalendarTrigger>
+  </Triggers>
+  <Actions Context="Author">
+    <Exec>
+      <Command>shutdown</Command>
+      <Arguments>${plan.argu}</Arguments>
+    </Exec>
+  </Actions>
+</Task>
+  `;
+  return new Promise((resolve, reject) => {
+    fs.writeFile(xmlPath, xmlTemplete.toString(), function (error) {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve(xmlPath);
+    })
+  })
+}
+
 // 读取本地数据
 function dbStorageRead() {
   const plans = utools.dbStorage.getItem(Id);
@@ -55,4 +96,5 @@ window.utils = {
   dbStorageSave,
   dbStorageRead,
   exit,
+  createXML
 }

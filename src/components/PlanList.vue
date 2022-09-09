@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import throotle from "@mix/index.js";
+import { throotle } from "@mix/index.js";
 
 export default {
   name: "PlanList",
@@ -121,17 +121,27 @@ export default {
             week: weekly[week],
           });
         });
-        tempWeekly = tempWeekly.sort((prev, next) => {
-          return prev.no - next.no;
-        });
+        tempWeekly = tempWeekly.sort((prev, next) => prev.no - next.no);
         tempWeekly.forEach((item, index) => {
           tempWeekly[index] = `星期${item.week}`;
         });
-        tempWeekly = tempWeekly.join("、")+" ";
+        tempWeekly = tempWeekly.join("、") + " ";
         if (plan.weekly.length >= 2) {
           tempWeekly += "\n";
         }
         plan.datetime = `${tempWeekly}${plan.datetime}`;
+      }
+      if (plan.cycle === "monthly") {
+        let temp = plan.daysOfMonth.sort((prev, next) => prev - next);
+        temp.forEach((day, index) => {
+          temp[index] = `${day}日`;
+        });
+        temp = temp.join(",");
+        if (plan.daysOfMonth.length >= 4) {
+          temp += "\n";
+        }
+        plan.datetime = plan.datetime.split("T")[1];
+        plan.datetime = `${temp}${plan.datetime}`;
       }
       const planInfo = {
         type: {
@@ -143,11 +153,13 @@ export default {
           daily: "每天",
           once: "仅一次",
           weekly: "每周",
+          monthly: "每月",
         },
       };
       this.$set(plan, "status", true);
       plan.type = planInfo.type[plan.type];
       plan.cycle = planInfo.cycle[plan.cycle];
+      plan.datetime = plan.datetime.replace(/:/, "时") + "分";
       this.plans.unshift(plan);
     },
     // 改变任务状态
