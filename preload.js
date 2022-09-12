@@ -7,8 +7,7 @@ const { exec } = require('child_process'),
   binaryEncoding = 'binary',
   // 设置存储id，存储的计划列表只与当前设备相关
   Id = utools.getNativeId() + "TimedPlan",
-  xmlName = "timed-shutdonw_UtoolsPlugin.xml",
-  xmlPath = resolve(utools.getPath('home'), xmlName);
+  xmlPath = resolve(utools.getPath('home'), "timed-shutdonw_UtoolsPlugin.xml");
 
 iconv.skipDecodeWarning = true; //忽略warining
 
@@ -96,7 +95,7 @@ function exit() {
     deleteXML()
     setTimeout(() => {
       process.exit(0);
-    }, 20000);
+    }, 800)
   })
 }
 

@@ -45,7 +45,10 @@
       </el-switch>
       <!-- 执行周期为每月显示 -->
       <div class="notice">
-        <el-tooltip content="例：9月没有31日，当天的任务将顺延到下个月31日" placement="top-end">
+        <el-tooltip
+          content="例：9月没有31日，当天的任务将顺延到下个月31日执行"
+          placement="top-end"
+        >
           <el-alert
             v-show="plan.cycle === 'monthly' ? true : false"
             title="当月没有的日期任务将会顺延到下个月"
@@ -78,6 +81,14 @@
         size="small"
         multiple
         placeholder="请选择"
+        :style="[
+          { transition: 'width .5s linear' },
+          {
+            width: plan.weekly.length
+              ? 90+plan.weekly.length * 60 + 'px'
+              : '90px',
+          },
+        ]"
       >
         <el-option
           v-for="item in task.weekly"
@@ -199,7 +210,12 @@ export default {
      * @return {boolen} true:验证通过; false:缺少信息，验证不通过
      */
     _checkPlan() {
-      const { name, datetime, cycle, day, weekly, daysOfMonth } = this.plan;
+      const { type, name, datetime, cycle, day, weekly, daysOfMonth } =
+        this.plan;
+      if (type === "" || type === null) {
+        this.$message({ type: "warning", message: "任务类型未填写！" });
+        return false;
+      }
       if (name === "" || name === null) {
         this.$message({ type: "warning", message: "任务名称未填写！" });
         return false;
@@ -378,6 +394,15 @@ export default {
 .el-input {
   width: 200px;
 }
+
+.el-select:deep() .el-input__inner::selection {
+  background-color: transparent;
+}
+.el-select:deep() .el-select__tags {
+  height: 24px;
+  overflow: hidden;
+}
+
 :deep() .el-switch__label {
   color: #bdc3c7;
 }
@@ -395,13 +420,10 @@ export default {
   width: 150px;
 }
 
-#planTime .el-select {
-  width: 240px;
-}
-
 .el-switch {
   margin: 4.5px 0 0 20px;
 }
+
 label.el-checkbox.el-checkbox--mini.is-bordered {
   margin-left: 0;
 }
@@ -446,13 +468,16 @@ label.el-checkbox.el-checkbox--mini.is-bordered {
 .instruct {
   margin-right: 5px;
 }
+
 .monthly .instruct {
   margin: 0 10px 0 22px;
   white-space: nowrap;
 }
+
 input[type="number"] {
   width: 50px;
 }
+
 .notice {
   line-height: 18px;
   margin-left: 20px;

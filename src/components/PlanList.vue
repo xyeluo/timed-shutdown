@@ -222,52 +222,64 @@ export default {
 .el-table:deep() th {
   text-align: center;
 }
+
 .el-table:deep() tbody .el-table_1_column_4 .cell {
   white-space: pre-line;
 }
+
 .el-table:deep() .el-table__fixed-body-wrapper {
   user-select: text;
 }
+
 #plan-list {
   margin-top: var(--panel-between);
   box-sizing: border-box;
 }
+
 #title {
   font-weight: 600;
   font-size: 16px;
 }
+
 #plan {
   white-space: pre-wrap;
 }
+
 .status {
   display: flex;
   justify-content: center;
   cursor: default;
   user-select: none;
 }
+
 .status svg {
   --w-h: 24px;
   width: var(--w-h);
   height: var(--w-h);
   stroke-width: 4;
 }
+
 .enable {
   color: var(--button-enable);
 }
+
 .enable svg path {
   fill: var(--button-enable);
   stroke: var(--button-enable);
   stroke-linejoin: round;
 }
+
 .disable {
   color: var(--button-disable);
 }
+
 .disable svg path {
   fill: var(--button-disable);
   stroke: var(--button-disable);
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
 .status:hover {
   text-decoration: underline;
   cursor: pointer;
