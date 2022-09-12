@@ -4,7 +4,7 @@
       <span class="instruct">任务类型</span>
       <el-select v-model="plan.type" size="small" placeholder="请选择">
         <el-option
-          v-for="item in task.types"
+          v-for="item in task.type"
           :key="item.value"
           :value="item.value"
           :label="item.label"
@@ -85,7 +85,7 @@
           { transition: 'width .5s linear' },
           {
             width: plan.weekly.length
-              ? 90+plan.weekly.length * 60 + 'px'
+              ? 90 + plan.weekly.length * 60 + 'px'
               : '90px',
           },
         ]"
@@ -130,36 +130,12 @@
 </template>
 
 <script>
-import { throotle } from "@mix/index.js";
+import { throotle, panelTask } from "@mix/index.js";
 
 export default {
   name: "PlanPanel",
   data() {
     return {
-      // 任务提供的可选参数
-      task: {
-        // 类型
-        types: [
-          { label: "重启", value: "reboot" },
-          { label: "关机", value: "shutdown" },
-          { label: "休眠", value: "dormancy" },
-        ],
-        // 周期
-        cycle: [
-          { label: "仅一次", value: "once" },
-          { label: "每天", value: "daily" },
-          { label: "每周", value: "weekly" },
-          { label: "每月", value: "monthly" },
-        ],
-        // 星期数,在beforeMount中渲染
-        weekly: [],
-        // 可选日期，从系统当前日期开始
-        start_Date: {
-          disabledDate(time) {
-            return time.getTime() < Date.now() - 24 * 3600 * 1000;
-          },
-        },
-      },
       // 初始化计划所需参数
       plan: {
         type: "",
@@ -186,7 +162,7 @@ export default {
       },
     },
   },
-  mixins: [throotle],
+  mixins: [throotle, panelTask],
   methods: {
     /**
      * @Description: 判断是否是windows系统
@@ -206,36 +182,31 @@ export default {
       return resutl;
     },
     /**
-     * @Description: 检查任务名称和日期是否完整
+     * @Description: 检查任务所需参数是否完整
      * @return {boolen} true:验证通过; false:缺少信息，验证不通过
      */
     _checkPlan() {
       const { type, name, datetime, cycle, day, weekly, daysOfMonth } =
-        this.plan;
-      if (type === "" || type === null) {
-        this.$message({ type: "warning", message: "任务类型未填写！" });
-        return false;
-      }
-      if (name === "" || name === null) {
-        this.$message({ type: "warning", message: "任务名称未填写！" });
-        return false;
-      }
-      if (cycle === "once" && (day === "" || day === null)) {
-        this.$message({ type: "warning", message: "执行周期缺少具体日期！" });
-        return false;
-      }
-      if (cycle === "weekly" && weekly.length === 0) {
-        this.$message({ type: "warning", message: "执行周期缺少星期！" });
-        return false;
-      }
-      if (cycle === "monthly" && daysOfMonth.length === 0) {
-        this.$message({ type: "warning", message: "执行周期缺少日期！" });
-        return false;
-      }
-      if (datetime === "" || datetime === null) {
-        this.$message({ type: "warning", message: "执行周期缺少时间！" });
-        return false;
-      }
+          this.plan,
+        // 统一通知
+        warningMsg = (message) => {
+          this.$message({ type: "warning", message });
+          return false;
+        };
+      if (type === "" || type === null) return warningMsg("任务类型未填写！");
+      if (name === "" || name === null) return warningMsg("任务名称未填写！");
+      if (cycle === "once" && (day === "" || day === null))
+        return warningMsg("执行周期缺少具体日期！");
+
+      if (cycle === "weekly" && weekly.length === 0)
+        return warningMsg("执行周期缺少星期！");
+
+      if (cycle === "monthly" && daysOfMonth.length === 0)
+        return warningMsg("执行周期缺少日期！");
+
+      if (datetime === "" || datetime === null)
+        return warningMsg("执行周期缺少时间！");
+
       return true;
     },
     /**
@@ -262,55 +233,51 @@ export default {
     /**
      * @Description: 根据任务类型、执行周期，返回对应命令
      */
-    async _setCmd() {
+    _setCmd() {
       // 根据任务类型确定命令执行参数，关机|重启|休眠
       const types = {
           shutdown: "-s -t 00 -f",
           reboot: "-r -t 00 -f",
           dormancy: "-h",
         },
-        { type, name, cycle, datetime, day, weekly, daysOfMonth } = this.plan;
+        { type, name, cycle, datetime, day, weekly, daysOfMonth } = this.plan,
+        baseCmd = `schtasks /create /tn "${name}"`; // 定义基础命令
 
-      // 定义基础命令
-      let cmd = `schtasks /create /sc ${cycle} /tn "${name}" /tr "shutdown ${types[type]}" /st ${datetime}`;
+      let cmd = `${baseCmd} /sc ${cycle} /tr "shutdown ${types[type]}" /st ${datetime}`;
 
-      // 执行周期若为一次，则补充命令
-      switch (cycle) {
-        case "once":
+      // 补充命令
+      const modifyCmdByCycle = {
+        once: () => {
           let tempTime = `${day} ${datetime}`;
 
           // 如果计划时间小于当前时间，则失败
           if (Date.parse(new Date()) >= Date.parse(tempTime)) {
             return {
-              line: "~253",
+              line: "~254",
               message: "计划时间小于当前时间！",
             };
           }
-          cmd += ` /sd ${day.replace(/-/g, "/")}`; //日期修改为yyyy/mm/dd格式
-          break;
-        case "weekly":
-          // schtasks /create /sc weekly /tn "test" /tr "calc.exe" /st "08:30" /d fri
-          cmd += ` /d ${weekly.toString()}`;
-          break;
-        case "monthly":
+          return (cmd += ` /sd ${day.replace(/-/g, "/")}`); //日期修改为yyyy/mm/dd格式
+        },
+        // schtasks /create /sc weekly /tn "test" /tr "calc.exe" /st "08:30" /d fri
+        weekly: () => (cmd += ` /d ${weekly.toString()}`),
+        monthly: async () => {
           try {
             let path = await this.$utils.createXML({
               daysOfMonth,
               datetime,
               argu: types[type],
             });
-            cmd = `schtasks /create /tn "${name}" /xml "${path}"`;
+            return (cmd = `${baseCmd} /xml "${path}"`);
           } catch (error) {
             return {
-              line: "~267",
+              line: "~266",
               message: error,
             };
           }
-          break;
-        default:
-          break;
-      }
-      return cmd;
+        },
+      };
+      return modifyCmdByCycle[cycle]();
     },
     // 执行添加计划命令
     async _addPlan() {
@@ -369,18 +336,6 @@ export default {
       this.plan.type = code;
     });
     this.plan.cycle = this.task.cycle[0].value;
-    const weekly = [
-      ["日", "sun"],
-      ["一", "mon"],
-      ["二", "tue"],
-      ["三", "wed"],
-      ["四", "thu"],
-      ["五", "fri"],
-      ["六", "sat"],
-    ];
-    weekly.forEach((item) => {
-      this.task.weekly.push({ label: `星期${item[0]}`, value: item[1] });
-    });
   },
 };
 </script>

@@ -67,6 +67,7 @@ body::-webkit-scrollbar {
   flex-direction: column;
   align-items: center;
   padding: 20px 0;
+  min-height: 100vh;
 }
 
 #plan-panel,

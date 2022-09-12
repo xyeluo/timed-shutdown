@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { throotle } from "@mix/index.js";
+import { throotle, reverseKeyValueSourceTask } from "@mix/index.js";
 
 export default {
   name: "PlanList",
@@ -99,63 +99,48 @@ export default {
     },
     // 添加计划列表
     _getPlan(plan) {
-      if (plan.cycle === "once") {
-        // 仅一次周期下把日期、时间拼接到执行日期一起显示
-        plan.datetime = `${plan.day} ${plan.datetime}`;
-      }
-      if (plan.cycle === "weekly") {
-        const weekly = {
-          sun: "日",
-          mon: "一",
-          tue: "二",
-          wed: "三",
-          thu: "四",
-          fri: "五",
-          sat: "六",
+      const planInfo = reverseKeyValueSourceTask,
+        modifyCmdByCycle = {
+          once: () => {
+            // 仅一次周期下把日期、时间拼接到执行日期一起显示
+            plan.datetime = `${plan.day} ${plan.datetime}`;
+          },
+          weekly: () => {
+            // 存储转化、排序后的星期
+            let tempWeekly = [];
+            plan.weekly.forEach((week) => {
+              tempWeekly.push({
+                no: Object.keys(planInfo.weekly).findIndex(
+                  (item) => item === week
+                ),
+                week: planInfo.weekly[week],
+              });
+            });
+            tempWeekly = tempWeekly.sort((prev, next) => prev.no - next.no);
+            tempWeekly.forEach((item, index) => {
+              tempWeekly[index] = item.week;
+            });
+            tempWeekly = tempWeekly.join("、") + " ";
+            if (plan.weekly.length >= 2) {
+              tempWeekly += "\n";
+            }
+            plan.datetime = `${tempWeekly}${plan.datetime}`;
+          },
+          monthly: () => {
+            let temp = plan.daysOfMonth.sort((prev, next) => prev - next);
+            temp.forEach((day, index) => {
+              temp[index] = `${day}日`;
+            });
+            temp = temp.join(",");
+            if (plan.daysOfMonth.length >= 4) {
+              temp += "\n";
+            }
+            //2022-09-08T18:30
+            plan.datetime = plan.datetime.split("T")[1];
+            plan.datetime = `${temp}${plan.datetime}`;
+          },
         };
-        // 存储转化、排序后的星期
-        let tempWeekly = [];
-        plan.weekly.forEach((week) => {
-          tempWeekly.push({
-            no: Object.keys(weekly).findIndex((item) => item === week),
-            week: weekly[week],
-          });
-        });
-        tempWeekly = tempWeekly.sort((prev, next) => prev.no - next.no);
-        tempWeekly.forEach((item, index) => {
-          tempWeekly[index] = `星期${item.week}`;
-        });
-        tempWeekly = tempWeekly.join("、") + " ";
-        if (plan.weekly.length >= 2) {
-          tempWeekly += "\n";
-        }
-        plan.datetime = `${tempWeekly}${plan.datetime}`;
-      }
-      if (plan.cycle === "monthly") {
-        let temp = plan.daysOfMonth.sort((prev, next) => prev - next);
-        temp.forEach((day, index) => {
-          temp[index] = `${day}日`;
-        });
-        temp = temp.join(",");
-        if (plan.daysOfMonth.length >= 4) {
-          temp += "\n";
-        }
-        plan.datetime = plan.datetime.split("T")[1];
-        plan.datetime = `${temp}${plan.datetime}`;
-      }
-      const planInfo = {
-        type: {
-          reboot: "重启",
-          shutdown: "关机",
-          dormancy: "休眠",
-        },
-        cycle: {
-          daily: "每天",
-          once: "仅一次",
-          weekly: "每周",
-          monthly: "每月",
-        },
-      };
+      modifyCmdByCycle[plan.cycle]();
       this.$set(plan, "status", true);
       plan.type = planInfo.type[plan.type];
       plan.cycle = planInfo.cycle[plan.cycle];

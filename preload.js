@@ -95,7 +95,7 @@ function exit() {
     deleteXML()
     setTimeout(() => {
       process.exit(0);
-    }, 800)
+    }, 50)
   })
 }
 
