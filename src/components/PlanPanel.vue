@@ -185,7 +185,7 @@ export default {
       let cmd = `${baseCmd} /sc ${cycle} /tr "shutdown ${types[type]}" /st ${datetime}`;
 
       // 补充命令
-      const modifyCmdByCycle = {
+      const panelModifyCmdByCycle = {
         once: () => {
           let tempTime = `${day} ${datetime}`;
 
@@ -196,7 +196,7 @@ export default {
               message: '计划时间小于当前时间！',
             };
           }
-          return (cmd += ` /sd ${day.replace(/-/g, '/')}`); //日期修改为yyyy/mm/dd格式
+          return (cmd += ` /sd ${day}`);
         },
         // schtasks /create /sc weekly /tn "test" /tr "calc.exe" /st "08:30" /d fri
         weekly: () => (cmd += ` /d ${weekly.toString()}`),
@@ -216,7 +216,7 @@ export default {
           }
         },
       };
-      return modifyCmdByCycle[cycle]();
+      return typeof panelModifyCmdByCycle[cycle] === 'function' ? panelModifyCmdByCycle[cycle]() : cmd;
     },
     // 执行添加计划命令
     async _addPlan() {

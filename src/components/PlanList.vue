@@ -1,7 +1,7 @@
 <template>
   <div id="plan-list">
     <h2 id="title">计划列表</h2>
-    <el-table :data="plans" max-height="300" v-if="plans.length !== 0">
+    <el-table :data="plans" max-height="450" v-if="plans.length !== 0">
       <el-table-column fixed prop="name" label="任务名称"> </el-table-column>
       <el-table-column fixed prop="type" label="任务类型"> </el-table-column>
       <el-table-column fixed prop="cycle" label="执行周期"> </el-table-column>
@@ -89,7 +89,7 @@ export default {
     // 添加计划列表
     _getPlan(plan) {
       const planInfo = reverseKeyValueSourceTask,
-        modifyCmdByCycle = {
+        listModifyCmdByCycle = {
           once: () => {
             // 仅一次周期下把日期、时间拼接到执行日期一起显示
             plan.datetime = `${plan.day} ${plan.datetime}`;
@@ -127,7 +127,9 @@ export default {
             plan.datetime = `${temp}${plan.datetime}`;
           },
         };
-      modifyCmdByCycle[plan.cycle]();
+      if (listModifyCmdByCycle[plan.cycle]) {
+        listModifyCmdByCycle[plan.cycle]();
+      }
       this.$set(plan, 'status', true);
       plan.type = planInfo.type[plan.type];
       plan.cycle = planInfo.cycle[plan.cycle];
