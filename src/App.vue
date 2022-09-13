@@ -6,10 +6,10 @@
 </template>
 
 <script>
-import PlanPanel from "@cpts/PlanPanel.vue";
-import PlanList from "@cpts/PlanList.vue";
+import PlanPanel from '@cpts/PlanPanel.vue';
+import PlanList from '@cpts/PlanList.vue';
 export default {
-  name: "App",
+  name: 'App',
   components: {
     PlanPanel,
     PlanList,

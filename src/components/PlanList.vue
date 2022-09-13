@@ -1,24 +1,17 @@
 <template>
   <div id="plan-list">
     <h2 id="title">计划列表</h2>
-    <el-table :data="plans" max-height="300">
+    <el-table :data="plans" max-height="300" v-if="plans.length !== 0">
       <el-table-column fixed prop="name" label="任务名称"> </el-table-column>
       <el-table-column fixed prop="type" label="任务类型"> </el-table-column>
       <el-table-column fixed prop="cycle" label="执行周期"> </el-table-column>
-      <el-table-column fixed prop="datetime" label="执行日期" width="190">
-      </el-table-column>
+      <el-table-column fixed prop="datetime" label="执行日期" width="190"> </el-table-column>
       <el-table-column fixed label="状态">
         <template slot-scope="scope">
-          <div
-            class="status enable"
-            v-if="scope.row.status"
-            @click="changeStatus(scope)"
-          >
+          <div class="status enable" v-if="scope.row.status" @click="changeStatus(scope)">
             <span>运行中</span>
             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M15 24V11.8756L25.5 17.9378L36 24L25.5 30.0622L15 36.1244V24Z"
-              />
+              <path d="M15 24V11.8756L25.5 17.9378L36 24L25.5 30.0622L15 36.1244V24Z" />
             </svg>
           </div>
           <div class="status disable" v-else @click="changeStatus(scope)">
@@ -32,12 +25,8 @@
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button
-            @click.native.prevent="deleteRow(scope, plans)"
-            type="danger"
-            size="small"
-          >
-            {{ scope.row.autoDelete ? "自动删除" : "移除" }}
+          <el-button @click.native.prevent="deleteRow(scope, plans)" type="danger" size="small">
+            {{ scope.row.autoDelete ? '自动删除' : '移除' }}
           </el-button>
         </template>
       </el-table-column>
@@ -46,10 +35,10 @@
 </template>
 
 <script>
-import { throotle, reverseKeyValueSourceTask } from "@mix/index.js";
+import { throotle, reverseKeyValueSourceTask } from '@mix/index.js';
 
 export default {
-  name: "PlanList",
+  name: 'PlanList',
   data() {
     return {
       plans: [],
@@ -89,9 +78,9 @@ export default {
         })
         .catch((reason) => {
           this.$confirm({
-            msg: "<p>是否强制从<b>插件计划列表</b>中移除</p>",
+            msg: '<p>是否强制从<b>插件计划列表</b>中移除</p>',
             title: reason,
-            customClass: "danger",
+            customClass: 'danger',
           }).then(() => {
             rows.splice(scope.$index, 1);
           });
@@ -110,9 +99,7 @@ export default {
             let tempWeekly = [];
             plan.weekly.forEach((week) => {
               tempWeekly.push({
-                no: Object.keys(planInfo.weekly).findIndex(
-                  (item) => item === week
-                ),
+                no: Object.keys(planInfo.weekly).findIndex((item) => item === week),
                 week: planInfo.weekly[week],
               });
             });
@@ -120,9 +107,9 @@ export default {
             tempWeekly.forEach((item, index) => {
               tempWeekly[index] = item.week;
             });
-            tempWeekly = tempWeekly.join("、") + " ";
+            tempWeekly = tempWeekly.join('、') + ' ';
             if (plan.weekly.length >= 2) {
-              tempWeekly += "\n";
+              tempWeekly += '\n';
             }
             plan.datetime = `${tempWeekly}${plan.datetime}`;
           },
@@ -131,20 +118,20 @@ export default {
             temp.forEach((day, index) => {
               temp[index] = `${day}日`;
             });
-            temp = temp.join(",");
+            temp = temp.join(',');
             if (plan.daysOfMonth.length >= 4) {
-              temp += "\n";
+              temp += '\n';
             }
             //2022-09-08T18:30
-            plan.datetime = plan.datetime.split("T")[1];
+            plan.datetime = plan.datetime.split('T')[1];
             plan.datetime = `${temp}${plan.datetime}`;
           },
         };
       modifyCmdByCycle[plan.cycle]();
-      this.$set(plan, "status", true);
+      this.$set(plan, 'status', true);
       plan.type = planInfo.type[plan.type];
       plan.cycle = planInfo.cycle[plan.cycle];
-      plan.datetime = plan.datetime.replace(/:/, "时") + "分";
+      plan.datetime = plan.datetime.replace(/:/, '时') + '分';
       this.plans.unshift(plan);
     },
     // 改变任务状态
@@ -152,9 +139,9 @@ export default {
       if (!this.throotle()) {
         return;
       }
-      let status = "/disable";
+      let status = '/disable';
       if (!row.status) {
-        status = "/enable";
+        status = '/enable';
       }
       const cmd = `schtasks /change /tn "${row.name}" ${status}`;
       return this.$utils
@@ -165,7 +152,7 @@ export default {
         })
         .catch((reason) => {
           this.$message({
-            type: "error",
+            type: 'error',
             message: reason,
           });
         });
@@ -174,10 +161,7 @@ export default {
     _deleteTypeOncePlan() {
       this.plans = this.plans.filter((item) => {
         // 保留没有开启自动删除，或者开启自动删除但计划时间大于当前时间的任务
-        if (
-          !item.autoDelete ||
-          (item.autoDelete && new Date(item.datetime) > Date.now())
-        ) {
+        if (!item.autoDelete || (item.autoDelete && new Date(item.datetime) > Date.now())) {
           return true;
         }
         this._deletePlan(item.name).catch(() => {});
@@ -188,10 +172,10 @@ export default {
     // 先读取storage
     this.plans = this.$utils.dbStorageRead();
     this._deleteTypeOncePlan();
-    this.$bus.$on("getPlan", this._getPlan);
+    this.$bus.$on('getPlan', this._getPlan);
   },
   destroyed() {
-    this.$bus.$off("showResult");
+    this.$bus.$off('showResult');
   },
 };
 </script>

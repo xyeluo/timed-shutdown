@@ -3,13 +3,7 @@
     <div class="item">
       <span class="instruct">任务类型</span>
       <el-select v-model="plan.type" size="small" placeholder="请选择">
-        <el-option
-          v-for="item in task.type"
-          :key="item.value"
-          :value="item.value"
-          :label="item.label"
-        >
-        </el-option>
+        <el-option v-for="item in task.type" :key="item.value" :value="item.value" :label="item.label"> </el-option>
       </el-select>
       <div class="remote" @click="callRemote">
         <p>呼出系统自带远程关机（局域网内）</p>
@@ -17,46 +11,19 @@
     </div>
     <div class="item">
       <label class="instruct" for="planName">任务名称</label>
-      <el-input
-        placeholder="例：每日关机"
-        size="small"
-        v-model.trim="plan.name"
-        clearable
-      ></el-input>
+      <el-input placeholder="例：每日关机" size="small" v-model.trim="plan.name" clearable></el-input>
     </div>
     <div class="item">
       <span class="instruct">执行周期</span>
       <el-select v-model="plan.cycle" size="small" placeholder="请选择">
-        <el-option
-          v-for="item in task.cycle"
-          :key="item.value"
-          :value="item.value"
-          :label="item.label"
-        >
-        </el-option>
+        <el-option v-for="item in task.cycle" :key="item.value" :value="item.value" :label="item.label"> </el-option>
       </el-select>
       <!-- 执行周期为仅一次显示 -->
-      <el-switch
-        v-show="plan.cycle === 'once' ? true : false"
-        v-model="plan.autoDelete"
-        active-color="#13ce66"
-        active-text="自动删除过期任务"
-      >
-      </el-switch>
+      <el-switch v-if="plan.cycle === 'once' ? true : false" v-model="plan.autoDelete" active-color="#13ce66" active-text="自动删除过期任务"> </el-switch>
       <!-- 执行周期为每月显示 -->
-      <div class="notice">
-        <el-tooltip
-          content="例：9月没有31日，当天的任务将顺延到下个月31日执行"
-          placement="top-end"
-        >
-          <el-alert
-            v-show="plan.cycle === 'monthly' ? true : false"
-            title="当月没有的日期任务将会顺延到下个月"
-            type="info"
-            show-icon
-            :closable="false"
-          >
-          </el-alert>
+      <div class="notice" v-else-if="plan.cycle === 'monthly' ? true : false">
+        <el-tooltip content="例：9月没有31日，当天的任务将顺延到下个月31日执行" placement="top-end">
+          <el-alert title="当月没有的日期任务将会顺延到下个月" type="info" show-icon :closable="false"> </el-alert>
         </el-tooltip>
       </div>
     </div>
@@ -64,7 +31,7 @@
       <!-- 执行周期为仅一次显示 -->
       <el-date-picker
         class="item tag"
-        v-show="plan.cycle === 'once' ? true : false"
+        v-if="plan.cycle === 'once' ? true : false"
         v-model.trim="plan.day"
         type="date"
         placeholder="具体日期"
@@ -76,7 +43,7 @@
       <!-- 执行周期为每周显示 -->
       <el-select
         class="item tag"
-        v-show="plan.cycle === 'weekly' ? true : false"
+        v-else-if="plan.cycle === 'weekly' ? true : false"
         v-model="plan.weekly"
         size="small"
         multiple
@@ -84,43 +51,20 @@
         :style="[
           { transition: 'width .5s linear' },
           {
-            width: plan.weekly.length
-              ? 90 + plan.weekly.length * 60 + 'px'
-              : '90px',
+            width: plan.weekly.length ? 90 + plan.weekly.length * 60 + 'px' : '90px',
           },
         ]"
       >
-        <el-option
-          v-for="item in task.weekly"
-          :key="item.value"
-          :value="item.value"
-          :label="item.label"
-        >
-        </el-option>
+        <el-option v-for="item in task.weekly" :key="item.value" :value="item.value" :label="item.label"> </el-option>
       </el-select>
       <!-- 执行周期为每月显示 -->
-      <div
-        class="item monthly"
-        v-show="plan.cycle === 'monthly' ? true : false"
-      >
+      <div class="item monthly" v-else-if="plan.cycle === 'monthly' ? true : false">
         <span class="instruct">日期</span>
         <el-checkbox-group size="mini" v-model="plan.daysOfMonth">
-          <el-checkbox
-            border
-            v-for="(item, index) in 31"
-            :key="index"
-            :label="item"
-          ></el-checkbox>
+          <el-checkbox border v-for="(item, index) in 31" :key="index" :label="item"></el-checkbox>
         </el-checkbox-group>
       </div>
-      <el-time-picker
-        class="item tag"
-        v-model.trim="plan.datetime"
-        placeholder="执行时间"
-        size="small"
-        format="HH:mm"
-        :value-format="plan.cycle === 'monthly' ? 'yyyy-MM-ddTHH:mm' : 'HH:mm'"
-      >
+      <el-time-picker class="item tag" v-model.trim="plan.datetime" placeholder="执行时间" size="small" format="HH:mm" :value-format="plan.cycle === 'monthly' ? 'yyyy-MM-ddTHH:mm' : 'HH:mm'">
       </el-time-picker>
     </div>
     <div class="item">
@@ -130,31 +74,31 @@
 </template>
 
 <script>
-import { throotle, panelTask } from "@mix/index.js";
+import { throotle, panelTask } from '@mix/index.js';
 
 export default {
-  name: "PlanPanel",
+  name: 'PlanPanel',
   data() {
     return {
       // 初始化计划所需参数
       plan: {
-        type: "",
-        name: "",
-        cycle: "",
-        day: "",
+        type: '',
+        name: '',
+        cycle: '',
+        day: '',
         daysOfMonth: [],
         weekly: [],
-        datetime: "",
+        datetime: '',
         autoDelete: true,
       },
     };
   },
   watch: {
-    "plan.cycle": {
+    'plan.cycle': {
       immediate: true,
       handler(newVal) {
-        this.plan.datetime = "";
-        if (newVal !== "once") {
+        this.plan.datetime = '';
+        if (newVal !== 'once') {
           this.plan.autoDelete = false;
           return;
         }
@@ -172,8 +116,8 @@ export default {
       const resutl = utools.isWindows();
       if (!resutl) {
         this.$confirm({
-          msg: "<p>该插件仅支持<b>Windows</b>系统</p>",
-          title: "提醒",
+          msg: '<p>该插件仅支持<b>Windows</b>系统</p>',
+          title: '提醒',
           center: true,
           showCancelButton: false,
           closeOnClickModal: false,
@@ -186,26 +130,21 @@ export default {
      * @return {boolen} true:验证通过; false:缺少信息，验证不通过
      */
     _checkPlan() {
-      const { type, name, datetime, cycle, day, weekly, daysOfMonth } =
-          this.plan,
+      const { type, name, datetime, cycle, day, weekly, daysOfMonth } = this.plan,
         // 统一通知
         warningMsg = (message) => {
-          this.$message({ type: "warning", message });
+          this.$message({ type: 'warning', message });
           return false;
         };
-      if (type === "" || type === null) return warningMsg("任务类型未填写！");
-      if (name === "" || name === null) return warningMsg("任务名称未填写！");
-      if (cycle === "once" && (day === "" || day === null))
-        return warningMsg("执行周期缺少具体日期！");
+      if (type === '' || type === null) return warningMsg('任务类型未填写！');
+      if (name === '' || name === null) return warningMsg('任务名称未填写！');
+      if (cycle === 'once' && (day === '' || day === null)) return warningMsg('执行周期缺少具体日期！');
 
-      if (cycle === "weekly" && weekly.length === 0)
-        return warningMsg("执行周期缺少星期！");
+      if (cycle === 'weekly' && weekly.length === 0) return warningMsg('执行周期缺少星期！');
 
-      if (cycle === "monthly" && daysOfMonth.length === 0)
-        return warningMsg("执行周期缺少日期！");
+      if (cycle === 'monthly' && daysOfMonth.length === 0) return warningMsg('执行周期缺少日期！');
 
-      if (datetime === "" || datetime === null)
-        return warningMsg("执行周期缺少时间！");
+      if (datetime === '' || datetime === null) return warningMsg('执行周期缺少时间！');
 
       return true;
     },
@@ -223,7 +162,7 @@ export default {
       // 查询到同名的任务
       if (result !== undefined) {
         this.$message({
-          type: "warning",
+          type: 'warning',
           message: `“${result.name}”任务已存在`,
         });
         temp = true;
@@ -236,9 +175,9 @@ export default {
     _setCmd() {
       // 根据任务类型确定命令执行参数，关机|重启|休眠
       const types = {
-          shutdown: "-s -t 00 -f",
-          reboot: "-r -t 00 -f",
-          dormancy: "-h",
+          shutdown: '-s -t 00 -f',
+          reboot: '-r -t 00 -f',
+          dormancy: '-h',
         },
         { type, name, cycle, datetime, day, weekly, daysOfMonth } = this.plan,
         baseCmd = `schtasks /create /tn "${name}"`; // 定义基础命令
@@ -253,11 +192,11 @@ export default {
           // 如果计划时间小于当前时间，则失败
           if (Date.parse(new Date()) >= Date.parse(tempTime)) {
             return {
-              line: "~254",
-              message: "计划时间小于当前时间！",
+              line: '~254',
+              message: '计划时间小于当前时间！',
             };
           }
-          return (cmd += ` /sd ${day.replace(/-/g, "/")}`); //日期修改为yyyy/mm/dd格式
+          return (cmd += ` /sd ${day.replace(/-/g, '/')}`); //日期修改为yyyy/mm/dd格式
         },
         // schtasks /create /sc weekly /tn "test" /tr "calc.exe" /st "08:30" /d fri
         weekly: () => (cmd += ` /d ${weekly.toString()}`),
@@ -271,7 +210,7 @@ export default {
             return (cmd = `${baseCmd} /xml "${path}"`);
           } catch (error) {
             return {
-              line: "~266",
+              line: '~266',
               message: error,
             };
           }
@@ -282,7 +221,7 @@ export default {
     // 执行添加计划命令
     async _addPlan() {
       const cmd = await this._setCmd();
-      if (typeof cmd === "object") {
+      if (typeof cmd === 'object') {
         return Promise.reject(`${cmd.message}(${cmd.line})`);
       }
       // 执行命令
@@ -298,26 +237,21 @@ export default {
     // 增加计划列表行数
     addRow() {
       // 不是windows系统、频繁点击创建计划按钮、表单缺少参数、存在同名计划，则return
-      if (
-        !this._isWin() ||
-        !this.throotle() ||
-        !this._checkPlan() ||
-        this._repeatPlan()
-      ) {
+      if (!this._isWin() || !this.throotle() || !this._checkPlan() || this._repeatPlan()) {
         return;
       }
       this._addPlan()
         .then((msg) => {
           this.$message({ message: msg });
           // 数据传递给List，由List添加到dbStroage
-          this.$bus.$emit("getPlan", { ...this.plan });
+          this.$bus.$emit('getPlan', { ...this.plan });
           // 任务置空
-          this.plan.name = this.plan.datetime = this.plan.day = "";
+          this.plan.name = this.plan.datetime = this.plan.day = '';
           this.plan.weekly = this.plan.daysOfMonth = [];
         })
         .catch((reason) => {
           this.$message({
-            type: "error",
+            type: 'error',
             message: reason,
           });
         });
@@ -327,7 +261,7 @@ export default {
       if (!this.throotle()) {
         return;
       }
-      this.$utils.execCmd("shutdown -i");
+      this.$utils.execCmd('shutdown -i');
     },
   },
   beforeMount() {
@@ -429,7 +363,7 @@ label.el-checkbox.el-checkbox--mini.is-bordered {
   white-space: nowrap;
 }
 
-input[type="number"] {
+input[type='number'] {
   width: 50px;
 }
 

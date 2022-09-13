@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "utools":"vue-cli-service build && ncc build -m  ./preload.js"
+    "utools": "vue-cli-service build && ncc build -m  ./preload.js"
   },
   "dependencies": {
     "element-ui": "2.12",
