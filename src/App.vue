@@ -25,6 +25,18 @@ export default {
 .msg {
   white-space: pre-wrap;
 }
+/* 每周的星期选择器 */
+.el-select-dropdown.el-popper.is-multiple {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: unset;
+}
+.el-select-dropdown.el-popper.is-multiple .el-scrollbar {
+  width: 100px;
+  background-color: var(--panel-bg);
+  box-shadow: 0 2px 12px 0 rgb(0 0 0 / 20%);
+  border-radius: 4px;
+}
 
 /* 通用样式 */
 * {
