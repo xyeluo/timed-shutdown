@@ -30,12 +30,14 @@ export default {
   background-color: transparent;
   border-color: transparent;
   box-shadow: unset;
+  pointer-events: none;
 }
 .el-select-dropdown.el-popper.is-multiple .el-scrollbar {
   width: 100px;
   background-color: var(--panel-bg);
   box-shadow: 0 2px 12px 0 rgb(0 0 0 / 20%);
   border-radius: 4px;
+  pointer-events: auto;
 }
 
 /* 通用样式 */
