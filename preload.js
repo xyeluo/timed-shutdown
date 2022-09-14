@@ -49,7 +49,7 @@ function createXML(plan) {
   </RegistrationInfo>
   <Triggers>
     <CalendarTrigger>
-      <StartBoundary>${plan.datetime}</StartBoundary>
+      <StartBoundary>${plan.datetime}:00</StartBoundary>
       <Enabled>true</Enabled>
         ${daysOfMonth}
     </CalendarTrigger>
