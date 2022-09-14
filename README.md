@@ -34,8 +34,8 @@
 yarn install
 yarn serve
 
-//用utools开发者工具打包dist目录
-yarn build
+//preload.js会被打包，之后用utools开发者工具打包dist目录
+yarn utools
 ```
 
 ### 安装
