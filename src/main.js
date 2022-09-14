@@ -1,4 +1,3 @@
-console.time("Obj");
 import Vue from 'vue'
 import App from './App.vue'
 import '@pln/element';
@@ -12,4 +11,3 @@ new Vue({
     Vue.prototype.$utils = window.utils;
   }
 }).$mount('#app')
-console.timeEnd("Obj");
