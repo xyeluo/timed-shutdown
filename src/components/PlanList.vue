@@ -162,8 +162,11 @@ export default {
     // 删除过期任务
     _deleteTypeOncePlan() {
       this.plans = this.plans.filter((item) => {
-        // 保留没有开启自动删除，或者开启自动删除但计划时间大于当前时间的任务
-        if (!item.autoDelete || (item.autoDelete && new Date(item.datetime) > Date.now())) {
+        let datetime = item.datetime;
+        // 去除中文字符，‘时’替换‘:’
+        datetime = datetime.slice(0, datetime.length - 1).replace(/时/, ':');
+        // 保留没有开启自动删除，或开启自动删除但计划时间大于当前时间的任务
+        if (!item.autoDelete || (item.autoDelete && new Date(datetime) > Date.now())) {
           return true;
         }
         this._deletePlan(item.name).catch(() => {});
@@ -177,7 +180,7 @@ export default {
     this.$bus.$on('getPlan', this._getPlan);
   },
   destroyed() {
-    this.$bus.$off('showResult');
+    this.$bus.$off('getPlan');
   },
 };
 </script>
