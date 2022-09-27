@@ -2,6 +2,7 @@
   "name": "timed-shutdown",
   "version": "1.0.1",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "ready":"bash ./TimedShutdown.sh r",
     "start": "bash ./TimedShutdown.sh st",

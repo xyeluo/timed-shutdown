@@ -12,7 +12,7 @@ function dev(){
   mv dist "../utools" &&
   cd "../utools" &&
   # 打包preload.js
-  ncc build -m  "./preload.js" &&
+  yarn ncc build -m  "./preload.js" &&
   cp "./plugin.json" "./dist/"
 }
 function utools(){
