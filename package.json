@@ -3,20 +3,10 @@
   "version": "1.0.1",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "utools": "vue-cli-service build && ncc build -m  ./preload.js"
-  },
-  "dependencies": {
-    "element-ui": "2.12",
-    "iconv-lite": "^0.6.3",
-    "vue": "^2.6.11"
-  },
-  "devDependencies": {
-    "@vercel/ncc": "^0.34.0",
-    "@vue/cli-plugin-babel": "~5.0.8",
-    "@vue/cli-service": "~5.0.8",
-    "babel-plugin-component": "^1.1.1",
-    "vue-template-compiler": "^2.6.11"
+    "ready":"bash ./TimedShutdown.sh r",
+    "start": "bash ./TimedShutdown.sh st",
+    "serve": "bash ./TimedShutdown.sh s",
+    "dev": "bash ./TimedShutdown.sh d",
+    "utools": "bash ./TimedShutdown.sh u"
   }
 }
