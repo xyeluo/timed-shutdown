@@ -139,13 +139,9 @@ export default {
       if (type === '' || type === null) return warningMsg('任务类型未填写！');
       if (name === '' || name === null) return warningMsg('任务名称未填写！');
       if (cycle === 'once' && (day === '' || day === null)) return warningMsg('执行周期缺少具体日期！');
-
       if (cycle === 'weekly' && weekly.length === 0) return warningMsg('执行周期缺少星期！');
-
       if (cycle === 'monthly' && daysOfMonth.length === 0) return warningMsg('执行周期缺少日期！');
-
       if (datetime === '' || datetime === null) return warningMsg('执行周期缺少时间！');
-
       return true;
     },
     /**
@@ -216,7 +212,7 @@ export default {
           }
         },
       };
-      return typeof panelModifyCmdByCycle[cycle] === 'function' ? panelModifyCmdByCycle[cycle]() : cmd;
+      return panelModifyCmdByCycle[cycle] ? panelModifyCmdByCycle[cycle]() : cmd;
     },
     // 执行添加计划命令
     async _addPlan() {

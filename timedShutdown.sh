@@ -19,7 +19,7 @@ function utools(){
   node="node_modules"
   icon="${node}/iconv-lite/"
   safer="${node}/safer-buffer/"
-  # 复制preladd所需依赖
+  # 复制preload所需依赖
   iconNeed=("encodings" "lib" "LICENSE" "package.json")
   saferNeed=("safer.js" "LICENSE" "package.json")
 

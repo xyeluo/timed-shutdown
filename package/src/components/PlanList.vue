@@ -87,7 +87,7 @@ export default {
         });
     },
     // 添加计划列表
-    _getPlan(plan) {
+    getPlan(plan) {
       const planInfo = reverseKeyValueSourceTask,
         listModifyCmdByCycle = {
           once: () => {
@@ -177,7 +177,7 @@ export default {
     // 先读取storage
     this.plans = this.$utils.dbStorageRead();
     this._deleteTypeOncePlan();
-    this.$bus.$on('getPlan', this._getPlan);
+    this.$bus.$on('getPlan', this.getPlan);
   },
   destroyed() {
     this.$bus.$off('getPlan');
