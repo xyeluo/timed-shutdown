@@ -11,7 +11,7 @@
     </div>
     <div class="item">
       <label class="instruct" for="planName">任务名称</label>
-      <el-input placeholder="例：每日关机" size="small" v-model.trim="plan.name" clearable></el-input>
+      <el-input placeholder="选填，可自动生成" size="small" v-model.trim="plan.name" clearable></el-input>
     </div>
     <div class="item">
       <span class="instruct">执行周期</span>
@@ -136,12 +136,11 @@ export default {
           this.$message({ type: 'warning', message });
           return false;
         };
-      if (type === '' || type === null) return warningMsg('任务类型未填写！');
-      if (name === '' || name === null) return warningMsg('任务名称未填写！');
-      if (cycle === 'once' && (day === '' || day === null)) return warningMsg('执行周期缺少具体日期！');
-      if (cycle === 'weekly' && weekly.length === 0) return warningMsg('执行周期缺少星期！');
-      if (cycle === 'monthly' && daysOfMonth.length === 0) return warningMsg('执行周期缺少日期！');
-      if (datetime === '' || datetime === null) return warningMsg('执行周期缺少时间！');
+      if (!type) return warningMsg('任务类型未填写！');
+      if (cycle === 'once' && !day) return warningMsg('执行周期缺少具体日期！');
+      if (cycle === 'weekly' && !weekly.length) return warningMsg('执行周期缺少星期！');
+      if (cycle === 'monthly' && !daysOfMonth.length) return warningMsg('执行周期缺少日期！');
+      if (!datetime) return warningMsg('执行周期缺少时间！');
       return true;
     },
     /**
@@ -171,15 +170,18 @@ export default {
     _setCmd() {
       // 根据任务类型确定命令执行参数，关机|重启|休眠
       const types = {
-          shutdown: '-s -t 00 -f',
-          reboot: '-r -t 00 -f',
-          dormancy: '-h',
-        },
-        { type, name, cycle, datetime, day, weekly, daysOfMonth } = this.plan,
-        baseCmd = `schtasks /create /tn "${name}"`; // 定义基础命令
-
-      let cmd = `${baseCmd} /sc ${cycle} /tr "shutdown ${types[type]}" /st ${datetime}`;
-
+        shutdown: '-s -t 00 -f',
+        reboot: '-r -t 00 -f',
+        dormancy: '-h',
+      };
+      let { type, name, cycle, datetime, day, weekly, daysOfMonth } = this.plan;
+      if (!name) {
+        let nowDate = new Date(new Date().getTime() + 8 * 60 * 60 * 1000);
+        nowDate = nowDate.toJSON().split('T').join(' ').substr(2, 17).replace(/:/g, '');
+        this.plan.tempName = name = `TS_${nowDate}`;
+      }
+      let baseCmd = `schtasks /create /tn "${name}"`, // 定义基础命令
+        cmd = `${baseCmd} /sc ${cycle} /tr "shutdown ${types[type]}" /st ${datetime}`;
       // 补充命令
       const panelModifyCmdByCycle = {
         once: () => {
@@ -238,9 +240,11 @@ export default {
       }
       this._addPlan()
         .then((msg) => {
+          let plan = { ...this.plan };
+          plan.name = plan.name || plan.tempName;
           this.$message({ message: msg });
           // 数据传递给List，由List添加到dbStroage
-          this.$bus.$emit('getPlan', { ...this.plan });
+          this.$bus.$emit('getPlan', plan);
           // 任务置空
           this.plan.name = this.plan.datetime = this.plan.day = '';
           this.plan.weekly = this.plan.daysOfMonth = [];
@@ -248,7 +252,7 @@ export default {
         .catch((reason) => {
           this.$message({
             type: 'error',
-            message: reason,
+            message: reason.toString().trim(),
           });
         });
     },
