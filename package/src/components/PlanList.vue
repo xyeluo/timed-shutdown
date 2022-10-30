@@ -24,11 +24,12 @@
         </template>
       </el-table-column>
       <el-table-column label="操作">
-        <template slot-scope="scope">
+        <div slot-scope="scope" class="btn">
+          <el-button @click.native.prevent="runPlan(scope.row.name)" type="success" size="small"> 立即执行 </el-button>
           <el-button @click.native.prevent="deleteRow(scope, plans)" type="danger" size="small">
-            {{ scope.row.autoDelete ? '自动删除' : '移除' }}
+            {{ scope.row.autoDelete ? '自动删除' : '删除' }}
           </el-button>
-        </template>
+        </div>
       </el-table-column>
     </el-table>
   </div>
@@ -68,23 +69,32 @@ export default {
     },
     // 删除相应行的计划列表
     deleteRow(scope, rows) {
-      const result = this._deletePlan(scope.row.name);
-      result
-        .then((msg) => {
-          this.$message({ message: msg });
+      if (!this.throotle()) {
+        return;
+      }
+      this.$confirm({
+        msg: `<p>确定删除<b>${scope.row.name}</b>计划吗？</p>`,
+        customClass: 'danger',
+      }).then(() => {
+        const result = this._deletePlan(scope.row.name);
+        result
+          .then((msg) => {
+            this.$message({ message: msg });
 
-          // 删除行
-          rows.splice(scope.$index, 1);
-        })
-        .catch((reason) => {
-          this.$confirm({
-            msg: '<p>是否强制从<b>插件计划列表</b>中移除</p>',
-            title: reason,
-            customClass: 'danger',
-          }).then(() => {
+            // 删除行
             rows.splice(scope.$index, 1);
+          })
+          .catch((reason) => {
+            this.$confirm({
+              msg: '<p>是否强制从<b>插件计划列表</b>中移除</p>',
+              title: reason,
+              customClass: 'danger',
+              type: 'error',
+            }).then(() => {
+              rows.splice(scope.$index, 1);
+            });
           });
-        });
+      });
     },
     // 添加计划列表
     getPlan(plan) {
@@ -172,6 +182,21 @@ export default {
         this._deletePlan(item.name).catch(() => {});
       });
     },
+    // 立即执行任务
+    runPlan(name) {
+      if (!this.throotle()) {
+        return;
+      }
+      const cmd = `schtasks /run /tn "${name}"`;
+      this.$utils
+        .execCmd(cmd)
+        .then((msg) => {
+          this.$message({ message: msg });
+        })
+        .catch((reason) => {
+          this.$message({ type: 'error', message: reason });
+        });
+    },
   },
   beforeMount() {
     // 先读取storage
@@ -257,5 +282,9 @@ export default {
 .status:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.btn:deep() button {
+  margin: 2px auto;
 }
 </style>

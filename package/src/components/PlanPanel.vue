@@ -252,7 +252,7 @@ export default {
         .catch((reason) => {
           this.$message({
             type: 'error',
-            message: reason.toString().trim(),
+            message: reason,
           });
         });
     },

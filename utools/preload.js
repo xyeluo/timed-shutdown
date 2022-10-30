@@ -19,7 +19,7 @@ function execCmd(command) {
   return new Promise((resolve, reject) => {
     exec(command, { encoding: binaryEncoding }, (error, stdout, stderr) => {
       if (stderr) {
-        reject(iconv.decode(stderr, encoding));
+        reject(iconv.decode(stderr, encoding).toString().trim());
         return;
       }
       stdout = stdout == null ? null : iconv.decode(stdout, encoding);
