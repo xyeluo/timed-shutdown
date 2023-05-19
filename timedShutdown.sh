@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function serve(){
     cd "./package" &&
@@ -34,6 +34,10 @@ function utools(){
       cp -r "./${safer}${saferNeed[idx]}" "./dist/$safer"
     fi
   done
+  if [ -d "../dist" ]; then
+    rm -rf ../dist
+  fi
+  mv ./dist ../dist
 }
 
 case "${1}" in

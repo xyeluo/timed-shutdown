@@ -1,6 +1,8 @@
 {
   "name": "timed-shutdown",
   "version": "1.1.0",
+  "author": "xyeluo <yeluoyh@outlook.com>",
+  "homepage": "https://github.com/xyeluo/timed-shutdown",
   "private": true,
   "license": "MIT",
   "scripts": {
