@@ -1,10 +1,7 @@
 const { exec } = require('child_process'),
-  iconv = require('iconv-lite'),
+  nodecron=require('node-cron'),
   fs = require("fs"),
   { resolve } = require("path"),
-  // 设置编码
-  encoding = 'gbk',
-  binaryEncoding = 'binary',
   // 设置存储id，存储的计划列表只与当前设备相关
   Id = utools.getNativeId() + "TimedPlan",
   xmlPath = resolve(utools.getPath('temp'), "timed-shutdonw_UtoolsPlugin.xml");
@@ -17,7 +14,7 @@ iconv.skipDecodeWarning = true; //忽略warining
  */
 function execCmd(command) {
   return new Promise((resolve, reject) => {
-    exec(command, { encoding: binaryEncoding }, (error, stdout, stderr) => {
+    exec(command, { encoding: 'binary' }, (_, stdout, stderr) => {
       if (stderr) {
         reject(iconv.decode(stderr, encoding).toString().trim());
         return;
