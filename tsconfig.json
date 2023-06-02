@@ -1,5 +1,10 @@
 {
   "files": [],
+  "compilerOptions": {
+    "types": [
+      "utools-api-types"
+    ]
+  },
   "references": [
     {
       "path": "./tsconfig.node.json"

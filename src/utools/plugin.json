@@ -1,7 +1,7 @@
 {
   "main": "index.html",
   "logo": "logo.png",
-  "preload": "index.js",
+  "preload": "preload.js",
   "features": [
     {
       "code": "shutdown",
@@ -21,6 +21,6 @@
   ],
   "platform": ["win32"],
   "development": {
-    "main": "http://localhost:8080"
+    "main": "http://localhost:5173/src/panel/"
   }
 }

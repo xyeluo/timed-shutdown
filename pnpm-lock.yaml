@@ -30,15 +30,21 @@ devDependencies:
   rollup-plugin-visualizer:
     specifier: ^5.9.0
     version: 5.9.0
+  sass:
+    specifier: ^1.62.1
+    version: 1.62.1
   typescript:
     specifier: ~5.0.4
     version: 5.0.4
   unplugin-vue-components:
     specifier: ^0.25.0
     version: 0.25.0(vue@3.3.2)
+  utools-api-types:
+    specifier: ^3.0.0
+    version: 3.0.0
   vite:
     specifier: ^4.3.5
-    version: 4.3.5(@types/node@18.16.8)
+    version: 4.3.5(@types/node@18.16.8)(sass@1.62.1)
   vue-tsc:
     specifier: ^1.6.4
     version: 1.6.4(typescript@5.0.4)
@@ -677,7 +683,7 @@ packages:
       '@babel/core': 7.22.1
       '@babel/plugin-transform-typescript': 7.22.3(@babel/core@7.22.1)
       '@vue/babel-plugin-jsx': 1.1.1(@babel/core@7.22.1)
-      vite: 4.3.5(@types/node@18.16.8)
+      vite: 4.3.5(@types/node@18.16.8)(sass@1.62.1)
       vue: 3.3.2
     transitivePeerDependencies:
       - supports-color
@@ -690,7 +696,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.3.5(@types/node@18.16.8)
+      vite: 4.3.5(@types/node@18.16.8)(sass@1.62.1)
       vue: 3.3.2
     dev: true
 
@@ -1436,6 +1442,10 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
+  /immutable@4.3.0:
+    resolution: {integrity: sha512-0AOCmOip+xgJwEVTQj1EfiDDOkPmuyllDuTuEX+DDXUgapLAsBIfkg3sxCYyCEA8mQqZrrxPUGjcOQ2JS3WLkg==}
+    dev: true
+
   /internal-slot@1.0.5:
     resolution: {integrity: sha512-Y+R5hJrzs52QCG2laLn4udYVnxsfny9CpOhNhUvk/SSSVyF6T27FzRbF0sroPidSu3X8oEAkOn2K804mjpt6UQ==}
     engines: {node: '>= 0.4'}
@@ -1924,6 +1934,16 @@ packages:
       is-regex: 1.1.4
     dev: true
 
+  /sass@1.62.1:
+    resolution: {integrity: sha512-NHpxIzN29MXvWiuswfc1W3I0N8SXBd8UR26WntmDlRYf0bSADnwnOjsyMZ3lMezSlArD33Vs3YFhp7dWvL770A==}
+    engines: {node: '>=14.0.0'}
+    hasBin: true
+    dependencies:
+      chokidar: 3.5.3
+      immutable: 4.3.0
+      source-map-js: 1.0.2
+    dev: true
+
   /scroll-into-view-if-needed@2.2.31:
     resolution: {integrity: sha512-dGCXy99wZQivjmjIqihaBQNjryrz5rueJY7eHfTdyWEiR4ttYpsajb14rn9s5d4DY4EcY6+4+U/maARBXJedkA==}
     dependencies:
@@ -2161,6 +2181,10 @@ packages:
       picocolors: 1.0.0
     dev: true
 
+  /utools-api-types@3.0.0:
+    resolution: {integrity: sha512-KJYytaX/cnxRTm+fBKeDAV6PhE1Emrv4bZm/6pigVhxEM4StAy8UFGyo22bVARSRIUUxbEdtWIo6O7qmEGnv5A==}
+    dev: true
+
   /validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
     dependencies:
@@ -2168,7 +2192,7 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: true
 
-  /vite@4.3.5(@types/node@18.16.8):
+  /vite@4.3.5(@types/node@18.16.8)(sass@1.62.1):
     resolution: {integrity: sha512-0gEnL9wiRFxgz40o/i/eTBwm+NEbpUeTWhzKrZDSdKm6nplj+z4lKz8ANDgildxHm47Vg8EUia0aicKbawUVVA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -2197,6 +2221,7 @@ packages:
       esbuild: 0.17.19
       postcss: 8.4.24
       rollup: 3.23.0
+      sass: 1.62.1
     optionalDependencies:
       fsevents: 2.3.2
     dev: true

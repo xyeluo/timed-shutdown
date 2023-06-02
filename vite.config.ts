@@ -49,9 +49,9 @@ export default defineConfig({
         notice: getPagePath('notice')
       },
       output: {
-        chunkFileNames: 'static/js/[name]-[hash].js',
-        entryFileNames: 'static/js/[name]-[hash].js',
-        assetFileNames: 'static/[ext]/[name]-[hash].[ext]'
+        chunkFileNames: 'src/js/[name]-[hash].js',
+        entryFileNames: 'src/js/[name]-[hash].js',
+        assetFileNames: 'src/[ext]/[name]-[hash].[ext]'
       }
     }
   }
