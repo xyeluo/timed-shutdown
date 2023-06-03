@@ -3,7 +3,7 @@
   "compilerOptions": {
     "types": [
       "utools-api-types"
-    ]
+    ],
   },
   "references": [
     {

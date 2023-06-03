@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+
 import { Preload } from './src/utools/preload.d.ts'
 
 declare global {

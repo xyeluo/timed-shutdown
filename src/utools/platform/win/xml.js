@@ -1,10 +1,6 @@
 const { writeFile, access, unlink } = require('fs/promises')
-const { resolve } = require('path')
 
-const xmlPath = resolve(
-  utools.getPath('temp'),
-  'timed-shutdonw_UtoolsPlugin.xml'
-)
+const {xmlPath} = require('../../utils/config')
 
 function eachXmlObj(xmlObj, callback) {
   return Object.entries(xmlObj).reduce((str, [key, value]) => {
@@ -47,7 +43,6 @@ function objToXml(xmlObj, indent = false) {
 async function createXML(xmlObj) {
   const xml = `<?xml version="1.0" encoding="UTF-16"?>\n${objToXml(xmlObj, 0)}`
   await writeFile(xmlPath, xml)
-  console.log(`xml:\n${xml}`, 'File written successfully.')
 }
 
 /**
@@ -55,9 +50,7 @@ async function createXML(xmlObj) {
  */
 async function deleteXML() {
   await access(xmlPath, 0)
-  console.log(`${xmlPath} exists`)
   await unlink(xmlPath)
-  console.log(`${xmlPath} was deleted`)
 }
 
 module.exports = {

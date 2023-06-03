@@ -1,9 +1,9 @@
 const { promisify } = require('util')
 const { exec } = require('child_process')
 
-const promiseExec = promisify(exec)
+const ID = require('./config')
 
-const ID = utools.getNativeId() + 'TimedPlan'
+const promiseExec = promisify(exec)
 
 /**
  * 添加计划任务，执行关机、重启、休眠
