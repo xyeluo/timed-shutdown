@@ -1,9 +1,9 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "include": [
-    "env.d.ts",
+    "./*.d.ts",
     "src/**/*",
-    "src/**/*.vue"
+    "src/**/*.vue",
   ],
   "exclude": [
     "src/**/__tests__/*"
@@ -21,9 +21,6 @@
       "@notice/*": [
         "./src/notice/*"
       ]
-    },
-    "types": [
-      "./auto-imports.d.ts"
-    ]
+    },   
   },
 }

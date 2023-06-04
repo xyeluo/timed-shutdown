@@ -17,6 +17,8 @@
   "devDependencies": {
     "@tsconfig/node18": "^2.0.1",
     "@types/node": "^18.16.8",
+    "@vicons/antd": "^0.12.0",
+    "@vicons/fluent": "^0.12.0",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
     "@vue/tsconfig": "^0.4.0",

@@ -11,6 +11,11 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     NButton: typeof import('naive-ui')['NButton']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']
+    NDataTable: typeof import('naive-ui')['NDataTable']
     NGlobalStyle: typeof import('naive-ui')['NGlobalStyle']
+    NIcon: typeof import('naive-ui')['NIcon']
+    NPopselect: typeof import('naive-ui')['NPopselect']
+    NSpace: typeof import('naive-ui')['NSpace']
+    NTooltip: typeof import('naive-ui')['NTooltip']
   }
 }

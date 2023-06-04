@@ -1,29 +1,29 @@
 import { darkTheme, type GlobalTheme } from 'naive-ui';
 
+import '@panel/styles/Page.scss';
+
+type naiveThemeType = GlobalTheme | null
+
 const themes = { dark: darkTheme, light: null }
-type changeThemeType = (currentTheme: keyof typeof themes) => void
+let theme = ref<naiveThemeType>(null)
+
+
+export type themeType = keyof typeof themes
+export const changeTheme = (currentTheme: themeType): void => {
+  theme.value = themes[currentTheme]
+}
 
 export const Page = defineComponent({
-  setup(_, { slots, expose }) {
-    interface PageProps {
-      theme: GlobalTheme | null
-    }
-    let theme = ref<PageProps[keyof PageProps]>(null)
-
-    const changeTheme: changeThemeType = (currentTheme) => {
-      theme.value = themes[currentTheme]
-    }
-    expose({ changeTheme })
+  name: "Page",
+  setup(_, { slots }) {
     return () => (
       <n-config-provider theme={theme.value}>
         <n-global-style />
-        {slots.default?.()}
+        <header>{slots.header?.()}</header>
+        <main>{slots.main?.()}</main>
+        <footer>{slots.footer?.()}</footer>
       </n-config-provider>
     )
   }
 })
 
-type PageType = typeof Page
-export interface PageInstance extends PageType {
-  changeTheme: changeThemeType
-}

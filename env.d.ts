@@ -1,10 +1,4 @@
 /// <reference types="vite/client" />
 
-import { Preload } from './src/utools/preload.d.ts'
-
-declare global {
-  interface Window {
-    preload: Preload
-  }
-  declare const preload: Preload
-}
+import utools from 'utools-api-types'
+import preload from './src/utools/preload.d.ts'
