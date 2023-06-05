@@ -1,7 +1,7 @@
 header,
 main,
 footer {
-  margin: 15px 15px;
+  margin: 15px;
 }
 
 header {
@@ -12,13 +12,9 @@ header {
 
 footer {
   position: absolute;
-  right: 0;
   bottom: 0;
   i {
     cursor: pointer;
     margin: 0 5px;
-    &:hover {
-      color: rgba($color: #333639, $alpha: 0.5);
-    }
   }
 }

@@ -1,7 +1,7 @@
 import type { SelectGroupOption } from 'naive-ui';
-import { Page } from '@panel/components/Page';
-import { Add12Filled, Settings28Filled } from '@vicons/fluent';
-import { GithubFilled, QuestionCircleFilled } from '@vicons/antd';
+import { Page, changeTheme, type themeType } from '@panel/components/Page';
+
+import { GithubIcon, QuestionIcon, SettingIcon, AddIcon } from '@panel/icons';
 
 const PlanPanel = defineAsyncComponent(() => import("@panel/views/PlanPanel"))
 const PlanList = defineAsyncComponent(() => import("@panel/views/PlanList"))
@@ -14,16 +14,16 @@ const HomeUrl = 'https://github.com/xyeluo/'
 
 const Github = defineComponent({
   setup() {
+    const openGithub = () => {
+      openUrl(`${HomeUrl}timed-shutdown/`)
+    }
     return () => (
-      <n-tooltip show-arrow={false} trigger="hover">
+      <n-popover show-arrow={false} trigger="hover">
         {{
           default: () => <>Github</>,
-          trigger: () => <n-icon size='20px' onClick={() => openUrl(
-            `${HomeUrl}timed-shutdown/`
-          )}><GithubFilled /></n-icon>
+          trigger: () => <n-icon size='20px' onClick={openGithub}><GithubIcon /></n-icon>
         }}
-      </n-tooltip>
-
+      </n-popover>
     )
   }
 })
@@ -53,7 +53,7 @@ const Question = defineComponent({
     ]
     return () => (
       <n-popselect options={options}>
-        <n-icon size='20px'><QuestionCircleFilled /></n-icon>
+        <n-icon size='20px'><QuestionIcon /></n-icon>
       </n-popselect>
     )
   }
@@ -61,8 +61,44 @@ const Question = defineComponent({
 
 const Setting = defineComponent({
   setup() {
-    return () => (
-      <n-icon size='20px'><Settings28Filled /></n-icon>
+    let active = ref(false)
+    let selectedTheme = ref<themeType>('light')
+    const themesData = [
+      { txt: '白天', value: 'light' },
+      { txt: '黑夜', value: 'dark' },
+    ]
+    const activate = () => {
+      active.value = true
+    }
+    watch<themeType>(selectedTheme, (nValue) => {
+      changeTheme(nValue)
+    })
+    return () => (<>
+      <n-popover>
+        {{
+          default: () => <>设置</>,
+          trigger: () => <n-icon size='20px' onClick={activate}><SettingIcon /></n-icon>,
+        }}
+      </n-popover>
+
+      <n-drawer v-model:show={active.value} width="300">
+        <n-drawer-content closable>
+          {{
+            header: () => <div>header</div>,
+            default: () => (
+              themesData.map((theme) => {
+                return (
+                  <label for={theme.value}>
+                    <input type="radio" v-model={selectedTheme.value} name="theme" value={theme.value} id={theme.value} />
+                    {theme.txt}
+                  </label>
+                )
+              }))
+            ,
+          }}
+        </n-drawer-content>
+      </n-drawer>
+    </>
     )
   }
 })
@@ -79,12 +115,12 @@ const PanelHeader = defineComponent({
     }
     return () => (<>
       <h2>任务列表</h2>
-      <n-button type="info" color="#409eff"
+      <n-button type="primary" color="#67c23a"
         loading={btnState.value} disabled={btnState.value} onClick={handleClick}
       >
         {{
           default: () => <div>添加任务</div>,
-          icon: () => <n-icon><Add12Filled /></n-icon>
+          icon: () => <n-icon><AddIcon /></n-icon>
         }}
       </n-button></>)
   }
@@ -101,6 +137,7 @@ export default defineComponent({
           ,
           main: () => (<>
             <PlanList />
+            {/* <PlanPanel /> */}
           </>)
           ,
           footer: () => (<>
