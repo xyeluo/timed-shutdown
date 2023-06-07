@@ -1,7 +1,7 @@
 const { promisify } = require('util')
 const { exec } = require('child_process')
 
-const ID = require('./config')
+const { ID } = require('./config')
 
 const promiseExec = promisify(exec)
 
@@ -15,7 +15,7 @@ async function execCmd(command) {
 
 /**
  * 存储计划任务
- * @param {object} data 
+ * @param {object} data
  */
 async function dbStorageSave(data) {
   await utools.dbStorage.setItem(ID, data)

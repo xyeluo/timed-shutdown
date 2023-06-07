@@ -16,11 +16,14 @@ declare module '@vue/runtime-core' {
     NDrawerContent: typeof import('naive-ui')['NDrawerContent']
     NGlobalStyle: typeof import('naive-ui')['NGlobalStyle']
     NIcon: typeof import('naive-ui')['NIcon']
-    NIconWra: typeof import('naive-ui')['NIconWra']
-    NIconWrapper: typeof import('naive-ui')['NIconWrapper']
+    NInput: typeof import('naive-ui')['NInput']
+    NModal: typeof import('naive-ui')['NModal']
     NPopover: typeof import('naive-ui')['NPopover']
     NPopselect: typeof import('naive-ui')['NPopselect']
+    NSelect: typeof import('naive-ui')['NSelect']
     NSpace: typeof import('naive-ui')['NSpace']
-    NTooltip: typeof import('naive-ui')['NTooltip']
+    NSwitch: typeof import('naive-ui')['NSwitch']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
   }
 }

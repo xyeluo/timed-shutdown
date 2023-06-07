@@ -1,12 +1,11 @@
-import { darkTheme, type GlobalTheme } from 'naive-ui';
+import { darkTheme, type GlobalTheme } from 'naive-ui'
 
-import '@panel/styles/Page.scss';
+import PageScss from '@panel/styles/Page.module.scss'
 
 type naiveThemeType = GlobalTheme | null
 
 const themes = { dark: darkTheme, light: null }
 let theme = ref<naiveThemeType>(null)
-
 
 export type themeType = keyof typeof themes
 export const changeTheme = (currentTheme: themeType): void => {
@@ -14,10 +13,10 @@ export const changeTheme = (currentTheme: themeType): void => {
 }
 
 export const Page = defineComponent({
-  name: "Page",
+  name: 'Page',
   setup(_, { slots }) {
     return () => (
-      <n-config-provider theme={theme.value}>
+      <n-config-provider theme={theme.value} class={PageScss.container}>
         <n-global-style />
         <header>{slots.header?.()}</header>
         <main>{slots.main?.()}</main>
@@ -26,4 +25,3 @@ export const Page = defineComponent({
     )
   }
 })
-

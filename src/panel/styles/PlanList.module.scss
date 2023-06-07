@@ -4,14 +4,16 @@
   align-items: center;
   cursor: default;
   user-select: none;
-  $width: 70px;
+  $width: 65px;
   width: $width;
   margin: 0 calc((100px - $width) / 2);
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
   i {
     padding-left: 5px;
   }
   &.play {
-    color: #69b2fe;
+    color: $btn-color;
   }
   &.stop {
     color: #f56c6c;

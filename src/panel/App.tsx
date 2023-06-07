@@ -1,24 +1,40 @@
 import type { SelectGroupOption } from 'naive-ui';
-import { Page, changeTheme, type themeType } from '@panel/components/Page';
-
+import { Page, changeTheme, type themeType } from '@/panel/components/Page';
 import { GithubIcon, QuestionIcon, SettingIcon, AddIcon } from '@panel/icons';
-
-const PlanPanel = defineAsyncComponent(() => import("@panel/views/PlanPanel"))
-const PlanList = defineAsyncComponent(() => import("@panel/views/PlanList"))
-
-import { openUrl } from '@panel/utils';
-
+import { useOpenUrl } from '@/panel/hooks';
 import "@panel/styles/index.scss"
+import { showModal } from "@panel/components/PlanPanel";
+const PlanPanel = defineAsyncComponent(() => import("@/panel/components/PlanPanel"))
+const PlanList = defineAsyncComponent(() => import("@/panel/components/PlanList"))
 
 const HomeUrl = 'https://github.com/xyeluo/'
+
+const PanelHeader = defineComponent({
+  setup() {
+    let btnState = ref(false)
+    const handleClick = () => {
+      showModal()
+    }
+    return () => (<>
+      <h3>任务列表</h3>
+      <n-button type="primary" color="#69b2fe"
+        loading={btnState.value} onClick={handleClick}
+      >
+        {{
+          default: () => <div>添加任务</div>,
+          icon: () => <n-icon><AddIcon /></n-icon>
+        }}
+      </n-button></>)
+  }
+})
 
 const Github = defineComponent({
   setup() {
     const openGithub = () => {
-      openUrl(`${HomeUrl}timed-shutdown/`)
+      useOpenUrl(`${HomeUrl}timed-shutdown/`)
     }
     return () => (
-      <n-popover show-arrow={false} trigger="hover">
+      <n-popover trigger="hover">
         {{
           default: () => <>Github</>,
           trigger: () => <n-icon size='20px' onClick={openGithub}><GithubIcon /></n-icon>
@@ -38,13 +54,13 @@ const Question = defineComponent({
           {
             label(options) {
               // console.log('Github', options, selected);
-              return (<div onClick={() => openUrl(`${HomeUrl}/timed-shutdown/issues`)}>{options.value}</div>)
+              return (<div onClick={() => useOpenUrl(`${HomeUrl}/timed-shutdown/issues`)}>{options.value}</div>)
             },
             value: "Github",
           },
           {
             label(options) {
-              return (<div onClick={() => openUrl('https://yuanliao.info/d/5810')}>{options.value}</div>)
+              return (<div onClick={() => useOpenUrl('https://yuanliao.info/d/5810')}>{options.value}</div>)
             },
             value: 'Utools',
           },
@@ -104,49 +120,22 @@ const Setting = defineComponent({
 })
 
 
-const PanelHeader = defineComponent({
-  setup() {
-    let btnState = ref(false)
-    const handleClick = () => {
-      btnState.value = !btnState.value
-      setTimeout(() => {
-        btnState.value = !btnState.value
-      }, 3000)
-    }
-    return () => (<>
-      <h2>任务列表</h2>
-      <n-button type="primary" color="#67c23a"
-        loading={btnState.value} disabled={btnState.value} onClick={handleClick}
-      >
-        {{
-          default: () => <div>添加任务</div>,
-          icon: () => <n-icon><AddIcon /></n-icon>
-        }}
-      </n-button></>)
-  }
-})
-
-
 export default defineComponent({
   setup() {
 
     return () => (
-      <Page>
-        {{
-          header: () => <PanelHeader />
-          ,
-          main: () => (<>
-            <PlanList />
-            {/* <PlanPanel /> */}
-          </>)
-          ,
-          footer: () => (<>
-            <Github />
-            <Question />
-            <Setting />
-          </>)
-        }}
-      </Page>
+      <Page>{{
+        header: () => <PanelHeader />,
+        main: () => (<>
+          <PlanList />
+          <PlanPanel />
+        </>),
+        footer: () => (<>
+          <Github />
+          <Question />
+          <Setting />
+        </>)
+      }}</Page>
     )
   }
 })

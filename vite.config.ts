@@ -5,11 +5,16 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
+// UI
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 
+// analyze
 import { visualizer } from 'rollup-plugin-visualizer'
+
+// Vue DevTools
+import VueDevTools from 'vite-plugin-vue-devtools'
 
 const enableVisualizer = process.env.ANALYZE?.trim() === 'true'
 
@@ -49,13 +54,15 @@ export default defineConfig({
       resolvers: [NaiveUiResolver()]
     }),
     vue(),
-    vueJsx()
+    vueJsx(),
+    VueDevTools()
   ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '@panel': fileURLToPath(new URL('./src/panel', import.meta.url)),
       '@notice': fileURLToPath(new URL('./src/notice', import.meta.url)),
+      '@cmn': fileURLToPath(new URL('./src/common', import.meta.url))
     }
   },
   build: {
@@ -73,5 +80,12 @@ export default defineConfig({
   },
   server: {
     open: '/src/panel/'
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@import "@cmn/styles/globalVariables.scss";'
+      }
+    }
   }
 })

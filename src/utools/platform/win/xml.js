@@ -1,6 +1,6 @@
 const { writeFile, access, unlink } = require('fs/promises')
 
-const {xmlPath} = require('../../utils/config')
+const { xmlPath } = require('../../utils/config')
 
 function eachXmlObj(xmlObj, callback) {
   return Object.entries(xmlObj).reduce((str, [key, value]) => {
