@@ -1,3 +1,5 @@
 import { useOpenUrl } from './utools'
+import { useTypeOptions, useCycleOptions, type Cycle } from './optionsData'
 
-export { useOpenUrl }
+export { useOpenUrl, useTypeOptions, useCycleOptions }
+export type { Cycle }

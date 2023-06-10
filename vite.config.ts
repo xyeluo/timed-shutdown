@@ -13,9 +13,6 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 // analyze
 import { visualizer } from 'rollup-plugin-visualizer'
 
-// Vue DevTools
-import VueDevTools from 'vite-plugin-vue-devtools'
-
 const enableVisualizer = process.env.ANALYZE?.trim() === 'true'
 
 const getPagePath = (page: 'notice' | 'panel') =>
@@ -51,11 +48,10 @@ export default defineConfig({
         /\.vue$/,
         /\.vue\?vue/ // .vue
       ],
-      resolvers: [NaiveUiResolver()]
+      resolvers: [NaiveUiResolver()],
     }),
     vue(),
-    vueJsx(),
-    VueDevTools()
+    vueJsx()
   ],
   resolve: {
     alias: {
@@ -66,6 +62,7 @@ export default defineConfig({
     }
   },
   build: {
+    chunkSizeWarningLimit: 800,
     rollupOptions: {
       input: {
         panel: getPagePath('panel'),

@@ -1,6 +1,8 @@
-import { darkTheme, type GlobalTheme } from 'naive-ui'
+import { darkTheme, zhCN, dateZhCN, type GlobalTheme } from 'naive-ui'
 
 import PageScss from '@panel/styles/Page.module.scss'
+
+import { Suspense } from 'vue'
 
 type naiveThemeType = GlobalTheme | null
 
@@ -16,7 +18,12 @@ export const Page = defineComponent({
   name: 'Page',
   setup(_, { slots }) {
     return () => (
-      <n-config-provider theme={theme.value} class={PageScss.container}>
+      <n-config-provider
+        locale={zhCN}
+        date-locale={dateZhCN}
+        theme={theme.value}
+        class={PageScss.container}
+      >
         <n-global-style />
         <header>{slots.header?.()}</header>
         <main>{slots.main?.()}</main>
