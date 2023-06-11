@@ -6,6 +6,7 @@
     display: inline-block;
   }
   #{&}Label {
+    text-align: right;
     width: 56px;
     margin-right: 10px;
   }
@@ -37,6 +38,6 @@
   }
 }
 
-@include extra('Cycle'){
+@include extra('Cycle') {
   margin-left: 15px;
 }

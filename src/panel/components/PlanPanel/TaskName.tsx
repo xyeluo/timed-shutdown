@@ -1,6 +1,6 @@
 import { RowItem } from '@panel/components/RowItem'
 
-export const TaskName = defineComponent({
+export default defineComponent({
   setup() {
     let name = ref('')
     watch(name, (nValue) => {

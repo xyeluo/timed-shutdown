@@ -62,7 +62,6 @@ export default defineConfig({
     }
   },
   build: {
-    chunkSizeWarningLimit: 800,
     rollupOptions: {
       input: {
         panel: getPagePath('panel'),

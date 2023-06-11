@@ -1,43 +1,80 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
-import { useCycleOptions, type Cycle } from '@panel/hooks'
+import {
+  useCycleOptions,
+  type Cycle,
+  useCycleWeeklyOptions
+} from '@panel/hooks'
 import { RowItem } from '@panel/components/RowItem'
 import { PanelSelect } from '@panel/components/PlanPanel/PanelSelect'
 
-export const TaskCycle = defineComponent({
+const Weekly = defineComponent({
+  setup() {
+    const options = useCycleWeeklyOptions()
+
+    let weekly = ref(options[0].value)
+    return () => (
+      <n-select
+        v-model:value={weekly.value}
+        multiple
+        options={options}
+        size="small"
+        style={{ minWidth: '100px', maxWidth: '360px' }}
+      />
+    )
+  }
+})
+
+const Monthly = defineComponent({
+  setup() {
+    return () => (
+      <n-checkbox-group size="small" style={{ width: '400px' }}>
+        <n-space size="small">
+          {[
+            Array.from({ length: 31 }).map((_, i) => {
+              const index = i + 1
+              return (
+                <n-checkbox value={index} key={index}>
+                  {index}
+                </n-checkbox>
+              )
+            })
+          ]}
+        </n-space>
+      </n-checkbox-group>
+    )
+  }
+})
+export default defineComponent({
   setup() {
     const options = useCycleOptions()
     let type = ref<Cycle>(options[0].value)
 
     watch(type, (nValue) => {
-      console.log(nValue)
+      console.log(cycleCpt[type.value])
     })
 
     const cycleCpt = {
       once: (
-        <RowItem>
-          <n-date-picker
-            type="date"
-            size="small"
-            placeholder="具体日期"
-            is-date-disabled={(ts: number) =>
-              ts < Date.now() - 24 * 3600 * 1000
-            }
-          />
-        </RowItem>
+        <n-date-picker
+          type="date"
+          size="small"
+          placeholder="具体日期"
+          is-date-disabled={(ts: number) => ts < Date.now() - 24 * 3600 * 1000}
+        />
       ),
       daily: '',
-      weekly: () => {},
-      monthly: () => {}
+      weekly: h(Weekly),
+      monthly: h(Monthly)
     }
+
     const extraCpt = (
-      <n-switch size="small" class={PPanelScss.extra}>
+      <n-switch class={PPanelScss.extra}>
         {{
-          checked: () => '自动删除过期任务',
-          unchecked: () => '自动删除过期任务'
+          checked: () => '执行后删除',
+          unchecked: () => '执行后保留'
         }}
       </n-switch>
     )
-
     return () => (
       <>
         <RowItem
@@ -48,7 +85,9 @@ export const TaskCycle = defineComponent({
           <PanelSelect v-model:value={type.value} options={options} />
         </RowItem>
         {/* 动态渲染组件 */}
-        {cycleCpt[type.value]}
+        <RowItem label={type.value === 'monthly' ? '日期' : ''}>
+          {cycleCpt[type.value]}
+        </RowItem>
         <RowItem>
           <n-time-picker size="small" placeholder="执行时间" />
         </RowItem>

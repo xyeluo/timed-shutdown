@@ -3,7 +3,7 @@ import { useTypeOptions } from '@panel/hooks'
 import { RowItem } from '@panel/components/RowItem'
 import { PanelSelect } from '@panel/components/PlanPanel/PanelSelect'
 
-export const TaskType = defineComponent({
+export default defineComponent({
   setup() {
     const options = useTypeOptions()
     let type = ref(options[0].value)

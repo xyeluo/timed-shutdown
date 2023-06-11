@@ -33,3 +33,20 @@ export const useCycleOptions = (): CycleOption[] => {
   ]
   return createOptoins(cycle) as CycleOption[]
 }
+
+export const useCycleWeeklyOptions = () => {
+  const weekly = [
+    ['日', 'sun'],
+    ['一', 'mon'],
+    ['二', 'tue'],
+    ['三', 'wed'],
+    ['四', 'thu'],
+    ['五', 'fri'],
+    ['六', 'sat']
+  ]
+  return createOptoins(
+    weekly.map((w) => {
+      return [`星期${w[0]}`, w[1]]
+    })
+  )
+}
