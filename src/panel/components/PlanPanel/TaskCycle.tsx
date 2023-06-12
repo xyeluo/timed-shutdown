@@ -1,11 +1,25 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 import {
   useCycleOptions,
-  type Cycle,
+  type CycleType,
   useCycleWeeklyOptions
 } from '@panel/hooks'
-import { RowItem } from '@panel/components/RowItem'
-import { PanelSelect } from '@panel/components/PlanPanel/PanelSelect'
+import { RowItem, SwitchComponet } from '@/panel/components/common'
+import { PanelSelect } from '@panel/components/common'
+import type { Component } from 'vue'
+
+const Once = defineComponent({
+  setup() {
+    return () => (
+      <n-date-picker
+        type="date"
+        size="small"
+        placeholder="具体日期"
+        is-date-disabled={(ts: number) => ts < Date.now() - 24 * 3600 * 1000}
+      />
+    )
+  }
+})
 
 const Weekly = defineComponent({
   setup() {
@@ -45,27 +59,37 @@ const Monthly = defineComponent({
   }
 })
 export default defineComponent({
-  setup() {
+  props: { value: String },
+  emits: ['update:value'],
+  setup(props, { emit }) {
+    interface Cycle {
+      type: CycleType
+    }
     const options = useCycleOptions()
-    let type = ref<Cycle>(options[0].value)
-
-    watch(type, (nValue) => {
-      console.log(cycleCpt[type.value])
+    let cycle = ref<Cycle>({
+      type: options[0].value
     })
 
     const cycleCpt = {
-      once: (
-        <n-date-picker
-          type="date"
-          size="small"
-          placeholder="具体日期"
-          is-date-disabled={(ts: number) => ts < Date.now() - 24 * 3600 * 1000}
-        />
-      ),
+      once: Once,
       daily: '',
-      weekly: h(Weekly),
-      monthly: h(Monthly)
+      weekly: Weekly,
+      monthly: Monthly
     }
+
+    let switchCycleCpt = computed(() => {
+      if (cycle.value.type === 'daily') {
+        return null
+      }
+      return (
+        <RowItem label={cycle.value.type === 'monthly' ? '日期' : ''}>
+          <SwitchComponet
+            is={cycleCpt[cycle.value.type]}
+            id={cycle.value.type}
+          ></SwitchComponet>
+        </RowItem>
+      )
+    })
 
     const extraCpt = (
       <n-switch class={PPanelScss.extra}>
@@ -80,14 +104,12 @@ export default defineComponent({
         <RowItem
           label="任务周期"
           class={PPanelScss.taskCycle}
-          v-slots={{ extra: extraCpt }}
+          v-slots={{ extra: cycle.value.type === 'once' ? extraCpt : '' }}
         >
-          <PanelSelect v-model:value={type.value} options={options} />
+          <PanelSelect v-model:value={cycle.value.type} options={options} />
         </RowItem>
         {/* 动态渲染组件 */}
-        <RowItem label={type.value === 'monthly' ? '日期' : ''}>
-          {cycleCpt[type.value]}
-        </RowItem>
+        {switchCycleCpt.value}
         <RowItem>
           <n-time-picker size="small" placeholder="执行时间" />
         </RowItem>

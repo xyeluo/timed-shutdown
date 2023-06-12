@@ -155,9 +155,7 @@ const Setting = defineComponent({
 
 export default defineComponent({
   setup() {
-    const PlanPanel = defineAsyncComponent(
-      () => import('@/panel/view/PlanPanel')
-    )
+    const PlanPanel = defineAsyncComponent(() => import('@/panel/view/PlanPanel'))
     const PlanList = defineAsyncComponent(() => import('@/panel/view/PlanList'))
     return () => (
       <Page>

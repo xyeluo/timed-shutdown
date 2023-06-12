@@ -2,9 +2,9 @@ import { useOpenUrl } from './utools'
 import {
   useTypeOptions,
   useCycleOptions,
-  type Cycle,
+  type CycleType,
   useCycleWeeklyOptions
 } from './optionsData'
 
 export { useOpenUrl, useTypeOptions, useCycleOptions, useCycleWeeklyOptions }
-export type { Cycle }
+export type { CycleType }

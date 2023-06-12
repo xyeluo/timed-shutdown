@@ -1,12 +1,17 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
-import { RowItem } from '@panel/components/RowItem'
+import { RowItem } from '@/panel/components/common'
+
+let modalState = ref(false)
+export const showModal = () => {
+  modalState.value = !modalState.value
+}
 
 const Action = defineComponent({
   setup() {
     return () => (
       <RowItem>
         <n-space>
-          <n-button size="medium" type="info" color="#409eff">
+          <n-button type="info" color="#409eff">
             确定
           </n-button>
           <n-button onClick={showModal}>取消</n-button>
@@ -15,11 +20,6 @@ const Action = defineComponent({
     )
   }
 })
-
-let modalState = ref(true)
-export const showModal = () => {
-  modalState.value = !modalState.value
-}
 
 export default defineComponent({
   name: 'PlanPanel',
@@ -32,6 +32,21 @@ export default defineComponent({
     )
     const TaskName = defineAsyncComponent(
       () => import('@panel/components/PlanPanel/TaskName')
+    )
+    let plan = ref({
+      type: '',
+      name: '',
+      cycle: ''
+    })
+
+    watch(
+      plan,
+      (nValue) => {
+        console.log(nValue)
+      },
+      {
+        deep: true
+      }
     )
     return () => (
       <n-modal
@@ -46,10 +61,11 @@ export default defineComponent({
         to="#app"
         closable={false}
         auto-focus={false}
+        display-directive="show"
       >
         <div class={PPanelScss.container}>
-          <TaskType />
-          <TaskName />
+          <TaskType v-model:value={plan.value.type} />
+          <TaskName v-model:value={plan.value.name} />
           <TaskCycle />
         </div>
         <Action />

@@ -19,10 +19,10 @@ type Labels = {
   weekly: '每周'
   monthly: '每月'
 }
-export type Cycle = keyof Labels
+export type CycleType = keyof Labels
 interface CycleOption extends SelectOption {
-  label: Labels[Cycle]
-  value: Cycle
+  label: Labels[CycleType]
+  value: CycleType
 }
 export const useCycleOptions = (): CycleOption[] => {
   const cycle = [
