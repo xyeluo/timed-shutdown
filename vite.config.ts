@@ -48,7 +48,7 @@ export default defineConfig({
         /\.vue$/,
         /\.vue\?vue/ // .vue
       ],
-      resolvers: [NaiveUiResolver()],
+      resolvers: [NaiveUiResolver()]
     }),
     vue(),
     vueJsx()
