@@ -1,5 +1,6 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
-import { RowItem } from '@/panel/components/common'
+import { RowItem } from '@panel/components/common'
+import { taskStore } from '@panel/store'
 
 let modalState = ref(false)
 export const showModal = () => {
@@ -11,7 +12,7 @@ const Action = defineComponent({
     return () => (
       <RowItem>
         <n-space>
-          <n-button type="info" color="#409eff">
+          <n-button type="info" color="#409eff" onClick={taskStore.addTask}>
             确定
           </n-button>
           <n-button onClick={showModal}>取消</n-button>

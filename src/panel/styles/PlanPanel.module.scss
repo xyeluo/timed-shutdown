@@ -41,3 +41,9 @@
 @include extra('Cycle') {
   margin-left: 15px;
 }
+
+.dateGrid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  column-gap: 4px;
+}

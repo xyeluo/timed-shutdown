@@ -50,3 +50,13 @@ export const useCycleWeeklyOptions = () => {
     })
   )
 }
+
+export const useFirstType = () => {
+  const first = useTypeOptions()
+  return first[0].value
+}
+
+export const useFirstCycle = () => {
+  const first = useCycleOptions()
+  return first[0].value
+}

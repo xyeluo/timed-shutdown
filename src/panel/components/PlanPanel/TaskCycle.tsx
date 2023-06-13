@@ -6,16 +6,25 @@ import {
 } from '@panel/hooks'
 import { RowItem, SwitchComponet } from '@/panel/components/common'
 import { PanelSelect } from '@panel/components/common'
-import type { Component } from 'vue'
+import { taskStore } from '@panel/store'
+
+const dateTimeCommonAttr = {
+  size: 'small',
+  'input-readonly': true,
+  clearable: true
+}
 
 const Once = defineComponent({
   setup() {
     return () => (
       <n-date-picker
         type="date"
-        size="small"
+        {...dateTimeCommonAttr}
         placeholder="具体日期"
+        v-model:formatted-value={taskStore.cycle.date}
         is-date-disabled={(ts: number) => ts < Date.now() - 24 * 3600 * 1000}
+        style={{ width: '140px' }}
+        value-format="yyyy-MM-dd"
       />
     )
   }
@@ -25,13 +34,12 @@ const Weekly = defineComponent({
   setup() {
     const options = useCycleWeeklyOptions()
 
-    let weekly = ref(options[0].value)
     return () => (
       <n-select
-        v-model:value={weekly.value}
+        v-model:value={taskStore.cycle.date}
         multiple
         options={options}
-        size="small"
+        size={dateTimeCommonAttr.size}
         style={{ minWidth: '100px', maxWidth: '360px' }}
       />
     )
@@ -41,34 +49,35 @@ const Weekly = defineComponent({
 const Monthly = defineComponent({
   setup() {
     return () => (
-      <n-checkbox-group size="small" style={{ width: '400px' }}>
-        <n-space size="small">
+      <n-checkbox-group
+        size={dateTimeCommonAttr.size}
+        style={{ width: '400px' }}
+        v-model:value={taskStore.cycle.date}
+      >
+        <div class={PPanelScss.dateGrid}>
           {[
             Array.from({ length: 31 }).map((_, i) => {
               const index = i + 1
               return (
-                <n-checkbox value={index} key={index}>
+                <n-checkbox
+                  size={dateTimeCommonAttr.size}
+                  value={index}
+                  key={index}
+                >
                   {index}
                 </n-checkbox>
               )
             })
           ]}
-        </n-space>
+        </div>
       </n-checkbox-group>
     )
   }
 })
+
 export default defineComponent({
-  props: { value: String },
-  emits: ['update:value'],
-  setup(props, { emit }) {
-    interface Cycle {
-      type: CycleType
-    }
+  setup() {
     const options = useCycleOptions()
-    let cycle = ref<Cycle>({
-      type: options[0].value
-    })
 
     const cycleCpt = {
       once: Once,
@@ -78,18 +87,26 @@ export default defineComponent({
     }
 
     let switchCycleCpt = computed(() => {
-      if (cycle.value.type === 'daily') {
+      if (taskStore.cycle.type === 'daily') {
         return null
       }
       return (
-        <RowItem label={cycle.value.type === 'monthly' ? '日期' : ''}>
+        <RowItem label={taskStore.cycle.type === 'monthly' ? '日期' : ''}>
           <SwitchComponet
-            is={cycleCpt[cycle.value.type]}
-            id={cycle.value.type}
+            is={cycleCpt[taskStore.cycle.type]}
+            id={taskStore.cycle.type}
           ></SwitchComponet>
         </RowItem>
       )
     })
+
+    // 当任务周期发生改变时清除date
+    watch(
+      () => taskStore.cycle.type,
+      (nValue) => {
+        taskStore.cycle.date = null
+      }
+    )
 
     const extraCpt = (
       <n-switch class={PPanelScss.extra}>
@@ -104,14 +121,19 @@ export default defineComponent({
         <RowItem
           label="任务周期"
           class={PPanelScss.taskCycle}
-          v-slots={{ extra: cycle.value.type === 'once' ? extraCpt : '' }}
+          v-slots={{ extra: taskStore.cycle.type === 'once' ? extraCpt : '' }}
         >
-          <PanelSelect v-model:value={cycle.value.type} options={options} />
+          <PanelSelect v-model:value={taskStore.cycle.type} options={options} />
         </RowItem>
         {/* 动态渲染组件 */}
         {switchCycleCpt.value}
         <RowItem>
-          <n-time-picker size="small" placeholder="执行时间" />
+          <n-time-picker
+            {...dateTimeCommonAttr}
+            v-model:formatted-value={taskStore.cycle.time}
+            placeholder="执行时间"
+            format="HH:mm"
+          />
         </RowItem>
       </>
     )
