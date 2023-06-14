@@ -1,12 +1,8 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
-import {
-  useCycleOptions,
-  type CycleType,
-  useCycleWeeklyOptions
-} from '@panel/hooks'
+import { useCycleOptions, useCycleWeeklyOptions } from '@panel/hooks'
 import { RowItem, SwitchComponet } from '@/panel/components/common'
 import { PanelSelect } from '@panel/components/common'
-import { taskStore } from '@panel/store'
+import { useTaskStore } from '@/panel/stores'
 
 const dateTimeCommonAttr = {
   size: 'small',
@@ -16,12 +12,13 @@ const dateTimeCommonAttr = {
 
 const Once = defineComponent({
   setup() {
+    const { task } = useTaskStore()
     return () => (
       <n-date-picker
         type="date"
         {...dateTimeCommonAttr}
         placeholder="具体日期"
-        v-model:formatted-value={taskStore.cycle.date}
+        v-model:formatted-value={task.cycle.date}
         is-date-disabled={(ts: number) => ts < Date.now() - 24 * 3600 * 1000}
         style={{ width: '140px' }}
         value-format="yyyy-MM-dd"
@@ -33,10 +30,10 @@ const Once = defineComponent({
 const Weekly = defineComponent({
   setup() {
     const options = useCycleWeeklyOptions()
-
+    const { task } = useTaskStore()
     return () => (
       <n-select
-        v-model:value={taskStore.cycle.date}
+        v-model:value={task.cycle.date}
         multiple
         options={options}
         size={dateTimeCommonAttr.size}
@@ -48,11 +45,12 @@ const Weekly = defineComponent({
 
 const Monthly = defineComponent({
   setup() {
+    const { task } = useTaskStore()
     return () => (
       <n-checkbox-group
         size={dateTimeCommonAttr.size}
         style={{ width: '400px' }}
-        v-model:value={taskStore.cycle.date}
+        v-model:value={task.cycle.date}
       >
         <div class={PPanelScss.dateGrid}>
           {[
@@ -78,7 +76,7 @@ const Monthly = defineComponent({
 export default defineComponent({
   setup() {
     const options = useCycleOptions()
-
+    const { task } = useTaskStore()
     const cycleCpt = {
       once: Once,
       daily: '',
@@ -87,26 +85,18 @@ export default defineComponent({
     }
 
     let switchCycleCpt = computed(() => {
-      if (taskStore.cycle.type === 'daily') {
+      if (task.cycle.type === 'daily') {
         return null
       }
       return (
-        <RowItem label={taskStore.cycle.type === 'monthly' ? '日期' : ''}>
+        <RowItem label={task.cycle.type === 'monthly' ? '日期' : ''}>
           <SwitchComponet
-            is={cycleCpt[taskStore.cycle.type]}
-            id={taskStore.cycle.type}
+            is={cycleCpt[task.cycle.type]}
+            id={task.cycle.type}
           ></SwitchComponet>
         </RowItem>
       )
     })
-
-    // 当任务周期发生改变时清除date
-    watch(
-      () => taskStore.cycle.type,
-      (nValue) => {
-        taskStore.cycle.date = null
-      }
-    )
 
     const extraCpt = (
       <n-switch class={PPanelScss.extra}>
@@ -121,16 +111,16 @@ export default defineComponent({
         <RowItem
           label="任务周期"
           class={PPanelScss.taskCycle}
-          v-slots={{ extra: taskStore.cycle.type === 'once' ? extraCpt : '' }}
+          v-slots={{ extra: task.cycle.type === 'once' ? extraCpt : '' }}
         >
-          <PanelSelect v-model:value={taskStore.cycle.type} options={options} />
+          <PanelSelect v-model:value={task.cycle.type} options={options} />
         </RowItem>
         {/* 动态渲染组件 */}
         {switchCycleCpt.value}
         <RowItem>
           <n-time-picker
             {...dateTimeCommonAttr}
-            v-model:formatted-value={taskStore.cycle.time}
+            v-model:formatted-value={task.cycle.time}
             placeholder="执行时间"
             format="HH:mm"
           />

@@ -13,6 +13,9 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 // analyze
 import { visualizer } from 'rollup-plugin-visualizer'
 
+// Vue DevTools
+import VueDevTools from 'vite-plugin-vue-devtools'
+
 const enableVisualizer = process.env.ANALYZE?.trim() === 'true'
 
 const getPagePath = (page: 'notice' | 'panel') =>
@@ -51,7 +54,8 @@ export default defineConfig({
       resolvers: [NaiveUiResolver()]
     }),
     vue(),
-    vueJsx()
+    vueJsx(),
+    VueDevTools()
   ],
   resolve: {
     alias: {
