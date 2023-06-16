@@ -66,9 +66,11 @@ export const Page = defineComponent({
         }
       >
         <n-global-style />
-        <header>{slots.header?.()}</header>
-        <main>{slots.main?.()}</main>
-        <footer>{slots.footer?.()}</footer>
+        <n-message-provider max="5">
+          <header>{slots.header?.()}</header>
+          <main>{slots.main?.()}</main>
+          <footer>{slots.footer?.()}</footer>
+        </n-message-provider>
       </n-config-provider>
     )
   }

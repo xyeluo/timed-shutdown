@@ -1,7 +1,7 @@
 import type { SelectGroupOption } from 'naive-ui'
 import { Page, changeTheme, type themeType } from '@/panel/components/Page'
 import { GithubIcon, QuestionIcon, SettingIcon, AddIcon } from '@panel/icons'
-import { useOpenUrl } from '@/panel/hooks'
+import { openUrl } from '@/panel/utils'
 import '@panel/styles/index.scss'
 import { showModal } from '@panel/view/PlanPanel'
 
@@ -39,7 +39,7 @@ const PanelHeader = defineComponent({
 const Github = defineComponent({
   setup() {
     const openGithub = () => {
-      useOpenUrl(`${HomeUrl}timed-shutdown/`)
+      openUrl(`${HomeUrl}timed-shutdown/`)
     }
     return () => (
       <n-popover trigger="hover">
@@ -68,7 +68,7 @@ const Question = defineComponent({
               // console.log('Github', options, selected);
               return (
                 <div
-                  onClick={() => useOpenUrl(`${HomeUrl}/timed-shutdown/issues`)}
+                  onClick={() => openUrl(`${HomeUrl}/timed-shutdown/issues`)}
                 >
                   {options.value}
                 </div>
@@ -79,7 +79,7 @@ const Question = defineComponent({
           {
             label(options) {
               return (
-                <div onClick={() => useOpenUrl('https://yuanliao.info/d/5810')}>
+                <div onClick={() => openUrl('https://yuanliao.info/d/5810')}>
                   {options.value}
                 </div>
               )

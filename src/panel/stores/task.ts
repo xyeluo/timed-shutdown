@@ -19,8 +19,8 @@ export const useTaskStore = defineStore('task', () => {
       task.value.cycle.date = null
     }
   )
-  const addTask = () => {
+  const createTask = () => {
     console.log(task.value)
   }
-  return { task, addTask }
+  return { task, createTask }
 })

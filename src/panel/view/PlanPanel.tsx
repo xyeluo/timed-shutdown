@@ -1,20 +1,34 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 import { RowItem } from '@panel/components/common'
 import { useTaskStore } from '@/panel/stores'
+import { successMsg } from '@panel/hooks'
 
-let modalState = ref(false)
+let modalState = ref(true)
 export const showModal = () => {
   modalState.value = !modalState.value
 }
 
 const Action = defineComponent({
   setup() {
-    const { addTask } = useTaskStore()
-
+    const { createTask } = useTaskStore()
+    const success = successMsg()
+    let loading = ref(false)
     return () => (
       <RowItem>
         <n-space>
-          <n-button type="info" color="#409eff" onClick={addTask}>
+          <n-button
+            loading={loading.value}
+            type="info"
+            color="#409eff"
+            onClick={() => {
+              loading.value = !loading.value
+              createTask()
+              setTimeout(() => {
+                success('ok')
+                loading.value = !loading.value
+              }, 1000)
+            }}
+          >
             确定
           </n-button>
           <n-button onClick={showModal}>取消</n-button>
