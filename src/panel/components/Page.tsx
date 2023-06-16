@@ -33,6 +33,11 @@ const themeOverrides: GlobalThemeOverrides = {
   },
   Switch: {
     railColorActive: primaryColor
+  },
+  Alert: {
+    padding: '8px 13px',
+    iconMargin: '8px 8px 0 12px',
+    closeMargin: '9px 8px 0 12px'
   }
 }
 

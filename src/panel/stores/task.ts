@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia'
-import { useFirstCycle, useFirstType } from '@panel/hooks'
+import {
+  useErrorMsg,
+  useFirstCycle,
+  useFirstType,
+  useSuccessMsg
+} from '@panel/hooks'
 
 export const useTaskStore = defineStore('task', () => {
   const task = ref({
@@ -19,8 +24,17 @@ export const useTaskStore = defineStore('task', () => {
       task.value.cycle.date = null
     }
   )
-  const createTask = () => {
-    console.log(task.value)
+  const createTask = (loading: Ref<boolean>) => {
+    loading.value = !loading.value
+    useErrorMsg(
+      "I don't know why nobody told you how to unfold your love. Once upon a time you dressed so fine. How many roads must a man walk down. 'Cause you walked hand in hand With another man in my place. If I were you, I will realize that I love you more than any other guy."
+    )
+
+    setTimeout(() => {
+      console.log(task.value)
+
+      loading.value = !loading.value
+    }, 1000)
   }
   return { task, createTask }
 })

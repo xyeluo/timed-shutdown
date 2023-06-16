@@ -4,6 +4,7 @@ import { GithubIcon, QuestionIcon, SettingIcon, AddIcon } from '@panel/icons'
 import { openUrl } from '@/panel/utils'
 import '@panel/styles/index.scss'
 import { showModal } from '@panel/view/PlanPanel'
+import { useRegisteMsg } from './hooks'
 
 const HomeUrl = 'https://github.com/xyeluo/'
 
@@ -155,20 +156,27 @@ const Setting = defineComponent({
 
 export default defineComponent({
   setup() {
-    const PlanPanel = defineAsyncComponent(
-      () => import('@/panel/view/PlanPanel')
-    )
-    const PlanList = defineAsyncComponent(() => import('@/panel/view/PlanList'))
+    const Main = () => {
+      // 注册全局信息弹窗
+      useRegisteMsg()
+      const PlanPanel = defineAsyncComponent(
+        () => import('@/panel/view/PlanPanel')
+      )
+      const PlanList = defineAsyncComponent(
+        () => import('@/panel/view/PlanList')
+      )
+      return (
+        <>
+          <PlanList />
+          <PlanPanel />
+        </>
+      )
+    }
     return () => (
       <Page>
         {{
           header: () => <PanelHeader />,
-          main: () => (
-            <>
-              <PlanList />
-              <PlanPanel />
-            </>
-          ),
+          main: () => <Main />,
           footer: () => (
             <>
               <Github />
