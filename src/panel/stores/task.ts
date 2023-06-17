@@ -7,14 +7,15 @@ import {
   useWarningMsg
 } from '@panel/hooks'
 
-export const useTaskStore = defineStore('task', () => {
+export const useTaskStore = defineStore('TaskStore', () => {
   const task = ref({
     name: '',
     type: useFirstType(),
     cycle: {
       type: useFirstCycle(),
       date: null,
-      time: null
+      time: null,
+      autoDelete: true
     }
   })
 

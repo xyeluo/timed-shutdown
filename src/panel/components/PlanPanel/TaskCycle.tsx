@@ -99,7 +99,7 @@ export default defineComponent({
     })
 
     const extraCpt = (
-      <n-switch class={PPanelScss.extra}>
+      <n-switch class={PPanelScss.extra} v-model:value={task.cycle.autoDelete}>
         {{
           checked: () => '执行后删除',
           unchecked: () => '执行后保留'
