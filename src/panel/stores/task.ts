@@ -3,7 +3,8 @@ import {
   useErrorMsg,
   useFirstCycle,
   useFirstType,
-  useSuccessMsg
+  useSuccessMsg,
+  useWarningMsg
 } from '@panel/hooks'
 
 export const useTaskStore = defineStore('task', () => {
@@ -26,7 +27,7 @@ export const useTaskStore = defineStore('task', () => {
   )
   const createTask = (loading: Ref<boolean>) => {
     loading.value = !loading.value
-    useErrorMsg(
+    useWarningMsg(
       "I don't know why nobody told you how to unfold your love. Once upon a time you dressed so fine. How many roads must a man walk down. 'Cause you walked hand in hand With another man in my place. If I were you, I will realize that I love you more than any other guy."
     )
 

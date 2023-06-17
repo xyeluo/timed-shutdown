@@ -6,6 +6,7 @@ import {
   type GlobalThemeOverrides
 } from 'naive-ui'
 import PageScss from '@panel/styles/Page.module.scss'
+import { useAlertTheme } from '@panel/hooks'
 
 type naiveThemeType = GlobalTheme | null
 
@@ -16,7 +17,9 @@ const primaryColor = '#69b2feFF'
 const common = {
   primaryColor,
   primaryColorHover: primaryColor,
-  successColorPressed: primaryColor
+  successColorPressed: primaryColor,
+  borderRadius: '6px',
+  borderRadiusSmall: '5px'
 }
 const button = {
   borderHover: '1px solid #69b2fe'
@@ -34,11 +37,7 @@ const themeOverrides: GlobalThemeOverrides = {
   Switch: {
     railColorActive: primaryColor
   },
-  Alert: {
-    padding: '8px 13px',
-    iconMargin: '8px 8px 0 12px',
-    closeMargin: '9px 8px 0 12px'
-  }
+  Alert: useAlertTheme()
 }
 
 const lightThemeOverrides: GlobalThemeOverrides = {
@@ -71,7 +70,7 @@ export const Page = defineComponent({
         }
       >
         <n-global-style />
-        <n-message-provider max="5">
+        <n-message-provider max="5" container-style={{ bordeRadius: '10px' }}>
           <header>{slots.header?.()}</header>
           <main>{slots.main?.()}</main>
           <footer>{slots.footer?.()}</footer>

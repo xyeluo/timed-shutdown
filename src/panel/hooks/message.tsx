@@ -1,50 +1,88 @@
 import type { MessageApiInjection } from 'naive-ui/es/message/src/MessageProvider'
-import type { RenderMessageProps } from 'naive-ui/es/message/src/types'
-
+import type {
+  MessageOptions,
+  RenderMessageProps
+} from 'naive-ui/es/message/src/types'
+import type { AlertProps } from 'naive-ui'
 // type msgType = keyof MessageApiInjection
 let message: MessageApiInjection
 export const useRegisteMsg = () => {
   message = useMessage()
 }
 
-type messageType = 'success' | 'error'
-interface AlertOptions {
-  type: messageType
-  bgColor?: string
+type AlertType = 'success' | 'error' | 'warning'
+type AlertThemeOverrides = NonNullable<AlertProps['themeOverrides']>
+export const useAlertTheme = (): AlertThemeOverrides => {
+  const success = {
+    bgColor: '#f0f9eb',
+    fontColor: '#67c23a'
+  }
+  const error = {
+    bgColor: '#fef0f0',
+    fontColor: '#f56c6c'
+  }
+  const warning = {
+    bgColor: '#fdf6ec',
+    fontColor: '#e6a23c'
+  }
+  return {
+    padding: '8px 13px',
+    iconMargin: '10px 8px 0 12px',
+    closeMargin: '9px 8px 0 12px',
+    iconSize: '19px',
+
+    // success color
+    colorSuccess: success.bgColor,
+    contentTextColorSuccess: success.fontColor,
+    iconColorSuccess: success.fontColor,
+
+    // error color
+    colorError: error.bgColor,
+    contentTextColorError: error.fontColor,
+    iconColorError: error.fontColor,
+
+    // warning color
+    colorWarning: warning.bgColor,
+    contentTextColorWarning: warning.fontColor,
+    iconColorWarning: warning.fontColor
+  }
 }
-const Alert = (options: AlertOptions) => {
+const Alert = (type: AlertType) => {
   return (props: RenderMessageProps) => (
     <n-alert
-      type={options.type}
+      type={type}
       v-slots={{
         default: () => props.content
       }}
       style={{
         maxWidth: 'calc(100vw - 50px)',
-        width: '480px',
-        backgroundColor: options.bgColor
+        width: '480px'
       }}
       closable={props.closable}
     />
   )
 }
 
-export const useSuccessMsg = (msg: string, option?: Object) => {
-  const { success } = message
-  success(msg, {
-    render: Alert({ type: 'success', bgColor: '#f0f9eb' }),
-    closable: true,
+interface MsgOptions extends MessageOptions {
+  type: AlertType
+  text: string
+}
+const useMsg = (options: MsgOptions): void => {
+  const msg = Reflect.get(message, options.type)
+  const text = options.text
+  Reflect.deleteProperty(options, 'text')
+  msg(text, {
     duration: 60000,
-    ...option
+    closable: true,
+    render: Alert(options.type),
+    ...options
   })
 }
+export const useSuccessMsg = (msg: string, options?: MsgOptions) =>
+  useMsg({ text: msg, type: 'success', ...options })
 
-export const useErrorMsg = (msg: string, option?: Object) => {
-  const { error } = message
-  error(msg, {
-    render: Alert({ type: 'error', bgColor: '#fef0f0' }),
-    closable: true,
-    duration: 60000,
-    ...option
-  })
-}
+export const useErrorMsg = (msg: string, options?: MsgOptions) =>
+  useMsg({ text: msg, type: 'error', ...options })
+
+export const useWarningMsg = (msg: string, options?: MsgOptions) =>
+  useMsg({ text: msg, type: 'warning', ...options })
