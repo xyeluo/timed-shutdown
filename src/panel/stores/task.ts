@@ -6,11 +6,12 @@ import {
   useSuccessMsg,
   useWarningMsg
 } from '@panel/hooks'
+import type { Task } from '@cmn/types'
 
 export const useTaskStore = defineStore('TaskStore', () => {
-  const task = ref({
+  const task = ref<Task>({
     name: '',
-    type: useFirstType(),
+    plan: useFirstType(),
     cycle: {
       type: useFirstCycle(),
       date: null,
@@ -28,12 +29,10 @@ export const useTaskStore = defineStore('TaskStore', () => {
   )
   const createTask = (loading: Ref<boolean>) => {
     loading.value = !loading.value
-    useWarningMsg(
-      "I don't know why nobody told you how to unfold your love. Once upon a time you dressed so fine. How many roads must a man walk down. 'Cause you walked hand in hand With another man in my place. If I were you, I will realize that I love you more than any other guy."
-    )
 
     setTimeout(() => {
-      console.log(task.value)
+      useSuccessMsg('ok')
+      preload.createTask(toRaw(task.value))
 
       loading.value = !loading.value
     }, 1000)

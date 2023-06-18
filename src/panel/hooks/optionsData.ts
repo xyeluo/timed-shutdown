@@ -4,25 +4,36 @@ const createOptoins = (parms: Array<any[]>): SelectOption[] => {
   return parms.map((option) => ({ label: option[0], value: option[1] }))
 }
 
-export const useTypeOptions = () => {
+type PlanLabels = {
+  shutdown: '关机'
+  reboot: '重启'
+  dormancy: '休眠'
+}
+export type PlanValue = keyof PlanLabels
+
+interface PlanOption extends SelectOption {
+  label: PlanLabels[PlanValue]
+  value: PlanValue
+}
+export const usePlanOptions = (): PlanOption[] => {
   const types = [
     ['关机', 'shutdown'],
     ['重启', 'reboot'],
     ['休眠', 'dormancy']
   ]
-  return createOptoins(types)
+  return createOptoins(types) as PlanOption[]
 }
 
-type Labels = {
+type CycleLabels = {
   once: '仅一次'
   daily: '每天'
   weekly: '每周'
   monthly: '每月'
 }
-type CycleType = keyof Labels
+export type CycleValue = keyof CycleLabels
 interface CycleOption extends SelectOption {
-  label: Labels[CycleType]
-  value: CycleType
+  label: CycleLabels[CycleValue]
+  value: CycleValue
 }
 export const useCycleOptions = (): CycleOption[] => {
   const cycle = [
@@ -52,11 +63,11 @@ export const useCycleWeeklyOptions = () => {
 }
 
 export const useFirstType = () => {
-  const first = useTypeOptions()
-  return first[0].value
+  const all = usePlanOptions()
+  return all[0].value
 }
 
 export const useFirstCycle = () => {
-  const first = useCycleOptions()
-  return first[0].value
+  const all = useCycleOptions()
+  return all[0].value
 }

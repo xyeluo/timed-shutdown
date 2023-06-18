@@ -7,7 +7,7 @@ export default defineComponent({
     const noSideSpace = (value: string) =>
       !value.startsWith(' ') && !value.endsWith(' ')
     return () => (
-      <RowItem label="任务类型">
+      <RowItem label="任务名称">
         <n-input
           size="small"
           v-model:value={task.name}
