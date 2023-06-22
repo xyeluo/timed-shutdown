@@ -1,16 +1,22 @@
-const { promisify } = require('util')
 const { exec } = require('child_process')
-
 const { ID } = require('./config')
 
-const promiseExec = promisify(exec)
+const decoder = new TextDecoder('gbk')
 
 /**
  * 添加计划任务，执行关机、重启、休眠
  * @param {string} command 用schtasks命令，由用户指定执行任务的时间
  */
-async function execCmd(command) {
-  return await promiseExec(command, { encoding: 'binary' })
+function execCmd(command) {
+  return new Promise((resolve, reject) => {
+    exec(command, { encoding: null }, (_, stdout, stderr) => {
+      if (stderr.byteLength !== 0) {
+        reject(decoder.decode(stderr))
+        return
+      }
+      resolve(decoder.decode(stdout))
+    })
+  })
 }
 
 /**

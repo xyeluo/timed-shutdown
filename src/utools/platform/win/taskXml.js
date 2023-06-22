@@ -1,10 +1,8 @@
 /*
  * @Description: 创建win任务计划程序所需的xml文件
  */
-
 const { writeFile, access, unlink } = require('fs/promises')
-
-const { xmlPath } = require('../../utils/config')
+const { xmlPath } = require('../../utils/')
 
 function reduceXmlObj(xmlObj, callback, options = {}) {
   const config = {
@@ -91,7 +89,7 @@ function expandXmlObj(xmlObj) {
  * create xml file in xmlPath
  * @param {object} xmlObj similar to 'test' variable in the Test example
  */
-async function createXML(xmlObj) {
+async function createTaskXML(xmlObj) {
   const xmlHead = '<?xml version="1.0" encoding="UTF-16"?>'
   const xmlObjPre = {
     Task: {
@@ -107,35 +105,32 @@ async function createXML(xmlObj) {
 /**
  * delete xml file
  */
-async function deleteXML() {
+async function deleteTaskXML() {
   await access(xmlPath, 0)
   await unlink(xmlPath)
 }
 
 module.exports = {
-  createXML,
-  deleteXML
+  createTaskXML,
+  deleteTaskXML
 }
-
 /**
  * @example
  */
 // let befor = {
-//   Triggers: {
-//     // 存在子标签及文本，则赋值对象，key为标签名，value存子标签，_text存文本
-//     CalendarTrigger: {
-//       _text: '这是文本1',
-//       // 如果标签只存在文本可以直接赋值字符串
-//       StartBoundary: '这是文本2',
-//       Enabled: true,
-//       // 以+号开头的key是xml的属性
-//       '+context': 'Author'
-//     }
-//   }
-// }
+//  Triggers: {
+//   // 存在子标签及文本，则赋值对象，key为标签名，value存子标签，_text存文本
+//   CalendarTrigger: {
+//    _text: '这是文本1',
+//    // 如果标签只存在文本可以直接赋值字符串
+//    StartBoundary: '这是文本2',
+//    Enabled: true,
+//    // 以+号开头的key是xml的属性
+//    '+context': 'Author'
+// }}}
 // let after = expandXmlObj(befor)
 // console.log(JSON.stringify(after, null, 2))
 // const path = require('path')
 // const xmlPath = path.resolve(__dirname, 'timed-shutdonw_UtoolsPlugin.xml')
-// createXML(after)
-// deleteXML()
+// createTaskXML(after)
+// deleteTaskXML()

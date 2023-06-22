@@ -29,13 +29,17 @@ export const useTaskStore = defineStore('TaskStore', () => {
   )
   const createTask = (loading: Ref<boolean>) => {
     loading.value = !loading.value
-
-    setTimeout(() => {
-      useSuccessMsg('ok')
-      preload.createTask(toRaw(task.value))
-
-      loading.value = !loading.value
-    }, 1000)
+    preload
+      .createTask(toRaw(task.value))
+      .then((stdout) => {
+        useSuccessMsg(stdout)
+      })
+      .catch((error) => {
+        useErrorMsg(error)
+      })
+      .finally(() => {
+        loading.value = !loading.value
+      })
   }
   return { task, createTask }
 })

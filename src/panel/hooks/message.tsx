@@ -72,7 +72,6 @@ const useMsg = (options: MsgOptions): void => {
   const text = options.text
   Reflect.deleteProperty(options, 'text')
   msg(text, {
-    duration: 60000,
     closable: true,
     render: Alert(options.type),
     ...options
@@ -82,7 +81,7 @@ export const useSuccessMsg = (msg: string, options?: MsgOptions) =>
   useMsg({ text: msg, type: 'success', ...options })
 
 export const useErrorMsg = (msg: string, options?: MsgOptions) =>
-  useMsg({ text: msg, type: 'error', ...options })
+  useMsg({ text: msg, type: 'error', duration: 8000, ...options })
 
 export const useWarningMsg = (msg: string, options?: MsgOptions) =>
-  useMsg({ text: msg, type: 'warning', ...options })
+  useMsg({ text: msg, type: 'warning', duration: 6000, ...options })
