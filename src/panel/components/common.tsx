@@ -28,11 +28,10 @@ export const RowItem = defineComponent({
     label: String
   },
   setup(props, { slots }) {
-    const cpt = computed(() => slots.default?.())
     return () => (
       <div class={PPanelScss.item}>
         <label class={PPanelScss.itemLabel}>{props.label}</label>
-        <div class={PPanelScss.itemContent}>{cpt.value}</div>
+        <div class={PPanelScss.itemContent}>{slots.default?.()}</div>
         {slots.extra?.()}
       </div>
     )

@@ -84,7 +84,7 @@ export default defineComponent({
       monthly: Monthly
     }
 
-    let switchCycleCpt = computed(() => {
+    const switchCycleCpt = () => {
       if (task.cycle.type === 'daily') {
         return null
       }
@@ -96,7 +96,7 @@ export default defineComponent({
           ></SwitchComponet>
         </RowItem>
       )
-    })
+    }
 
     const extraCpt = (
       <n-switch class={PPanelScss.extra} v-model:value={task.cycle.autoDelete}>
@@ -116,7 +116,7 @@ export default defineComponent({
           <PanelSelect v-model:value={task.cycle.type} options={options} />
         </RowItem>
         {/* 动态渲染组件 */}
-        {switchCycleCpt.value}
+        {switchCycleCpt()}
         <RowItem>
           <n-time-picker
             {...dateTimeCommonAttr}
