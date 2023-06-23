@@ -16,24 +16,60 @@ function getXmlObj(cycle) {
       }
     },
     Settings: {
-      DisallowStartIfOnBatteries: false,
-      StopIfGoingOnBatteries: false,
+      DisallowStartIfOnBatteries: 'false',
+      StopIfGoingOnBatteries: 'false',
       ExecutionTimeLimit: 'PT1H',
-      WakeToRun: true
+      WakeToRun: 'true'
     }
+  }
+  const commonXmlObj = {
+    StartBoundary: dateTime,
+    Enabled: 'true'
   }
   switch (cycle.type) {
     case 'once':
-      xmlObj.Triggers.TimeTrigger = {
-        StartBoundary: dateTime,
-        Enabled: true
-      }
+      xmlObj.Triggers.TimeTrigger = commonXmlObj
       break
     case 'daily':
+      xmlObj.Triggers.CalendarTrigger = {
+        ...commonXmlObj,
+        ScheduleByDay: {
+          DaysInterval: '1'
+        }
+      }
       break
     case 'weekly':
+      xmlObj.Triggers.CalendarTrigger = {
+        ...commonXmlObj,
+        ScheduleByWeek: {
+          DaysOfWeek: cycle.otherDate,
+          WeeksInterval: '1'
+        }
+      }
       break
     case 'monthly':
+      xmlObj.Triggers.CalendarTrigger = {
+        ...commonXmlObj,
+        ScheduleByMonth: {
+          DaysOfMonth: {
+            day: cycle.otherDate[0]
+          },
+          Months: [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
+          ]
+        }
+      }
       break
     default:
       break
@@ -49,7 +85,6 @@ async function createTask(task) {
     dormancy: '-h'
   }
   cycle.execCmd = planCmd[plan]
-
   const xmlObj = getXmlObj(cycle)
   await TaskXml.createTaskXML(xmlObj)
 

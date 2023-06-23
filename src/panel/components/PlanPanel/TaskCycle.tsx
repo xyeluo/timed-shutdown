@@ -33,7 +33,7 @@ const Weekly = defineComponent({
     const { task } = useTaskStore()
     return () => (
       <n-select
-        v-model:value={task.cycle.date}
+        v-model:value={task.cycle.otherDate}
         multiple
         options={options}
         size={dateTimeCommonAttr.size}
@@ -50,7 +50,7 @@ const Monthly = defineComponent({
       <n-checkbox-group
         size={dateTimeCommonAttr.size}
         style={{ width: '400px' }}
-        v-model:value={task.cycle.date}
+        v-model:value={task.cycle.otherDate}
       >
         <div class={PPanelScss.dateGrid}>
           {[

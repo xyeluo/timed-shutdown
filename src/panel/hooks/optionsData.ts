@@ -47,13 +47,13 @@ export const useCycleOptions = (): CycleOption[] => {
 
 export const useCycleWeeklyOptions = () => {
   const weekly = [
-    ['日', 'sun'],
-    ['一', 'mon'],
-    ['二', 'tue'],
-    ['三', 'wed'],
-    ['四', 'thu'],
-    ['五', 'fri'],
-    ['六', 'sat']
+    ['日', 'sunday'],
+    ['一', 'monday'],
+    ['二', 'tuesday'],
+    ['三', 'wednesday'],
+    ['四', 'thursday'],
+    ['五', 'friday'],
+    ['六', 'saturday']
   ]
   return createOptoins(
     weekly.map((w) => {

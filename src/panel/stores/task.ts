@@ -16,6 +16,7 @@ export const useTaskStore = defineStore('TaskStore', () => {
       type: useFirstCycle(),
       date: null,
       time: null,
+      otherDate: [],
       autoDelete: true
     }
   })
@@ -25,6 +26,7 @@ export const useTaskStore = defineStore('TaskStore', () => {
     () => task.value.cycle.type,
     () => {
       task.value.cycle.date = null
+      task.value.cycle.otherDate = []
     }
   )
   const createTask = (loading: Ref<boolean>) => {

@@ -37,8 +37,10 @@ function objToXml(xmlObj, indent = false) {
     text = indent !== false ? ' ' + text : text
     text = text.trim().length !== 0 ? `${indentStr}${text}\n` : ''
 
-    Reflect.deleteProperty(xmlValue, '_child')
-    Reflect.deleteProperty(xmlValue, '_text')
+    if (getType(xmlValue) === 'object') {
+      Reflect.deleteProperty(xmlValue, '_child')
+      Reflect.deleteProperty(xmlValue, '_text')
+    }
 
     // 设置单标签
     if (!text && !child) {

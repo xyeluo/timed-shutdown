@@ -26,7 +26,7 @@ export const useAlertTheme = (): AlertThemeOverrides => {
     fontColor: '#e6a23c'
   }
   return {
-    padding: '8px 13px',
+    padding: '8px 28px',
     iconMargin: '10px 8px 0 12px',
     closeMargin: '9px 8px 0 12px',
     iconSize: '19px',
@@ -55,8 +55,8 @@ const Alert = (type: AlertType) => {
         default: () => props.content
       }}
       style={{
-        maxWidth: 'calc(100vw - 50px)',
-        width: '480px'
+        maxWidth: 'calc(100vw - 60px)',
+        minHeight: '39px'
       }}
       closable={props.closable}
     />
@@ -81,7 +81,7 @@ export const useSuccessMsg = (msg: string, options?: MsgOptions) =>
   useMsg({ text: msg, type: 'success', ...options })
 
 export const useErrorMsg = (msg: string, options?: MsgOptions) =>
-  useMsg({ text: msg, type: 'error', duration: 8000, ...options })
+  useMsg({ text: msg, type: 'error', duration: 60000, ...options })
 
 export const useWarningMsg = (msg: string, options?: MsgOptions) =>
   useMsg({ text: msg, type: 'warning', duration: 6000, ...options })

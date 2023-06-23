@@ -6,6 +6,7 @@ export interface Task {
     type: CycleValue
     date: string | null
     time: string | null
+    otherDate: string[]
     autoDelete: boolean
   }
 }
