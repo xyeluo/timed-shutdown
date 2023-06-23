@@ -4,18 +4,28 @@
 const { writeFile, access, unlink } = require('fs/promises')
 const { xmlPath } = require('../../utils/')
 
+function getType(params) {
+  let str = Object.prototype.toString.call(params)
+  str = str.slice(8, -1).replace(/^[A-Z]/, (match) => match.toLowerCase())
+  return str
+}
+
 function reduceXmlObj(xmlObj, callback, options = {}) {
   const config = {
     titleCase: false,
     initValue: '',
     ...options
   }
-  return Object.entries(xmlObj).reduce((str, [key, value]) => {
-    if (config.titleCase) {
-      key = key.replace(/^\w/g, (k) => k.toUpperCase())
+  let str = config.initValue
+  for (let key in xmlObj) {
+    if (xmlObj.hasOwnProperty(key)) {
+      if (config.titleCase) {
+        key = key.replace(/^[a-z]/, (k) => k.toUpperCase())
+      }
+      str = callback(str, [key, xmlObj[key]])
     }
-    return callback(str, [key, value])
-  }, config.initValue)
+  }
+  return str
 }
 
 function objToXml(xmlObj, indent = false) {
@@ -29,6 +39,12 @@ function objToXml(xmlObj, indent = false) {
 
     Reflect.deleteProperty(xmlValue, '_child')
     Reflect.deleteProperty(xmlValue, '_text')
+
+    // 设置单标签
+    if (!text && !child) {
+      xml += `${indentStr}<${xmlKey} />\n`
+      return xml
+    }
 
     // 补充xml标签属性
     xml += `${indentStr}<${xmlKey}${reduceXmlObj(
@@ -55,13 +71,18 @@ function expandXmlObj(xmlObj) {
     let obj = {}
     obj[xmlKey] = {}
 
+    if (getType(xmlValue) === 'array') {
+      let temp = xmlValue.map((key) => ({ [key]: '' }))
+      xmlValue = Object.assign({}, ...temp)
+    }
+
     // value不是对象则作为文本添加到_text
-    if (typeof xmlValue !== 'object') {
+    if (getType(xmlValue) === 'string') {
       obj[xmlKey]._text = xmlValue
     }
 
     // 是对象则递归
-    if (typeof xmlValue === 'object') {
+    if (getType(xmlValue) === 'object') {
       // 对象中若存在_text直接赋值，然后删除本身
       if (xmlValue._text) {
         obj[xmlKey]._text = xmlValue._text
@@ -118,19 +139,22 @@ module.exports = {
  * @example
  */
 // let befor = {
-//  Triggers: {
+// Triggers: {
 //   // 存在子标签及文本，则赋值对象，key为标签名，value存子标签，_text存文本
 //   CalendarTrigger: {
-//    _text: '这是文本1',
-//    // 如果标签只存在文本可以直接赋值字符串
-//    StartBoundary: '这是文本2',
-//    Enabled: true,
-//    // 以+号开头的key是xml的属性
-//    '+context': 'Author'
-// }}}
+//     _text: '这是文本1',
+//     // 如果标签只存在文本可以直接赋值字符串
+//     StartBoundary: '这是文本2',
+//     Enabled: 'true',
+//     // 以+号开头的key是xml的属性
+//     '+context': 'Author'
+//   },
+//   // 标签无文本、子标签，可以通过数组设置多个单标签
+//   DaysOfWeek: ['Sunday', 'Tuesday', 'Thursday']
+// }}
 // let after = expandXmlObj(befor)
 // console.log(JSON.stringify(after, null, 2))
-// const path = require('path')
-// const xmlPath = path.resolve(__dirname, 'timed-shutdonw_UtoolsPlugin.xml')
-// createTaskXML(after)
+// const { resolve } = require('path')
+// const xmlPath = resolve(__dirname, 'timed-shutdonw_UtoolsPlugin.xml')
+// createTaskXML(befor)
 // deleteTaskXML()
