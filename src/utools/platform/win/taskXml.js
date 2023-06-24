@@ -2,13 +2,8 @@
  * @Description: 创建win任务计划程序所需的xml文件
  */
 const { writeFile, access, unlink } = require('fs/promises')
-const { xmlPath } = require('../../utils/')
-
-function getType(params) {
-  let str = Object.prototype.toString.call(params)
-  str = str.slice(8, -1).replace(/^[A-Z]/, (match) => match.toLowerCase())
-  return str
-}
+const { getType, firstLetterUpper } = require('../../utils/common')
+const { xmlPath } = require('../../utils/config')
 
 function reduceXmlObj(xmlObj, callback, options = {}) {
   const config = {
@@ -20,7 +15,7 @@ function reduceXmlObj(xmlObj, callback, options = {}) {
   for (let key in xmlObj) {
     if (xmlObj.hasOwnProperty(key)) {
       if (config.titleCase) {
-        key = key.replace(/^[a-z]/, (k) => k.toUpperCase())
+        key = firstLetterUpper(key)
       }
       str = callback(str, [key, xmlObj[key]])
     }
@@ -36,10 +31,20 @@ function objToXml(xmlObj, indent = false) {
 
     text = indent !== false ? ' ' + text : text
     text = text.trim().length !== 0 ? `${indentStr}${text}\n` : ''
-
     if (getType(xmlValue) === 'object') {
       Reflect.deleteProperty(xmlValue, '_child')
       Reflect.deleteProperty(xmlValue, '_text')
+    }
+
+    // 设置相邻相同标签
+    let repeatKey = firstLetterUpper(xmlKey)
+    let repeatValue = xmlObj[repeatKey]?._repeat
+    if (repeatValue) {
+      for (const v of repeatValue) {
+        xml += `${indentStr}<${repeatKey}>${v}</${repeatKey}>\n`
+      }
+      Reflect.deleteProperty(xmlObj, repeatKey)
+      return xml
     }
 
     // 设置单标签
@@ -89,6 +94,12 @@ function expandXmlObj(xmlObj) {
       if (xmlValue._text) {
         obj[xmlKey]._text = xmlValue._text
         Reflect.deleteProperty(xmlValue, '_text')
+      }
+
+      // 处理相邻相同标签
+      if (xmlValue._repeat) {
+        obj[xmlKey]._repeat = xmlValue._repeat
+        Reflect.deleteProperty(xmlValue, '_repeat')
       }
 
       // 判断对象中是否存在属性
@@ -149,11 +160,12 @@ module.exports = {
 //     StartBoundary: '这是文本2',
 //     Enabled: 'true',
 //     // 以+号开头的key是xml的属性
-//     '+context': 'Author'
-//   },
-//   // 标签无文本、子标签，可以通过数组设置多个单标签
-//   DaysOfWeek: ['Sunday', 'Tuesday', 'Thursday']
-// }}
+//     '+context': 'Author',
+//     // 处理相邻相同标签(必须大写)，必须有值且值存数组
+//     Day: { _repeat: ['1', '2'] },
+//     // 标签无文本、子标签，可以通过数组设置多个单标签
+//     DaysOfWeek: ['Sunday', 'Tuesday', 'Thursday']
+// }}}
 // let after = expandXmlObj(befor)
 // console.log(JSON.stringify(after, null, 2))
 // const { resolve } = require('path')

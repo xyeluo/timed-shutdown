@@ -59,7 +59,7 @@ const Monthly = defineComponent({
               return (
                 <n-checkbox
                   size={dateTimeCommonAttr.size}
-                  value={index}
+                  value={`${index}`}
                   key={index}
                 >
                   {index}

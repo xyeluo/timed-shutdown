@@ -1,6 +1,4 @@
 const { exec } = require('child_process')
-const { ID } = require('./config')
-
 const decoder = new TextDecoder('gbk')
 
 /**
@@ -20,27 +18,33 @@ function execCmd(command) {
 }
 
 /**
- * 存储计划任务
- * @param {object} data
+ * @description 首字母小写
  */
-async function dbStorageSave(data) {
-  await utools.dbStorage.setItem(ID, data)
+function firstLetterLower(str) {
+  return str.replace(/^[A-Z]/, (match) => match.toLowerCase())
 }
 
 /**
- * 读取本地数据
- * @returns data
+ * @description 首字母大写
  */
-async function dbStorageRead() {
-  const plans = await utools.dbStorage.getItem(ID)
-  if (plans === null) {
-    return []
-  }
-  return plans
+function firstLetterUpper(str) {
+  return str.replace(/^[a-z]/, (match) => match.toUpperCase())
+}
+
+/**
+ * @description 返回变量类型
+ * @param {*} params
+ * @returns string,array,number,object,function...
+ */
+function getType(params) {
+  let str = Object.prototype.toString.call(params)
+  str = firstLetterLower(str.slice(8, -1))
+  return str
 }
 
 module.exports = {
-  execCmd,
-  dbStorageSave,
-  dbStorageRead
+  getType,
+  firstLetterLower,
+  firstLetterUpper,
+  execCmd
 }

@@ -1,5 +1,6 @@
 const TaskXml = require('./taskXml')
-const utils = require('../../utils')
+const { xmlPath } = require('../../utils/config')
+const { execCmd } = require('../../utils/utools')
 
 function getXmlObj(cycle) {
   const dateTime = `${cycle.date}T${cycle.time}:00`
@@ -52,7 +53,9 @@ function getXmlObj(cycle) {
         ...commonXmlObj,
         ScheduleByMonth: {
           DaysOfMonth: {
-            day: cycle.otherDate[0]
+            Day: {
+              _repeat: cycle.otherDate
+            }
           },
           Months: [
             'January',
@@ -89,8 +92,8 @@ async function createTask(task) {
   await TaskXml.createTaskXML(xmlObj)
 
   // 导入创建好的xml文件
-  const cmd = `schtasks /create /tn "${name}" /xml "${utils.xmlPath}"`
-  return await utils.execCmd(cmd)
+  const cmd = `schtasks /create /tn "${name}" /xml "${xmlPath}"`
+  return await execCmd(cmd)
 }
 module.exports = {
   createTask,
