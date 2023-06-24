@@ -21,6 +21,6 @@
   ],
   "platform": ["win32"],
   "development": {
-    "main": "http://localhost:5173/src/panel/"
+    "main": "http://localhost:5173/panel/"
   }
 }

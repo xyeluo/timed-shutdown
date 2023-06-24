@@ -76,7 +76,8 @@ export default defineConfig({
         entryFileNames: 'src/js/[name]-[hash].js',
         assetFileNames: 'src/[ext]/[name]-[hash].[ext]'
       }
-    }
+    },
+    outDir: resolve(__dirname, 'dist')
   },
   server: {
     open: '/src/panel/'
@@ -87,5 +88,6 @@ export default defineConfig({
         additionalData: '@import "@cmn/styles/globalVariables.scss";'
       }
     }
-  }
+  },
+  root: 'src/'
 })
