@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import pinia from '@panel/stores'
 
 import App from './App'
 
-createApp(App).use(createPinia()).mount('#app')
+createApp(App).use(pinia).mount('#app')
