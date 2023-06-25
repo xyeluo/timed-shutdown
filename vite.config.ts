@@ -72,15 +72,12 @@ export default defineConfig({
         notice: getPagePath('notice')
       },
       output: {
-        chunkFileNames: 'src/js/[name]-[hash].js',
-        entryFileNames: 'src/js/[name]-[hash].js',
-        assetFileNames: 'src/[ext]/[name]-[hash].[ext]'
+        chunkFileNames: 'view-src/js/[name]-[hash].js',
+        entryFileNames: 'view-src/js/[name]-[hash].js',
+        assetFileNames: 'view-src/[ext]/[name]-[hash].[ext]'
       }
     },
     outDir: resolve(__dirname, 'dist')
-  },
-  server: {
-    open: '/src/panel/'
   },
   css: {
     preprocessorOptions: {

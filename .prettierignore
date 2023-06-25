@@ -32,3 +32,4 @@ coverage
 /src/utools/lib/**
 auto-imports.d.ts
 components.d.ts
+src/index.html
