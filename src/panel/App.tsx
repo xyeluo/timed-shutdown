@@ -159,11 +159,11 @@ export default defineComponent({
     const Main = () => {
       // 注册全局信息弹窗
       useRegisteMsg()
-      const PlanPanel = defineAsyncComponent(
-        () => import('@/panel/view/PlanPanel')
-      )
       const PlanList = defineAsyncComponent(
         () => import('@/panel/view/PlanList')
+      )
+      const PlanPanel = defineAsyncComponent(
+        () => import('@/panel/view/PlanPanel')
       )
       return (
         <>

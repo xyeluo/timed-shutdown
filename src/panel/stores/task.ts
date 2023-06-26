@@ -40,7 +40,6 @@ export const useTaskStore = defineStore('TaskStore', () => {
     const stdout = await preload.createTask(cloneStore(task.value))
     addPlan(task.value)
     reset()
-
     return stdout
   }
   return { task, createTask }

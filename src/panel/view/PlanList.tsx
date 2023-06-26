@@ -1,8 +1,8 @@
 import type { DataTableColumns } from 'naive-ui'
 import { PlayIcon, StopIcon, TrashIcon } from '@panel/icons'
 import PListScss from '@panel/styles/PlanList.module.scss'
-import { usePlansStore, type Plan } from '@panel/stores'
-import { cloneStore } from '@panel/utils'
+import { usePlansStore } from '@panel/stores'
+import type { Plan } from '@/common/types'
 
 const StateBtn = defineComponent({
   props: {
@@ -127,12 +127,11 @@ export default defineComponent({
         }
       }
     ]
-    cloneStore(columns)
-    const { plans } = usePlansStore()
+    const plansStore = usePlansStore()
     return () => (
       <n-data-table
         columns={columns}
-        data={plans}
+        data={plansStore.plans}
         paginate-single-page={false}
         scroll-x="800"
       />
