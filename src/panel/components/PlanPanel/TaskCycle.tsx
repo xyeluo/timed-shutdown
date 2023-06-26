@@ -3,7 +3,6 @@ import { useCycleOptions, useCycleWeeklyOptions } from '@panel/hooks'
 import { RowItem, SwitchComponet } from '@/panel/components/common'
 import { PanelSelect } from '@panel/components/common'
 import { useTaskStore } from '@/panel/stores'
-import { storeToRefs } from 'pinia'
 
 const dateTimeCommonAttr = {
   size: 'small',
@@ -13,13 +12,13 @@ const dateTimeCommonAttr = {
 
 const Once = defineComponent({
   setup() {
-    const { task } = storeToRefs(useTaskStore())
+    const taskStore = useTaskStore()
     return () => (
       <n-date-picker
         type="date"
         {...dateTimeCommonAttr}
         placeholder="具体日期"
-        v-model:formatted-value={task.value.cycle.date}
+        v-model:formatted-value={taskStore.task.cycle.date}
         is-date-disabled={(ts: number) => ts < Date.now() - 24 * 3600 * 1000}
         style={{ width: '140px' }}
         value-format="yyyy-MM-dd"
@@ -31,12 +30,12 @@ const Once = defineComponent({
 const Weekly = defineComponent({
   setup() {
     const options = useCycleWeeklyOptions()
-    const { task } = storeToRefs(useTaskStore())
+    const taskStore = useTaskStore()
     return () => (
       <n-checkbox-group
         size={dateTimeCommonAttr.size}
         style={{ width: '400px' }}
-        v-model:value={task.value.cycle.otherDate}
+        v-model:value={taskStore.task.cycle.otherDate}
       >
         <div class={PPanelScss.weeklyGrid}>
           {options.map((o) => {
@@ -58,12 +57,12 @@ const Weekly = defineComponent({
 
 const Monthly = defineComponent({
   setup() {
-    const { task } = storeToRefs(useTaskStore())
+    const taskStore = useTaskStore()
     return () => (
       <n-checkbox-group
         size={dateTimeCommonAttr.size}
         style={{ width: '400px' }}
-        v-model:value={task.value.cycle.otherDate}
+        v-model:value={taskStore.task.cycle.otherDate}
       >
         <div class={PPanelScss.monthlyGrid}>
           {Array.from({ length: 31 }).map((_, i) => {
@@ -87,7 +86,7 @@ const Monthly = defineComponent({
 export default defineComponent({
   setup() {
     const options = useCycleOptions()
-    const { task } = storeToRefs(useTaskStore())
+    const taskStore = useTaskStore()
     const cycleCpt = {
       once: Once,
       daily: '',
@@ -96,14 +95,14 @@ export default defineComponent({
     }
 
     const switchCycleCpt = () => {
-      if (task.value.cycle.type === 'daily') {
+      if (taskStore.task.cycle.type === 'daily') {
         return null
       }
       return (
-        <RowItem label={task.value.cycle.type === 'monthly' ? '日期' : ''}>
+        <RowItem label={taskStore.task.cycle.type === 'monthly' ? '日期' : ''}>
           <SwitchComponet
-            is={cycleCpt[task.value.cycle.type]}
-            id={task.value.cycle.type}
+            is={cycleCpt[taskStore.task.cycle.type]}
+            id={taskStore.task.cycle.type}
           ></SwitchComponet>
         </RowItem>
       )
@@ -112,7 +111,7 @@ export default defineComponent({
     const extraCpt = (
       <n-switch
         class={PPanelScss.extra}
-        v-model:value={task.value.cycle.autoDelete}
+        v-model:value={taskStore.task.cycle.autoDelete}
       >
         {{
           checked: () => '执行后删除',
@@ -125,10 +124,12 @@ export default defineComponent({
         <RowItem
           label="任务周期"
           class={PPanelScss.taskCycle}
-          v-slots={{ extra: task.value.cycle.type === 'once' ? extraCpt : '' }}
+          v-slots={{
+            extra: taskStore.task.cycle.type === 'once' ? extraCpt : ''
+          }}
         >
           <PanelSelect
-            v-model:value={task.value.cycle.type}
+            v-model:value={taskStore.task.cycle.type}
             options={options}
           />
         </RowItem>
@@ -137,7 +138,7 @@ export default defineComponent({
         <RowItem>
           <n-time-picker
             {...dateTimeCommonAttr}
-            v-model:formatted-value={task.value.cycle.time}
+            v-model:formatted-value={taskStore.task.cycle.time}
             placeholder="执行时间"
             format="HH:mm"
           />
