@@ -42,8 +42,16 @@
   margin-left: 15px;
 }
 
-.dateGrid {
+%grid {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  column-gap: 4px;
+}
+.weeklyGrid {
+  @extend %grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 35px;
+}
+.monthlyGrid {
+  @extend %grid;
+  grid-template-columns: repeat(7, 1fr);
+  column-gap: 12px;
 }

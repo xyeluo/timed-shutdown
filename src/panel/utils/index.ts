@@ -9,3 +9,7 @@ export const getNowDate = () => {
     strDate = String(date.getDate()).padStart(2, '0')
   return `${year}-${month}-${strDate}`
 }
+
+export const cloneStore = (parms: object) => {
+  return JSON.parse(JSON.stringify(parms))
+}

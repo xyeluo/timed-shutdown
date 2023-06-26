@@ -1,12 +1,12 @@
-import type { CycleValue, PlanValue } from '@panel/hooks'
+import type { CycleKey, PlanKey, otherDateKey } from '@panel/hooks'
 export interface Task {
   name: string
-  plan: PlanValue
+  plan: PlanKey
   cycle: {
-    type: CycleValue
+    type: CycleKey
     date: string | null
     time: string | null
-    otherDate: string[]
+    otherDate: otherDateKey[]
     autoDelete: boolean
   }
 }

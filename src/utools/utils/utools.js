@@ -21,7 +21,6 @@ async function dbStorageRead() {
 }
 
 module.exports = {
-  execCmd,
   dbStorageSave,
   dbStorageRead
 }

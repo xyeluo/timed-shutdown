@@ -9,12 +9,14 @@ type PlanLabels = {
   reboot: '重启'
   dormancy: '休眠'
 }
-export type PlanValue = keyof PlanLabels
 
-interface PlanOption extends SelectOption {
-  label: PlanLabels[PlanValue]
-  value: PlanValue
+export type PlanKey = keyof PlanLabels
+
+export interface PlanOption extends SelectOption {
+  label: PlanLabels[PlanKey]
+  value: PlanKey
 }
+
 export const usePlanOptions = (): PlanOption[] => {
   const types = [
     ['关机', 'shutdown'],
@@ -30,10 +32,10 @@ type CycleLabels = {
   weekly: '每周'
   monthly: '每月'
 }
-export type CycleValue = keyof CycleLabels
-interface CycleOption extends SelectOption {
-  label: CycleLabels[CycleValue]
-  value: CycleValue
+export type CycleKey = keyof CycleLabels
+export interface CycleOption extends SelectOption {
+  label: CycleLabels[CycleKey]
+  value: CycleKey
 }
 export const useCycleOptions = (): CycleOption[] => {
   const cycle = [
@@ -45,6 +47,20 @@ export const useCycleOptions = (): CycleOption[] => {
   return createOptoins(cycle) as CycleOption[]
 }
 
+type otherDateLabels = {
+  sunday: '日'
+  monday: '一'
+  tuesday: '二'
+  wednesday: '三'
+  thursday: '四'
+  friday: '五'
+  saturday: '六'
+}
+export type otherDateKey = keyof otherDateLabels
+export interface OtherDateOption extends SelectOption {
+  label: otherDateLabels[otherDateKey]
+  value: otherDateKey
+}
 export const useCycleWeeklyOptions = () => {
   const weekly = [
     ['日', 'sunday'],

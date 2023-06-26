@@ -43,8 +43,8 @@ function getType(params) {
 }
 
 module.exports = {
+  execCmd,
   getType,
   firstLetterLower,
-  firstLetterUpper,
-  execCmd
+  firstLetterUpper
 }

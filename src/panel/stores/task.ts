@@ -1,12 +1,7 @@
 import { defineStore } from 'pinia'
-import {
-  useErrorMsg,
-  useFirstCycle,
-  useFirstType,
-  useSuccessMsg,
-  useWarningMsg
-} from '@panel/hooks'
+import { useFirstCycle, useFirstType } from '@panel/hooks'
 import type { Task } from '@cmn/types'
+import { cloneStore } from '../utils'
 
 export const useTaskStore = defineStore('TaskStore', () => {
   const task = ref<Task>({
@@ -29,19 +24,9 @@ export const useTaskStore = defineStore('TaskStore', () => {
       task.value.cycle.otherDate = []
     }
   )
-  const createTask = (loading: Ref<boolean>) => {
-    loading.value = !loading.value
-    preload
-      .createTask(toRaw(task.value))
-      .then((stdout) => {
-        useSuccessMsg(stdout)
-      })
-      .catch((error) => {
-        useErrorMsg(error)
-      })
-      .finally(() => {
-        loading.value = !loading.value
-      })
+
+  const createTask = async () => {
+    return await preload.createTask(cloneStore(task.value))
   }
   return { task, createTask }
 })

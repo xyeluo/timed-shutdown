@@ -1,6 +1,6 @@
 const TaskXml = require('./taskXml')
 const { xmlPath } = require('../../utils/config')
-const { execCmd } = require('../../utils/utools')
+const { execCmd } = require('../../utils/common')
 
 function getXmlObj(cycle) {
   const dateTime = `${cycle.date}T${cycle.time}:00`
