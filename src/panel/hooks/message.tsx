@@ -74,6 +74,7 @@ const useMsg = (options: MsgOptions): void => {
   msg(text, {
     closable: true,
     render: Alert(options.type),
+    keepAliveOnHover: true,
     ...options
   })
 }
@@ -81,7 +82,7 @@ export const useSuccessMsg = (msg: string, options?: MsgOptions) =>
   useMsg({ text: msg, type: 'success', ...options })
 
 export const useErrorMsg = (msg: string, options?: MsgOptions) =>
-  useMsg({ text: msg, type: 'error', duration: 60000, ...options })
+  useMsg({ text: msg, type: 'error', duration: 8000, ...options })
 
 export const useWarningMsg = (msg: string, options?: MsgOptions) =>
   useMsg({ text: msg, type: 'warning', duration: 6000, ...options })

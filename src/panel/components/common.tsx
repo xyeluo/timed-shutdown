@@ -9,10 +9,9 @@ export const PanelSelect = defineComponent({
   },
   emits: ['update:value'],
   setup(props, { emit }) {
-    let select = props.value
     return () => (
       <n-select
-        v-model:value={select}
+        v-model:value={ref(props.value).value}
         onUpdateValue={(value: string) => emit('update:value', value)}
         size="small"
         style={{ width: '90px' }}

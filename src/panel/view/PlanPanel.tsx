@@ -2,7 +2,6 @@ import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 import { RowItem } from '@panel/components/common'
 import { usePlansStore, useTaskStore } from '@/panel/stores'
 import { useErrorMsg, useOtherDate, useSuccessMsg } from '@panel/hooks'
-import type { Task } from '@/common/types'
 
 let modalState = ref(false)
 export const showModal = () => {
@@ -13,30 +12,16 @@ const Action = defineComponent({
   setup() {
     let loading = ref(false)
     const taskStore = useTaskStore()
-    const { addPlan } = usePlansStore()
-    // let temp: Task = {
-    //   name: 'test1',
-    //   plan: 'shutdown',
-    //   cycle: {
-    //     type: 'weekly',
-    //     date: '2023-06-26',
-    //     time: '01:00',
-    //     otherDate: [ 'sunday', 'monday', 'friday' ],
-    //     autoDelete: true
-    //   }
-    // }
-    // addPlan(temp)
 
     // todo: 数据验证，封装loading
-    const createTask = () => {
+    const createTask = async () => {
       loading.value = !loading.value
+
       useOtherDate(taskStore.task)
       taskStore
         .createTask()
         .then((stdout) => {
           useSuccessMsg(stdout)
-          addPlan(taskStore.task)
-          taskStore.$reset()
         })
         .catch((error) => {
           const e = error?.stack || error
@@ -90,6 +75,7 @@ export default defineComponent({
         }}
         to="#app"
         closable={false}
+        display-directive="show"
         auto-focus={false}
       >
         <div class={PPanelScss.container}>
