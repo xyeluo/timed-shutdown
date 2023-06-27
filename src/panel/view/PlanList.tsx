@@ -44,6 +44,8 @@ const StateBtn = defineComponent({
 export default defineComponent({
   name: 'PlanList',
   setup() {
+    const plansStore = usePlansStore()
+
     const columns: DataTableColumns<Plan> = [
       {
         title: '任务名称',
@@ -73,8 +75,7 @@ export default defineComponent({
         width: 120,
         align: 'center',
         render(row) {
-          let rowRef = ref(row)
-          return <StateBtn v-model:state={rowRef.value.state} />
+          return <StateBtn v-model:state={row.state} />
         }
       },
       {
@@ -95,9 +96,10 @@ export default defineComponent({
         width: 90,
         fixed: 'right',
         align: 'center',
-        render(row, index) {
+        render(row) {
           return (
             <n-space justify="space-around">
+              {/* 立即运行 */}
               <n-button size="tiny" tertiary circle type="info">
                 {{
                   icon: () => (
@@ -107,12 +109,16 @@ export default defineComponent({
                   )
                 }}
               </n-button>
+              {/* 删除任务 */}
               <n-button
                 size="tiny"
                 tertiary
                 circle
                 type="error"
                 color="#f56c6c"
+                onClick={() => {
+                  plansStore.deletePlan(row)
+                }}
               >
                 {{
                   icon: () => (
@@ -127,7 +133,6 @@ export default defineComponent({
         }
       }
     ]
-    const plansStore = usePlansStore()
     return () => (
       <n-data-table
         columns={columns}

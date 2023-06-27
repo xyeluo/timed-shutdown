@@ -22,7 +22,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
 
   const saveTaskDB = (task: Task) => {
     let rawTask = cloneStore(task)
-    taskDB.unshift(rawTask)
+    taskDB.push(rawTask)
     preload.dbStorageSave(taskDB)
   }
 
@@ -40,7 +40,10 @@ export const usePlansStore = defineStore('PlansStore', () => {
     plans.value.unshift(plan)
   }
 
+  const deletePlan = (plan: Plan) => {
+    plans.value = plans.value.filter((p) => p.name !== plan.name)
+  }
   preload.dbStorageSave(cloneStore([]))
 
-  return { plans, addPlan, saveTaskDB }
+  return { plans, addPlan, saveTaskDB, deletePlan }
 })
