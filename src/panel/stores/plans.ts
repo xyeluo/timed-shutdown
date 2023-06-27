@@ -8,27 +8,39 @@ import {
 } from '@panel/hooks/taskToPlan'
 
 export const usePlansStore = defineStore('PlansStore', () => {
-  const plans = ref<Plan[]>([])
+  let plans = ref<Plan[]>([])
 
-  // 加载数据
-  preload.dbStorageRead().then((data) => {
-    plans.value = data
+  let taskDB: Task[] = []
+
+  // 初始化时加载taskDB，并据此转换成任务列表显示
+  preload.dbStorageRead().then((value) => {
+    taskDB = value
+    taskDB.forEach((task) => {
+      addPlan(task)
+    })
   })
+
+  const saveTaskDB = (task: Task) => {
+    let rawTask = cloneStore(task)
+    taskDB.unshift(rawTask)
+    preload.dbStorageSave(taskDB)
+  }
+
   const addPlan = (task: Task) => {
     let plan: Plan = {
-      ...cloneStore(task),
-      cycle: {
-        type: useConvertTaskCycleType(task.cycle.type)
-      },
+      name: task.name,
       plan: useConvertTaskPlan(task.plan),
+      cycle: {
+        type: useConvertTaskCycleType(task.cycle.type),
+        autoDelete: task.cycle.autoDelete
+      },
       state: true,
       dateTime: useSetDateTime(task.cycle)
     }
     plans.value.unshift(plan)
   }
 
-  watch(plans, (nValue) => {
-    preload.dbStorageSave(cloneStore(nValue))
-  })
-  return { plans, addPlan }
+  preload.dbStorageSave(cloneStore([]))
+
+  return { plans, addPlan, saveTaskDB }
 })

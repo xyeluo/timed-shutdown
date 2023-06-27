@@ -10,6 +10,6 @@ export const getNowDate = () => {
   return `${year}-${month}-${strDate}`
 }
 
-export const cloneStore = (parms: object) => {
+export const cloneStore = <T>(parms: T): T => {
   return JSON.parse(JSON.stringify(parms))
 }

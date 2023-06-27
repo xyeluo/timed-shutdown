@@ -1,7 +1,7 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 import { RowItem } from '@panel/components/common'
 import { useTaskStore } from '@/panel/stores'
-import { useErrorMsg, useOtherDate, useSuccessMsg } from '@panel/hooks'
+import { useErrorMsg, useSuccessMsg } from '@panel/hooks'
 
 let modalState = ref(false)
 export const showModal = () => {
@@ -13,10 +13,9 @@ const Action = defineComponent({
     let loading = ref(false)
     const taskStore = useTaskStore()
 
-    // todo: 数据验证，封装loading
+    // todo: 封装loading
     const createTask = async () => {
       loading.value = !loading.value
-      useOtherDate(taskStore.task)
       taskStore
         .createTask()
         .then((stdout) => {

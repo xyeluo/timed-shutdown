@@ -14,7 +14,7 @@ export interface Task {
 
 type PlanValue = PlanOption['label']
 type CycleTypeValue = CycleOption['label']
-export interface Plan extends Omit<Omit<Task, 'plan'>, 'cycle'> {
+export interface Plan {
   name: string
   plan: PlanValue
   cycle: {

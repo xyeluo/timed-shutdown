@@ -1,9 +1,9 @@
-import type { Task, Plan } from '@cmn/types'
+import type { Task } from '@cmn/types'
 
 interface Preload {
   // utools
-  dbStorageSave(data: Plan[]): Promise<void>
-  dbStorageRead(): Promise<Plan[]>
+  dbStorageSave<T>(data: T): Promise<void>
+  dbStorageRead(): Promise<Task[]>
 
   // taskXml
   createTask(task: Task): Promise<any>
