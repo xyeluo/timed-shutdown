@@ -20,6 +20,14 @@ export const usePlansStore = defineStore('PlansStore', () => {
     })
   })
 
+  watch(
+    plans,
+    (nValue) => {
+      console.log(nValue)
+    },
+    { deep: true }
+  )
+
   const saveTaskDB = (task: Task) => {
     let rawTask = cloneStore(task)
     taskDB.push(rawTask)
@@ -28,22 +36,26 @@ export const usePlansStore = defineStore('PlansStore', () => {
 
   const addPlan = (task: Task) => {
     let plan: Plan = {
-      name: task.name,
+      ...cloneStore(task),
       plan: useConvertTaskPlan(task.plan),
       cycle: {
         type: useConvertTaskCycleType(task.cycle.type),
         autoDelete: task.cycle.autoDelete
       },
-      state: true,
       dateTime: useSetDateTime(task.cycle)
     }
     plans.value.unshift(plan)
   }
 
-  const deletePlan = (plan: Plan) => {
-    plans.value = plans.value.filter((p) => p.name !== plan.name)
+  const deletePlan = async (plan: Plan) => {
+    const stdout = await preload.deleteTask(plan.name)
+    const callback = (p: Plan | Task) => p.name !== plan.name
+    plans.value = plans.value.filter(callback)
+    taskDB = taskDB.filter(callback)
+    preload.dbStorageSave(taskDB)
+    return stdout
   }
-  preload.dbStorageSave(cloneStore([]))
+  // preload.dbStorageSave(cloneStore([]))
 
   return { plans, addPlan, saveTaskDB, deletePlan }
 })

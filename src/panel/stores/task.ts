@@ -14,7 +14,8 @@ export const useTaskStore = defineStore('TaskStore', () => {
       time: null,
       otherDate: [],
       autoDelete: true
-    }
+    },
+    state: true
   }
   const { addPlan, saveTaskDB } = usePlansStore()
 
@@ -40,7 +41,7 @@ export const useTaskStore = defineStore('TaskStore', () => {
     const stdout = await preload.createTask(cloneStore(task.value))
     addPlan(task.value)
     saveTaskDB(task.value)
-    reset()
+    // reset()
     return stdout
   }
 

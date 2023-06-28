@@ -10,17 +10,16 @@ export interface Task {
     otherDate: otherDateKey[]
     autoDelete: boolean
   }
+  state: boolean
 }
 
 type PlanValue = PlanOption['label']
 type CycleTypeValue = CycleOption['label']
-export interface Plan {
-  name: string
+export interface Plan extends Omit<Omit<Task, 'plan'>, 'cycle'> {
   plan: PlanValue
   cycle: {
     type: CycleTypeValue
     autoDelete: boolean
   }
-  state: boolean
   dateTime: string // 执行日期
 }

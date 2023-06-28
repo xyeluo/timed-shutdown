@@ -44,6 +44,6 @@ export const useSetDateTime = (cycle: Task['cycle']) => {
     default:
       break
   }
-  dateTime += ' ' + cycle.time?.split(':').join('时') + '日'
+  dateTime += ' ' + cycle.time?.split(':').join('时') + '分'
   return dateTime
 }

@@ -7,6 +7,7 @@ interface Preload {
 
   // taskXml
   createTask(task: Task): Promise<any>
+  deleteTask(name: string): Promise<any>
   deleteTaskXML(): Promise<void>
 }
 
