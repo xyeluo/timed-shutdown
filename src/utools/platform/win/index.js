@@ -95,7 +95,25 @@ async function createTask(task) {
   const cmd = `schtasks /create /tn "${name}" /xml "${xmlPath}"`
   return await execCmd(cmd)
 }
+
+async function deleteTask(name) {
+  const cmd = `schtasks /delete /tn "${name}" /f`
+  return await execCmd(cmd)
+}
+
+async function switchState(aboutPlan) {
+  const stateCmd = {
+    true: '/enable',
+    false: '/disable'
+  }
+  const cmd = `schtasks /change /tn "${aboutPlan.name}" ${
+    stateCmd[aboutPlan.state]
+  }`
+  return await execCmd(cmd)
+}
 module.exports = {
   createTask,
+  deleteTask,
+  switchState,
   deleteTaskXML: TaskXml.deleteTaskXML
 }

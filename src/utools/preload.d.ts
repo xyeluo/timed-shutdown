@@ -5,10 +5,11 @@ interface Preload {
   dbStorageSave<T>(data: T): Promise<void>
   dbStorageRead(): Promise<Task[]>
 
-  // taskXml
+  // win
   createTask(task: Task): Promise<any>
   deleteTask(name: string): Promise<any>
   deleteTaskXML(): Promise<void>
+  switchState(aboutPlan: { name: string; state: boolean }): Promise<any>
 }
 
 declare global {

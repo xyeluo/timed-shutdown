@@ -1,9 +1,15 @@
 const { dbStorageSave, dbStorageRead } = require('./utils/utools')
-const { createTask, deleteTask, deleteTaskXML } = require('./platform/win')
+const {
+  createTask,
+  deleteTask,
+  switchState,
+  deleteTaskXML
+} = require('./platform/win')
 window.preload = {
   createTask,
   deleteTaskXML,
   dbStorageSave,
   dbStorageRead,
-  deleteTask
+  deleteTask,
+  switchState
 }

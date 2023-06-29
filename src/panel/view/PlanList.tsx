@@ -3,23 +3,22 @@ import { PlayIcon, StopIcon, TrashIcon } from '@panel/icons'
 import PListScss from '@panel/styles/PlanList.module.scss'
 import { usePlansStore } from '@panel/stores'
 import type { Plan } from '@/common/types'
+import { useErrorMsg, useSuccessMsg } from '@panel/hooks'
+import type { PropType } from 'vue'
 
 const StateBtn = defineComponent({
   props: {
-    state: Boolean
+    state: Boolean,
+    onClick: Function as PropType<(e: MouseEvent) => void>
   },
-  emits: ['update:state'],
-  setup(props, { emit }) {
-    const handleClick = () => {
-      emit('update:state', !props.state)
-    }
+  setup(props) {
     return () => (
       <div
         class={[
           PListScss.stateBtn,
           props.state ? PListScss.play : PListScss.stop
         ]}
-        onClick={handleClick}
+        onClick={props.onClick}
       >
         {props.state ? (
           <>
@@ -45,6 +44,30 @@ export default defineComponent({
   name: 'PlanList',
   setup() {
     const plansStore = usePlansStore()
+
+    const switchState = (row: Plan) => {
+      plansStore
+        .switchState(row)
+        .then((stdout) => {
+          useSuccessMsg(stdout)
+        })
+        .catch((error) => {
+          const e = error?.stack || error
+          useErrorMsg(e)
+        })
+    }
+
+    const deletePlan = (row: Plan) => {
+      plansStore
+        .deletePlan(row)
+        .then((stdout) => {
+          useSuccessMsg(stdout)
+        })
+        .catch((error) => {
+          const e = error?.stack || error
+          useErrorMsg(e)
+        })
+    }
 
     const columns: DataTableColumns<Plan> = [
       {
@@ -75,7 +98,7 @@ export default defineComponent({
         width: 120,
         align: 'center',
         render(row) {
-          return <StateBtn v-model:state={row.state} />
+          return <StateBtn state={row.state} onClick={() => switchState(row)} />
         }
       },
       {
@@ -116,9 +139,7 @@ export default defineComponent({
                 circle
                 type="error"
                 color="#f56c6c"
-                onClick={() => {
-                  plansStore.deletePlan(row)
-                }}
+                onClick={() => deletePlan(row)}
               >
                 {{
                   icon: () => (
@@ -133,6 +154,7 @@ export default defineComponent({
         }
       }
     ]
+
     return () => (
       <n-data-table
         columns={columns}
