@@ -1,6 +1,7 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 import type { SelectOption } from 'naive-ui'
 import { createVNode, type Component, type PropType } from 'vue'
+import type { Plan } from '@/common/types'
 
 export const PanelSelect = defineComponent({
   props: {
@@ -61,3 +62,10 @@ export const SwitchComponet = defineComponent({
     }
   }
 })
+
+export const rowProps = {
+  row: {
+    type: Object as PropType<Plan>,
+    default: {}
+  }
+}

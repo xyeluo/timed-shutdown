@@ -16,7 +16,7 @@
     color: $btn-color;
   }
   &.stop {
-    color: #f56c6c;
+    color: $btn-error-color;
   }
   &:hover {
     border-bottom: 1px solid;

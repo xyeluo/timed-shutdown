@@ -1,73 +1,13 @@
 import type { DataTableColumns } from 'naive-ui'
-import { PlayIcon, StopIcon, TrashIcon } from '@panel/icons'
-import PListScss from '@panel/styles/PlanList.module.scss'
 import { usePlansStore } from '@panel/stores'
 import type { Plan } from '@/common/types'
-import { useErrorMsg, useSuccessMsg } from '@panel/hooks'
-import type { PropType } from 'vue'
-
-const StateBtn = defineComponent({
-  props: {
-    state: Boolean,
-    onClick: Function as PropType<(e: MouseEvent) => void>
-  },
-  setup(props) {
-    return () => (
-      <div
-        class={[
-          PListScss.stateBtn,
-          props.state ? PListScss.play : PListScss.stop
-        ]}
-        onClick={props.onClick}
-      >
-        {props.state ? (
-          <>
-            运行中
-            <n-icon size="18px">
-              <PlayIcon />
-            </n-icon>
-          </>
-        ) : (
-          <>
-            已暂停
-            <n-icon size="18px">
-              <StopIcon />
-            </n-icon>
-          </>
-        )}
-      </div>
-    )
-  }
-})
+import StateBtn from '@panel/components/PlanList/StateBtn'
+import Actions from '@panel/components/PlanList/Actions'
 
 export default defineComponent({
   name: 'PlanList',
   setup() {
     const plansStore = usePlansStore()
-
-    const switchState = (row: Plan) => {
-      plansStore
-        .switchState(row)
-        .then((stdout) => {
-          useSuccessMsg(stdout)
-        })
-        .catch((error) => {
-          const e = error?.stack || error
-          useErrorMsg(e)
-        })
-    }
-
-    const deletePlan = (row: Plan) => {
-      plansStore
-        .deletePlan(row)
-        .then((stdout) => {
-          useSuccessMsg(stdout)
-        })
-        .catch((error) => {
-          const e = error?.stack || error
-          useErrorMsg(e)
-        })
-    }
 
     const columns: DataTableColumns<Plan> = [
       {
@@ -97,9 +37,7 @@ export default defineComponent({
         key: 'state',
         width: 120,
         align: 'center',
-        render(row) {
-          return <StateBtn state={row.state} onClick={() => switchState(row)} />
-        }
+        render: (row) => <StateBtn row={row} />
       },
       {
         title: '执行日期',
@@ -119,39 +57,7 @@ export default defineComponent({
         width: 90,
         fixed: 'right',
         align: 'center',
-        render(row) {
-          return (
-            <n-space justify="space-around">
-              {/* 立即运行 */}
-              <n-button size="tiny" tertiary circle type="info">
-                {{
-                  icon: () => (
-                    <n-icon>
-                      <PlayIcon />
-                    </n-icon>
-                  )
-                }}
-              </n-button>
-              {/* 删除任务 */}
-              <n-button
-                size="tiny"
-                tertiary
-                circle
-                type="error"
-                color="#f56c6c"
-                onClick={() => deletePlan(row)}
-              >
-                {{
-                  icon: () => (
-                    <n-icon>
-                      <TrashIcon />
-                    </n-icon>
-                  )
-                }}
-              </n-button>
-            </n-space>
-          )
-        }
+        render: (row) => <Actions row={row} />
       }
     ]
 

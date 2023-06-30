@@ -8,7 +8,7 @@ export const showModal = () => {
   modalState.value = !modalState.value
 }
 
-const Action = defineComponent({
+const Confirm = defineComponent({
   setup() {
     let loading = ref(false)
     const taskStore = useTaskStore()
@@ -81,7 +81,7 @@ export default defineComponent({
           <TaskName />
           <TaskCycle />
         </div>
-        <Action />
+        <Confirm />
       </n-modal>
     )
   }

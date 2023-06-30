@@ -72,7 +72,9 @@ export const Page = defineComponent({
         <n-global-style />
         <n-message-provider max="5" container-style={{ bordeRadius: '10px' }}>
           <header>{slots.header?.()}</header>
-          <main>{slots.main?.()}</main>
+          <n-dialog-provider>
+            <main>{slots.main?.()}</main>
+          </n-dialog-provider>
           <footer>{slots.footer?.()}</footer>
         </n-message-provider>
       </n-config-provider>
