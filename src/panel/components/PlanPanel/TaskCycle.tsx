@@ -108,24 +108,50 @@ export default defineComponent({
       )
     }
 
-    const extraCpt = (
-      <n-switch
-        class={PPanelScss.extra}
-        v-model:value={taskStore.task.cycle.autoDelete}
-      >
-        {{
-          checked: () => '执行后删除',
-          unchecked: () => '执行后保留'
-        }}
-      </n-switch>
-    )
+    const extraCpt = {
+      once: (
+        <n-switch
+          class={PPanelScss.extra}
+          v-model:value={taskStore.task.cycle.autoDelete}
+        >
+          {{
+            checked: () => '执行后删除',
+            unchecked: () => '执行后保留'
+          }}
+        </n-switch>
+      ),
+      monthly: (
+        <n-popover trigger="hover">
+          {{
+            default: () => '例：9月没有31日，当天的任务将顺延到下个月31日执行',
+            trigger: () => (
+              <n-alert
+                class={PPanelScss.extra}
+                type="info"
+                themeOverrides={{
+                  padding: '3px 18px',
+                  iconMargin: '5px 8px 0 12px',
+                  colorInfo: '#f4f4f5',
+                  contentTextColorInfo: '#909399',
+                  iconColorInfo: '#909399'
+                }}
+                bordered={false}
+              >
+                当月没有的日期任务将会顺延到下个月
+              </n-alert>
+            )
+          }}
+        </n-popover>
+      )
+    }
     return () => (
       <>
         <RowItem
           label="任务周期"
           class={PPanelScss.taskCycle}
           v-slots={{
-            extra: taskStore.task.cycle.type === 'once' ? extraCpt : ''
+            extra:
+              extraCpt[taskStore.task.cycle.type as keyof typeof extraCpt] ?? ''
           }}
         >
           <PanelSelect

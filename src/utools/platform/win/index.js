@@ -117,10 +117,15 @@ async function runPlan(name) {
   return await execCmd(cmd)
 }
 
+async function openRemote() {
+  return await execCmd('shutdown -i')
+}
+
 module.exports = {
   createTask,
   deleteTask,
   switchState,
   deleteTaskXML: TaskXml.deleteTaskXML,
-  runPlan
+  runPlan,
+  openRemote
 }

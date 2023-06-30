@@ -9,7 +9,9 @@ export default defineComponent({
     const options = usePlanOptions()
     const taskStore = useTaskStore()
     const extraCpt = (
-      <span class={PPanelScss.extra}>呼出系统自带远程关机（局域网内）</span>
+      <span class={PPanelScss.extra} onClick={preload.openRemote}>
+        呼出系统自带远程关机（局域网内）
+      </span>
     )
     return () => (
       <RowItem

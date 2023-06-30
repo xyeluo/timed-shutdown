@@ -11,6 +11,7 @@ interface Preload {
   deleteTaskXML(): Promise<void>
   switchState(aboutPlan: { name: string; state: boolean }): Promise<any>
   runPlan(name: string): Promise<any>
+  openRemote(): Promise<any>
 }
 
 declare global {
