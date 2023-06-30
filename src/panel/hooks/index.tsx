@@ -8,7 +8,7 @@ export const useforceDelete = (e: string, row: Plan) => {
     title: e,
     text: (
       <>
-        是否强制从<b> 插件计划列表中 </b>
+        是否需要从<b> 插件计划列表 </b>中移除？
       </>
     ),
     okFn() {

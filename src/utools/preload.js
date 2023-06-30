@@ -3,13 +3,16 @@ const {
   createTask,
   deleteTask,
   switchState,
-  deleteTaskXML
+  deleteTaskXML,
+  runPlan
 } = require('./platform/win')
+
 window.preload = {
   createTask,
   deleteTaskXML,
   dbStorageSave,
   dbStorageRead,
   deleteTask,
-  switchState
+  switchState,
+  runPlan
 }

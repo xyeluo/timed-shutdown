@@ -111,9 +111,16 @@ async function switchState(aboutPlan) {
   }`
   return await execCmd(cmd)
 }
+
+async function runPlan(name) {
+  const cmd = `schtasks /run /tn "${name}"`
+  return await execCmd(cmd)
+}
+
 module.exports = {
   createTask,
   deleteTask,
   switchState,
-  deleteTaskXML: TaskXml.deleteTaskXML
+  deleteTaskXML: TaskXml.deleteTaskXML,
+  runPlan
 }

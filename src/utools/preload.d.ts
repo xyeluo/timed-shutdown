@@ -10,6 +10,7 @@ interface Preload {
   deleteTask(name: string): Promise<any>
   deleteTaskXML(): Promise<void>
   switchState(aboutPlan: { name: string; state: boolean }): Promise<any>
+  runPlan(name: string): Promise<any>
 }
 
 declare global {

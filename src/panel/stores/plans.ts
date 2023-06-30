@@ -65,12 +65,15 @@ export const usePlansStore = defineStore('PlansStore', () => {
     return stdout
   }
 
+  const runPlan = async (plan: Plan) => await preload.runPlan(plan.name)
+
   return {
     plans,
     addPlan,
     saveTaskDB,
     deletePlan,
     switchState,
-    deletePlanFromTaskDb
+    deletePlanFromTaskDb,
+    runPlan
   }
 })

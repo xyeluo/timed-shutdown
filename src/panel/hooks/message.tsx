@@ -4,13 +4,14 @@ import type {
   RenderMessageProps
 } from 'naive-ui/es/message/src/types'
 import type { AlertProps } from 'naive-ui'
-// type msgType = keyof MessageApiInjection
+
 let message: MessageApiInjection
 export const useRegisteMsg = () => {
   message = useMessage()
 }
 
 type AlertType = 'success' | 'error' | 'warning'
+
 type AlertThemeOverrides = NonNullable<AlertProps['themeOverrides']>
 export const useAlertTheme = (): AlertThemeOverrides => {
   const success = {
@@ -47,6 +48,7 @@ export const useAlertTheme = (): AlertThemeOverrides => {
     iconColorWarning: warning.fontColor
   }
 }
+
 const Alert = (type: AlertType) => {
   return (props: RenderMessageProps) => (
     <n-alert
@@ -63,26 +65,19 @@ const Alert = (type: AlertType) => {
   )
 }
 
-interface MsgOptions extends MessageOptions {
-  type: AlertType
-  text: string
-}
-const useMsg = (options: MsgOptions): void => {
-  const msg = Reflect.get(message, options.type)
-  const text = options.text
-  Reflect.deleteProperty(options, 'text')
-  msg(text, {
+const useMsg = (options: MessageOptions, msg: string): void => {
+  message.create(msg, {
     closable: true,
-    render: Alert(options.type),
+    render: Alert(options.type as AlertType),
     keepAliveOnHover: true,
     ...options
   })
 }
-export const useSuccessMsg = (msg: string, options?: MsgOptions) =>
-  useMsg({ text: msg, type: 'success', ...options })
+export const useSuccessMsg = (msg: string, options?: MessageOptions) =>
+  useMsg({ type: 'success', ...options }, msg)
 
-export const useErrorMsg = (msg: string, options?: MsgOptions) =>
-  useMsg({ text: msg, type: 'error', duration: 8000, ...options })
+export const useErrorMsg = (msg: string, options?: MessageOptions) =>
+  useMsg({ type: 'error', duration: 8000, ...options }, msg)
 
-export const useWarningMsg = (msg: string, options?: MsgOptions) =>
-  useMsg({ text: msg, type: 'warning', duration: 6000, ...options })
+export const useWarningMsg = (msg: string, options?: MessageOptions) =>
+  useMsg({ type: 'warning', duration: 6000, ...options }, msg)
