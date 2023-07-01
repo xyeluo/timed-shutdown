@@ -13,7 +13,6 @@ const Confirm = defineComponent({
     let loading = ref(false)
     const taskStore = useTaskStore()
 
-    // todo: 封装loading
     const createTask = async () => {
       if (useTaskInvalid(taskStore.task)) return
       loading.value = !loading.value

@@ -49,8 +49,8 @@ export const useAlertTheme = (): AlertThemeOverrides => {
   }
 }
 
-const Alert = (type: AlertType) => {
-  return (props: RenderMessageProps) => (
+const Alert = (type: AlertType) => (props: RenderMessageProps) =>
+  (
     <n-alert
       type={type}
       v-slots={{
@@ -63,7 +63,6 @@ const Alert = (type: AlertType) => {
       closable={props.closable}
     />
   )
-}
 
 const useMsg = (options: MessageOptions, msg: string): void => {
   message.create(msg, {
