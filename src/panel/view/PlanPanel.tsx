@@ -1,7 +1,7 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 import { RowItem } from '@panel/components/common'
 import { useTaskStore } from '@/panel/stores'
-import { useErrorMsg, useSuccessMsg } from '@panel/hooks'
+import { useErrorMsg, useSuccessMsg, useTaskInvalid } from '@panel/hooks'
 
 let modalState = ref(false)
 export const showModal = () => {
@@ -15,6 +15,7 @@ const Confirm = defineComponent({
 
     // todo: 封装loading
     const createTask = async () => {
+      if (useTaskInvalid(taskStore.task)) return
       loading.value = !loading.value
       taskStore
         .createTask()

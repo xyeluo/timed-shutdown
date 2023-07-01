@@ -98,8 +98,14 @@ export default defineComponent({
       if (taskStore.task.cycle.type === 'daily') {
         return null
       }
+      const label = {
+        monthly: '日期',
+        weekly: '星期'
+      }
       return (
-        <RowItem label={taskStore.task.cycle.type === 'monthly' ? '日期' : ''}>
+        <RowItem
+          label={label[taskStore.task.cycle.type as keyof typeof label] ?? ''}
+        >
           <SwitchComponet
             is={cycleCpt[taskStore.task.cycle.type]}
             id={taskStore.task.cycle.type}
@@ -112,7 +118,10 @@ export default defineComponent({
       once: (
         <n-switch
           class={PPanelScss.extra}
-          v-model:value={taskStore.task.cycle.autoDelete}
+          default-value={taskStore.task.cycle.autoDelete}
+          onUpdateValue={(value: boolean) => {
+            taskStore.task.cycle.autoDelete = value
+          }}
         >
           {{
             checked: () => '执行后删除',

@@ -15,6 +15,7 @@ export default defineComponent({
         key: 'name',
         width: 100,
         fixed: 'left',
+        align: 'center',
         resizable: true,
         ellipsis: {
           tooltip: true

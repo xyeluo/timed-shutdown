@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia'
-import { useFirstCycle, useFirstType, useCompleteDate } from '@panel/hooks'
+import {
+  useFirstCycle,
+  useFirstType,
+  useCompleteDate,
+  useCompleteName
+} from '@panel/hooks'
 import type { Task } from '@cmn/types'
 import { cloneStore } from '../utils'
 import { usePlansStore } from '@/panel/stores'
@@ -35,13 +40,13 @@ export const useTaskStore = defineStore('TaskStore', () => {
   }
 
   const createTask = async () => {
-    // todo: task有效性验证
     useCompleteDate(task.value)
+    useCompleteName(task.value)
 
     const stdout = await preload.createTask(cloneStore(task.value))
     addPlan(task.value)
     saveTaskDB(task.value)
-    // reset()
+    reset()
     return stdout
   }
 
