@@ -43,15 +43,17 @@ export default defineConfig({
             'useLoadingBar'
           ]
         }
-      ]
+      ],
+      dts: resolve(__dirname, './src/auto-imports.d.ts')
     }),
     Components({
       include: [
         /\.[tj]sx?$/, // .ts, .tsx, .js, .jsx
-        /\.vue$/,
-        /\.vue\?vue/ // .vue
+        /\.vue$/ // .vue
       ],
-      resolvers: [NaiveUiResolver()]
+      extensions: ['vue', 'tsx'],
+      resolvers: [NaiveUiResolver()],
+      dts: resolve(__dirname, './src/components.d.ts')
     }),
     vue(),
     vueJsx(),
@@ -77,7 +79,8 @@ export default defineConfig({
         assetFileNames: 'view-src/[ext]/[name]-[hash].[ext]'
       }
     },
-    outDir: resolve(__dirname, 'dist')
+    outDir: resolve(__dirname, 'dist'),
+    emptyOutDir: true
   },
   css: {
     preprocessorOptions: {
@@ -86,5 +89,7 @@ export default defineConfig({
       }
     }
   },
-  root: 'src/'
+  root: 'src/',
+  publicDir: resolve(__dirname, './src/utools'),
+  base: './'
 })
