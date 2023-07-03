@@ -1,5 +1,5 @@
 import { RowItem } from '@/panel/components/common'
-import { useTaskStore } from '@/panel/stores'
+import { useTaskStore } from '@cmn/stores'
 
 export default defineComponent({
   setup() {

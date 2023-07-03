@@ -13,5 +13,5 @@ pinia.use(({ store }) => {
 
 export default pinia
 
-export * from '@/panel/stores/task'
-export * from '@/panel/stores/plans'
+export * from './task'
+export * from './plans'

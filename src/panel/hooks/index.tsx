@@ -1,6 +1,6 @@
 import type { Plan } from '@cmn/types'
 import { useErrorDlg, useRegisteDlg, useWarningDlg } from './dialog'
-import { usePlansStore } from '@panel/stores'
+import { usePlansStore } from '@cmn/stores'
 
 export const useforceDelete = (e: string, row: Plan) => {
   const { deletePlanFromTaskDb } = usePlansStore()

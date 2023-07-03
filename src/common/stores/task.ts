@@ -6,8 +6,8 @@ import {
   useCompleteName
 } from '@panel/hooks'
 import type { Task } from '@cmn/types'
-import { cloneStore } from '../utils'
-import { usePlansStore } from '@/panel/stores'
+import { cloneStore } from '../../panel/utils'
+import { usePlansStore } from '@cmn/stores'
 
 export const useTaskStore = defineStore('TaskStore', () => {
   const init = {

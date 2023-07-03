@@ -32,8 +32,13 @@ export const Page = defineComponent({
       borderRadius: '6px',
       borderRadiusSmall: '5px'
     }
-    const button = {
-      borderHover: '1px solid #69b2fe'
+    const button: GlobalThemeOverrides['Button'] = {
+      borderHover: '1px solid #69b2fe',
+      textColorHover: '#69b2feFF',
+      textColorPressed: '#69b2feFF',
+      textColorFocus: '#69b2feFF',
+      borderPressed: '1px solid #69b2fe',
+      borderFocus: '1px solid #69b2fe'
     }
 
     const themeOverrides: GlobalThemeOverrides = {
@@ -57,7 +62,7 @@ export const Page = defineComponent({
     const lightThemeOverrides: GlobalThemeOverrides = {
       ...themeOverrides,
       common,
-      Button: { ...button, textColorHover: '#000' }
+      Button: button
     }
     const darkThemeOverrides: GlobalThemeOverrides = {
       ...themeOverrides,

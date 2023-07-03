@@ -2,7 +2,7 @@ import type { SelectGroupOption } from 'naive-ui'
 import { Page, changeTheme, type themeType } from '@/common/Page'
 import { GithubIcon, QuestionIcon, SettingIcon, AddIcon } from '@panel/icons'
 import { openUrl } from '@/panel/utils'
-import '@panel/styles/index.scss'
+import '@cmn/styles/index.scss'
 import { showModal } from '@panel/view/PlanPanel'
 import { useRegisteMsg, useRegisteDlg } from '@panel/hooks'
 

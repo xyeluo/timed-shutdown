@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import pinia from '@panel/stores'
+import pinia from '@cmn/stores'
 
 import App from './App'
 

@@ -1,5 +1,5 @@
 import { PlayIcon, TrashIcon } from '@panel/icons'
-import { usePlansStore } from '@panel/stores'
+import { usePlansStore } from '@cmn/stores'
 import type { Plan } from '@/common/types'
 import { useWarningDlg, useSuccessMsg, useforceDelete } from '@panel/hooks'
 import { rowProps } from '@panel/components/common'
