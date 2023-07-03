@@ -1,5 +1,5 @@
 import type { SelectGroupOption } from 'naive-ui'
-import { Page, changeTheme, type themeType } from '@/panel/components/Page'
+import { Page, changeTheme, type themeType } from '@/common/Page'
 import { GithubIcon, QuestionIcon, SettingIcon, AddIcon } from '@panel/icons'
 import { openUrl } from '@/panel/utils'
 import '@panel/styles/index.scss'
@@ -177,7 +177,7 @@ export default defineComponent({
       <Page>
         {{
           header: () => <PanelHeader />,
-          main: () => <Main />,
+          default: () => <Main />,
           footer: () => (
             <>
               <Github />

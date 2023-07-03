@@ -1,7 +1,12 @@
-import { defineComponent } from 'vue'
+import { Page } from '@/common/Page'
+import Notice from '@notice/Notice'
 
 export default defineComponent({
   setup() {
-    return () => <n-button>Notice</n-button>
+    return () => (
+      <Page bodyColor="transparent">
+        <Notice></Notice>
+      </Page>
+    )
   }
 })
