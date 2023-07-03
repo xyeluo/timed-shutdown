@@ -26,3 +26,10 @@ coverage
 *.njsproj
 *.sln
 *.sw?
+
+.husky
+*-lock.*
+/src/utools/lib/**
+auto-imports.d.ts
+components.d.ts
+src/index.html

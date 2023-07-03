@@ -1,0 +1,26 @@
+{
+  "main": "index.html",
+  "logo": "logo.png",
+  "preload": "preload.js",
+  "features": [
+    {
+      "code": "shutdown",
+      "explain": "设置关机任务",
+      "cmds": ["定时关机", "自动关机"]
+    },
+    {
+      "code": "reboot",
+      "explain": "设置重启任务",
+      "cmds": ["定时重启", "自动重启"]
+    },
+    {
+      "code": "dormancy",
+      "explain": "设置休眠任务",
+      "cmds": ["定时休眠", "自动休眠"]
+    }
+  ],
+  "platform": ["win32"],
+  "development": {
+    "main": "http://localhost:5173/panel/"
+  }
+}

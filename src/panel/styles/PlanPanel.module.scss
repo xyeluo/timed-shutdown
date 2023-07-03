@@ -1,0 +1,58 @@
+.item {
+  margin-top: 10px;
+  line-height: 28px;
+  #{&}Label,
+  #{&}Content {
+    display: inline-block;
+  }
+  #{&}Label {
+    text-align: right;
+    width: 56px;
+    margin-right: 10px;
+  }
+}
+
+.container {
+  position: relative;
+}
+
+// class="task($name) extra"
+@mixin extra($name) {
+  .task#{$name} {
+    .extra {
+      @content;
+    }
+  }
+}
+
+@include extra('Type') {
+  font-size: 13px;
+  position: absolute;
+  right: 0;
+  top: -5px;
+  color: $btn-color;
+  text-decoration: underline;
+  &:hover {
+    filter: brightness(0.8);
+    cursor: pointer;
+  }
+}
+
+@include extra('Cycle') {
+  margin-left: 15px;
+  display: inline-block;
+}
+
+%grid {
+  display: grid;
+}
+.weeklyGrid {
+  @extend %grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 35px;
+}
+.monthlyGrid {
+  @extend %grid;
+  grid-template-columns: repeat(7, 1fr);
+  column-gap: 12px;
+}
