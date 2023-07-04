@@ -1,12 +1,28 @@
+import { changeTheme } from '@/common/Page'
+
 export default defineComponent({
   setup() {
-    const notification = useNotification()
+    const { info } = useNotification()
+    changeTheme('dark')
     const notify = () => {
-      notification.info({
-        content: '说点啥呢',
-        meta: '想不出来',
+      const n = info({
+        title: () => <p>关机通知</p>,
+        content: () => (
+          <p>
+            您的电脑将在3分钟后自动<b>关机</b>
+          </p>
+        ),
+        meta: () => <p></p>,
+        description: `uTools定时关机插件：TS_0200-2023-07-20`,
         // duration: 2500,
-        keepAliveOnHover: true
+        keepAliveOnHover: true,
+        action: () => (
+          <n-space>
+            <n-button size="small">推迟十分钟</n-button>
+            <n-button size="small">暂停本次执行</n-button>
+            <n-button size="small">已读</n-button>
+          </n-space>
+        )
       })
     }
     onMounted(() => {
