@@ -1,4 +1,4 @@
-import { changeTheme, getCurrentTheme, type themeType } from '@/common/Page'
+import { changeTheme, getCurrentTheme, type themeType } from '@cmn/Page'
 import { RowItem } from './common'
 
 export default defineComponent({

@@ -1,4 +1,4 @@
-import type { Task, Plan } from '@/common/types'
+import type { Task, Plan } from '@cmn/types'
 import { defineStore } from 'pinia'
 import { cloneStore } from '@panel/utils'
 import {

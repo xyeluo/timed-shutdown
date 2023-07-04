@@ -1,6 +1,6 @@
 import type { DataTableColumns } from 'naive-ui'
 import { usePlansStore } from '@cmn/stores'
-import type { Plan } from '@/common/types'
+import type { Plan } from '@cmn/types'
 import StateBtn from '@panel/components/PlanList/StateBtn'
 import Actions from '@panel/components/PlanList/Actions'
 

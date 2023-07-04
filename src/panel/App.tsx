@@ -1,11 +1,11 @@
 import type { SelectGroupOption } from 'naive-ui'
-import { Page } from '@/common/Page'
+import { Page } from '@cmn/Page'
 import { GithubIcon, QuestionIcon, AddIcon, SettingIcon } from '@panel/icons'
-import { openUrl } from '@/panel/utils'
+import { openUrl } from '@panel/utils'
 import '@cmn/styles/index.scss'
 import { showModal } from '@panel/view/PlanPanel'
 import { useRegisteMsg, useRegisteDlg } from '@panel/hooks'
-import SettingView from '@/panel/components/SettingView'
+import SettingView from '@panel/components/SettingView'
 
 const HomeUrl = 'https://github.com/xyeluo/'
 
@@ -130,10 +130,10 @@ export default defineComponent({
       useRegisteMsg()
       useRegisteDlg()
       const PlanList = defineAsyncComponent(
-        () => import('@/panel/view/PlanList')
+        () => import('@panel/view/PlanList')
       )
       const PlanPanel = defineAsyncComponent(
-        () => import('@/panel/view/PlanPanel')
+        () => import('@panel/view/PlanPanel')
       )
       return (
         <>

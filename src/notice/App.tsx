@@ -1,4 +1,4 @@
-import { Page } from '@/common/Page'
+import { Page } from '@cmn/Page'
 import Notice from '@notice/Notice'
 import '@cmn/styles/index.scss'
 

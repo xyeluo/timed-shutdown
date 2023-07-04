@@ -1,4 +1,4 @@
-import { changeTheme } from '@/common/Page'
+import { changeTheme } from '@cmn/Page'
 
 export default defineComponent({
   setup() {

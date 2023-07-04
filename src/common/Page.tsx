@@ -7,7 +7,7 @@ import {
 } from 'naive-ui'
 import PageScss from '@cmn/styles/Page.module.scss'
 import { useAlertTheme } from '@panel/hooks'
-import { isDarkMode } from '@/panel/utils'
+import { isDarkMode } from '@panel/utils'
 
 type naiveThemeType = GlobalTheme | null
 

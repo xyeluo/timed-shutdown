@@ -1,7 +1,7 @@
 import { PlayIcon, StopIcon } from '@panel/icons'
 import PListScss from '@panel/styles/PlanList.module.scss'
 import { usePlansStore } from '@cmn/stores'
-import type { Plan } from '@/common/types'
+import type { Plan } from '@cmn/types'
 import { useSuccessMsg, useforceDelete } from '@panel/hooks'
 import { rowProps } from '@panel/components/common'
 

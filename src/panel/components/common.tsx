@@ -6,7 +6,7 @@ import {
   type PropType,
   type StyleValue
 } from 'vue'
-import type { Plan } from '@/common/types'
+import type { Plan } from '@cmn/types'
 
 export const PanelSelect = defineComponent({
   props: {

@@ -1,4 +1,4 @@
-import type { Task } from '@/common/types'
+import type { Task } from '@cmn/types'
 import {
   useCycleWeeklyOptions,
   usePlanOptions,
