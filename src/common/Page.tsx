@@ -7,16 +7,25 @@ import {
 } from 'naive-ui'
 import PageScss from '@cmn/styles/Page.module.scss'
 import { useAlertTheme } from '@panel/hooks'
+import { isDarkMode } from '@/panel/utils'
 
 type naiveThemeType = GlobalTheme | null
 
-const themes = { dark: darkTheme, light: null }
-let theme = ref<naiveThemeType>(null)
-
+const themes = { dark: darkTheme, light: null, auto: 'auto' }
 export type themeType = keyof typeof themes
-export const changeTheme = (currentTheme: themeType): void => {
-  theme.value = themes[currentTheme]
+
+let theme = ref<naiveThemeType>(null)
+let currentTheme = ref<themeType>('auto')
+
+export const changeTheme = (crtTheme: themeType): void => {
+  currentTheme.value = crtTheme
+  if (crtTheme === 'auto') {
+    theme.value = isDarkMode() ? themes.dark : themes.light
+    return
+  }
+  theme.value = themes[crtTheme]
 }
+export const getCurrentTheme = () => currentTheme.value
 
 export const Page = defineComponent({
   name: 'Page',
@@ -69,6 +78,8 @@ export const Page = defineComponent({
       common: { ...common, bodyColor: props.bodyColor || '#303133' },
       Button: { ...button, textColorHover: '#fffFF' }
     }
+
+    changeTheme(currentTheme.value)
 
     return () => (
       <n-config-provider

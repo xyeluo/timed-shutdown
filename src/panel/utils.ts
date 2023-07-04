@@ -13,3 +13,5 @@ export const getNowDate = () => {
 export const cloneStore = <T>(parms: T): T => {
   return JSON.parse(JSON.stringify(parms))
 }
+
+export const isDarkMode = () => utools.isDarkColors()

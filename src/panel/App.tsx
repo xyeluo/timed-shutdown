@@ -1,10 +1,11 @@
 import type { SelectGroupOption } from 'naive-ui'
-import { Page, changeTheme, type themeType } from '@/common/Page'
-import { GithubIcon, QuestionIcon, SettingIcon, AddIcon } from '@panel/icons'
+import { Page } from '@/common/Page'
+import { GithubIcon, QuestionIcon, AddIcon, SettingIcon } from '@panel/icons'
 import { openUrl } from '@/panel/utils'
 import '@cmn/styles/index.scss'
 import { showModal } from '@panel/view/PlanPanel'
 import { useRegisteMsg, useRegisteDlg } from '@panel/hooks'
+import SettingView from '@/panel/components/SettingView'
 
 const HomeUrl = 'https://github.com/xyeluo/'
 
@@ -103,52 +104,20 @@ const Question = defineComponent({
 const Setting = defineComponent({
   setup() {
     let active = ref(false)
-    let selectedTheme = ref<themeType>('light')
-    const themesData = [
-      { txt: '白天', value: 'light' },
-      { txt: '黑夜', value: 'dark' }
-    ]
-    const activate = () => {
-      active.value = true
-    }
-    watch<themeType>(selectedTheme, (nValue) => {
-      changeTheme(nValue)
-    })
+
     return () => (
       <>
         <n-popover>
           {{
             default: () => <>设置</>,
             trigger: () => (
-              <n-icon size="20px" onClick={activate}>
+              <n-icon size="20px" onClick={() => (active.value = true)}>
                 <SettingIcon />
               </n-icon>
             )
           }}
         </n-popover>
-
-        <n-drawer v-model:show={active.value} width="300">
-          <n-drawer-content closable>
-            {{
-              header: () => <div>header</div>,
-              default: () =>
-                themesData.map((theme) => {
-                  return (
-                    <label for={theme.value}>
-                      <input
-                        type="radio"
-                        v-model={selectedTheme.value}
-                        name="theme"
-                        value={theme.value}
-                        id={theme.value}
-                      />
-                      {theme.txt}
-                    </label>
-                  )
-                })
-            }}
-          </n-drawer-content>
-        </n-drawer>
+        <SettingView v-model:active={active.value} />
       </>
     )
   }

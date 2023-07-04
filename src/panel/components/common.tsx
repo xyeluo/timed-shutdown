@@ -1,6 +1,11 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 import type { SelectOption } from 'naive-ui'
-import { createVNode, type Component, type PropType } from 'vue'
+import {
+  createVNode,
+  type Component,
+  type PropType,
+  type StyleValue
+} from 'vue'
 import type { Plan } from '@/common/types'
 
 export const PanelSelect = defineComponent({
@@ -25,12 +30,15 @@ export const PanelSelect = defineComponent({
 
 export const RowItem = defineComponent({
   props: {
-    label: String
+    label: String,
+    style: Object as PropType<StyleValue>
   },
   setup(props, { slots }) {
     return () => (
       <div class={PPanelScss.item}>
-        <label class={PPanelScss.itemLabel}>{props.label}</label>
+        <label class={PPanelScss.itemLabel} style={props.style}>
+          {props.label}
+        </label>
         <div class={PPanelScss.itemContent}>{slots.default?.()}</div>
         {slots.extra?.()}
       </div>
