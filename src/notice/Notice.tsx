@@ -1,9 +1,7 @@
-import { changeTheme } from '@cmn/Page'
-
 export default defineComponent({
   setup() {
     const { info } = useNotification()
-    changeTheme('dark')
+
     const notify = () => {
       const n = info({
         title: () => <p>关机通知</p>,

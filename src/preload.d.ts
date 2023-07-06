@@ -12,6 +12,10 @@ interface Preload {
   switchState(aboutPlan: { name: string; state: boolean }): Promise<any>
   runPlan(name: string): Promise<any>
   openRemote(): Promise<any>
+
+  // preload
+  // todo:notice
+  addNotice(notice: Task['notice']): Promise<any>
 }
 
 declare global {

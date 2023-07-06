@@ -7,10 +7,14 @@ export interface Task {
     type: CycleKey
     date: string | null
     time: string | null
-    otherDate: otherDateKey[]
+    otherDate: otherDateKey[] | string[]
     autoDelete: boolean
   }
   state: boolean
+  notice: {
+    cron: string
+    dateTime: string
+  }
 }
 
 type PlanValue = PlanOption['label']

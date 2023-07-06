@@ -3,14 +3,15 @@ import {
   useFirstCycle,
   useFirstType,
   useCompleteDate,
-  useCompleteName
+  useCompleteName,
+  useNoticeCron
 } from '@panel/hooks'
 import type { Task } from '@cmn/types'
-import { cloneStore } from '../../panel/utils'
+import { cloneStore } from '@panel/utils'
 import { usePlansStore } from '@cmn/stores'
 
 export const useTaskStore = defineStore('TaskStore', () => {
-  const init = {
+  const init: Task = {
     name: '',
     plan: useFirstType(),
     cycle: {
@@ -20,7 +21,11 @@ export const useTaskStore = defineStore('TaskStore', () => {
       otherDate: [],
       autoDelete: true
     },
-    state: true
+    state: true,
+    notice: {
+      cron: '',
+      dateTime: ''
+    }
   }
   const { addPlan, saveTaskDB } = usePlansStore()
 
@@ -45,6 +50,12 @@ export const useTaskStore = defineStore('TaskStore', () => {
 
     const stdout = await preload.createTask(cloneStore(task.value))
     addPlan(task.value)
+
+    task.value.notice = useNoticeCron(task.value.cycle, 5)
+
+    // todo:notice
+    preload.addNotice(task.value.notice)
+
     saveTaskDB(task.value)
     reset()
     return stdout
