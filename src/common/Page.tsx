@@ -37,17 +37,18 @@ export const Page = defineComponent({
     const common: GlobalThemeOverrides['common'] = {
       primaryColor,
       primaryColorHover: primaryColor,
+      primaryColorPressed: primaryColor,
       successColorPressed: primaryColor,
       borderRadius: '6px',
       borderRadiusSmall: '5px'
     }
     const button: GlobalThemeOverrides['Button'] = {
-      borderHover: '1px solid #69b2fe',
-      textColorHover: '#69b2feFF',
-      textColorPressed: '#69b2feFF',
-      textColorFocus: '#69b2feFF',
-      borderPressed: '1px solid #69b2fe',
-      borderFocus: '1px solid #69b2fe'
+      borderHover: `1px solid ${primaryColor}`,
+      textColorHover: primaryColor,
+      textColorPressed: primaryColor,
+      textColorFocus: primaryColor,
+      borderPressed: '1px solid ${',
+      borderFocus: `1px solid ${primaryColor}`
     }
 
     const themeOverrides: GlobalThemeOverrides = {

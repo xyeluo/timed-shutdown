@@ -1,5 +1,5 @@
 import { changeTheme, getCurrentTheme, type themeType } from '@cmn/Page'
-import { RowItem } from './common'
+import { PanelSelect, RowItem } from './common'
 
 export default defineComponent({
   props: {
@@ -9,9 +9,9 @@ export default defineComponent({
   setup(props, { emit }) {
     let selectedTheme = ref<themeType>(getCurrentTheme())
     const themesData = [
-      { txt: '自动', value: 'auto' },
-      { txt: '明亮', value: 'light' },
-      { txt: '暗黑', value: 'dark' }
+      { label: '自动', value: 'auto' },
+      { label: '明亮', value: 'light' },
+      { label: '暗黑', value: 'dark' }
     ]
 
     watch(selectedTheme, () => changeTheme(selectedTheme.value), {
@@ -26,19 +26,16 @@ export default defineComponent({
       >
         <n-drawer-content closable>
           {{
-            header: () => <div>header</div>,
+            header: () => <div>设置</div>,
             default: () => (
               <RowItem
                 label="主题："
                 style={{ textAlign: 'left', width: 'auto' }}
               >
-                <n-radio-group v-model:value={selectedTheme.value}>
-                  {themesData.map((theme) => (
-                    <n-radio key={theme.value} value={theme.value}>
-                      {theme.txt}
-                    </n-radio>
-                  ))}
-                </n-radio-group>
+                <PanelSelect
+                  options={themesData}
+                  v-model:value={selectedTheme.value}
+                ></PanelSelect>
               </RowItem>
             )
           }}
