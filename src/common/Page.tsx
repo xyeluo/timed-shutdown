@@ -94,7 +94,7 @@ export const Page = defineComponent({
       >
         <n-global-style />
         <n-message-provider max="5" container-style={{ bordeRadius: '10px' }}>
-          <n-notification-provider>
+          <n-notification-provider to="main">
             <header>{slots.header?.()}</header>
             <n-dialog-provider>
               <main>{slots.default?.()}</main>
