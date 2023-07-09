@@ -52,9 +52,7 @@ export const useTaskStore = defineStore('TaskStore', () => {
     addPlan(task.value)
 
     task.value.notice = useNoticeCron(task.value.cycle, 5)
-
-    // todo:notice
-    preload.addNotice(task.value.notice)
+    await preload.addNotice(cloneStore(task.value))
 
     saveTaskDB(task.value)
     reset()

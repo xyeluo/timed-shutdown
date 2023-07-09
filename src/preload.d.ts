@@ -14,8 +14,7 @@ interface Preload {
   openRemote(): Promise<any>
 
   // preload
-  // todo:notice
-  addNotice(notice: Task['notice']): Promise<any>
+  addNotice(notice: Task): Promise<void>
 }
 
 declare global {

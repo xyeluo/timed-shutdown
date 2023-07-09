@@ -23,3 +23,5 @@ export const cloneStore = <T>(parms: T): T => {
 }
 
 export const isDarkMode = () => utools.isDarkColors()
+
+export const noticeBeep = () => utools.shellBeep()
