@@ -47,7 +47,7 @@ export const Page = defineComponent({
       textColorHover: primaryColor,
       textColorPressed: primaryColor,
       textColorFocus: primaryColor,
-      borderPressed: '1px solid ${',
+      borderPressed: `1px solid ${primaryColor}`,
       borderFocus: `1px solid ${primaryColor}`
     }
 
