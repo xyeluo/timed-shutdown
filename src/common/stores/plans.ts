@@ -41,6 +41,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
 
   const deletePlanFromTaskDb = (plan: Plan) => {
     const callback = (p: Plan | Task) => p.name !== plan.name
+    preload.deleteNotice(plan.name)
     plans.value = plans.value.filter(callback)
     taskDB = taskDB.filter(callback)
     preload.dbStorageSave(taskDB)
@@ -54,7 +55,10 @@ export const usePlansStore = defineStore('PlansStore', () => {
 
   const switchState = async (plan: Plan) => {
     const state = !plan.state
-    const stdout = await preload.switchState({ name: plan.name, state })
+    const partPlan = { name: plan.name, state }
+    const stdout = await preload.switchState(partPlan)
+    await preload.switchNoticeState(partPlan)
+
     plan.state = state
     taskDB.some((task) => {
       if (task.name !== plan.name) return false

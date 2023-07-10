@@ -34,10 +34,13 @@ const useDateToCron = (parms: DateType) => {
       break
     case 'daily':
       cron += ` */1 * *`
+      break
     case 'weekly':
       cron += ` * * ${otherDate.map((week) => week.slice(0, 3)).join(',')}`
+      break
     case 'monthly':
       cron += ` ${otherDate.join(',')} * *`
+      break
     default:
       break
   }

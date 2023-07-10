@@ -1,5 +1,6 @@
 import type { Task } from '@cmn/types'
 
+type PartPlan = { name: string; state: boolean }
 interface Preload {
   // utools
   dbStorageSave<T>(data: T): Promise<void>
@@ -9,12 +10,14 @@ interface Preload {
   createTask(task: Task): Promise<any>
   deleteTask(name: string): Promise<any>
   deleteTaskXML(): Promise<void>
-  switchState(aboutPlan: { name: string; state: boolean }): Promise<any>
+  switchState(partPlan: PartPlan): Promise<any>
   runPlan(name: string): Promise<any>
   openRemote(): Promise<any>
 
   // preload
   addNotice(notice: Task): Promise<void>
+  switchNoticeState(partPlan: PartPlan): Promise<void>
+  deleteNotice(name: string): Promise<void>
 }
 
 declare global {
