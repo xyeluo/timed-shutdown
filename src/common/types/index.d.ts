@@ -11,7 +11,7 @@ export interface Task {
     autoDelete: boolean
   }
   state: boolean
-  notice: {
+  notice?: {
     cron: string
     dateTime: string
   }

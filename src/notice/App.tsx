@@ -6,7 +6,7 @@ export default defineComponent({
   setup() {
     return () => (
       <Page bodyColor="transparent">
-        <Notice></Notice>
+        <Notice />
       </Page>
     )
   }
