@@ -1,13 +1,21 @@
-import type { Task } from '@/common/types'
-import { getDateTimeParts } from '@panel/utils'
+import type { Task } from '@cmn/types'
+import { getDateTimeParts } from '@cmn/utils'
 
 type DateType = Omit<Task['cycle'], 'autoDelete'>
 
-const useDateSubtract = (parms: DateType, minute: number): DateType => {
+export const useDateCompute = (
+  parms: DateType,
+  minute: number,
+  operator: '-' | '+' = '-'
+): DateType => {
   const { date, time } = parms
-  let result: string | string[] = new Date(
-    Date.parse(`${date} ${time}`) - minute * 60 * 1000
-  ).toLocaleString()
+  const dateParse = Date.parse(`${date} ${time}`)
+  const m = minute * 60 * 1000
+  let resultDate = dateParse - m
+  if (operator === '+') {
+    resultDate = dateParse + m
+  }
+  let result: string | string[] = new Date(resultDate).toLocaleString()
 
   result = result.split(' ') // ['2023/5/20', '19:35:00']
   return {
@@ -52,7 +60,7 @@ export const useNoticeCron = (
   minute: number
 ): Task['notice'] => {
   // 设置通知时间，执行任务前${minute}分钟通知
-  const noticeDate = useDateSubtract(parms, minute)
+  const noticeDate = useDateCompute(parms, minute)
   const cron = useDateToCron(noticeDate)
   return {
     cron,

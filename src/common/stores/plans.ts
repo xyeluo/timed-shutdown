@@ -1,11 +1,11 @@
 import type { Task, Plan } from '@cmn/types'
 import { defineStore } from 'pinia'
-import { cloneStore } from '@panel/utils'
+import { cloneStore } from '@cmn/utils'
 import {
   useConvertTaskCycleType,
   useConvertTaskPlan,
   useSetDateTime
-} from '@panel/hooks/taskToPlan'
+} from '@cmn/hooks/taskToPlan'
 
 export const usePlansStore = defineStore('PlansStore', () => {
   let plans = ref<Plan[]>([])
@@ -20,7 +20,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
     })
   })
 
-  const saveTaskDB = (task: Task) => {
+  const addTaskDB = (task: Task) => {
     let rawTask = cloneStore(task)
     taskDB.push(rawTask)
     preload.dbStorageSave(taskDB)
@@ -36,6 +36,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
       },
       dateTime: useSetDateTime(task.cycle)
     }
+    preload.addNotice(cloneStore(task))
     plans.value.unshift(plan)
   }
 
@@ -53,7 +54,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
     return stdout
   }
 
-  const switchState = async (plan: Plan) => {
+  const switchState = async (plan: Plan | Task) => {
     const state = !plan.state
     const partPlan = { name: plan.name, state }
     const stdout = await preload.switchState(partPlan)
@@ -74,7 +75,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
   return {
     plans,
     addPlan,
-    saveTaskDB,
+    addTaskDB,
     deletePlan,
     switchState,
     deletePlanFromTaskDb,

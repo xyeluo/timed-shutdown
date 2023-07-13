@@ -1,14 +1,20 @@
 import type { SelectGroupOption } from 'naive-ui'
 import { Page } from '@cmn/Page'
 import { GithubIcon, QuestionIcon, AddIcon, SettingIcon } from '@panel/icons'
-import { openUrl } from '@panel/utils'
+import { openUrl } from '@cmn/utils'
 import '@cmn/styles/index.scss'
 import { showModal } from '@panel/view/PlanPanel'
-import { useRegisteMsg, useRegisteDlg } from '@panel/hooks'
+import { useRegisteMsg, useRegisteDlg } from '@cmn/hooks'
 import SettingView from '@panel/components/SettingView'
-
+import { usePlansStore, useTaskStore } from '@cmn/stores'
+import type { Task } from '@cmn/types'
 const HomeUrl = 'https://github.com/xyeluo/'
 
+declare global {
+  interface Window {
+    createTask(task: Task): void
+  }
+}
 const PanelHeader = defineComponent({
   setup() {
     let btnState = ref(false)
@@ -125,6 +131,13 @@ const Setting = defineComponent({
 
 export default defineComponent({
   setup() {
+    const taskStore = useTaskStore()
+    const plansStore = usePlansStore()
+    window.createTask = (task) => {
+      taskStore.task = task
+      taskStore.createTask()
+    }
+
     const Main = () => {
       // 注册全局信息弹窗
       useRegisteMsg()

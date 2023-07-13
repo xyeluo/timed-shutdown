@@ -5,9 +5,9 @@ import {
   useCompleteDate,
   useCompleteName,
   useNoticeCron
-} from '@panel/hooks'
+} from '@cmn/hooks'
 import type { Task } from '@cmn/types'
-import { cloneStore } from '@panel/utils'
+import { cloneStore } from '@cmn/utils'
 import { usePlansStore } from '@cmn/stores'
 
 export const useTaskStore = defineStore('TaskStore', () => {
@@ -27,7 +27,7 @@ export const useTaskStore = defineStore('TaskStore', () => {
       dateTime: ''
     }
   }
-  const { addPlan, saveTaskDB } = usePlansStore()
+  const { addPlan, addTaskDB } = usePlansStore()
 
   let task = ref<Task>(cloneStore(init))
 
@@ -41,7 +41,7 @@ export const useTaskStore = defineStore('TaskStore', () => {
   )
 
   const reset = () => {
-    task.value = init
+    task.value = cloneStore(init)
   }
 
   const createTask = async () => {
@@ -49,12 +49,10 @@ export const useTaskStore = defineStore('TaskStore', () => {
     useCompleteName(task.value)
 
     const stdout = await preload.createTask(cloneStore(task.value))
-    addPlan(task.value)
 
-    task.value.notice = useNoticeCron(task.value.cycle, 5)
-    await preload.addNotice(cloneStore(task.value))
-
-    saveTaskDB(task.value)
+    task.value.notice = useNoticeCron(cloneStore(task.value.cycle), 5)
+    addPlan(cloneStore(task.value))
+    addTaskDB(cloneStore(task.value))
     reset()
     return stdout
   }

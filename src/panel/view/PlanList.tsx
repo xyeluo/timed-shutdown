@@ -8,7 +8,6 @@ export default defineComponent({
   name: 'PlanList',
   setup() {
     const plansStore = usePlansStore()
-
     const columns: DataTableColumns<Plan> = [
       {
         title: '任务名称',

@@ -6,8 +6,8 @@ import {
   type GlobalThemeOverrides
 } from 'naive-ui'
 import PageScss from '@cmn/styles/Page.module.scss'
-import { useAlertTheme } from '@panel/hooks'
-import { isDarkMode } from '@panel/utils'
+import { useAlertTheme } from '@cmn/hooks'
+import { isDarkMode } from '@cmn/utils'
 
 type naiveThemeType = GlobalTheme | null
 

@@ -1,6 +1,6 @@
 import type { Task } from '@cmn/types'
-import { getNowDate } from '@panel/utils'
-import { useWarningMsg } from '@panel/hooks'
+import { getNowDate } from '@cmn/utils'
+import { useWarningMsg } from '@cmn/hooks'
 
 // 除周期‘仅一次’外,date仅在点击‘确定’后获取
 export const useCompleteDate = (task: Task) => {

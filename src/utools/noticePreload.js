@@ -1,10 +1,16 @@
 const { ipcRenderer } = require('electron')
 
-ipcRenderer.on('notice', (event, taskName) => {
+let mainId
+ipcRenderer.once('init', (event) => {
+  mainId = event.senderId
+})
+
+ipcRenderer.on('notice', (_, task) => {
   let timed = false
   const sendNotice = () => {
     if (window.receiveNotice) {
-      window.receiveNotice(taskName)
+      utools.shellBeep()
+      window.receiveNotice(task)
       timed && cancelAnimationFrame(timed)
       return
     }
@@ -13,6 +19,11 @@ ipcRenderer.on('notice', (event, taskName) => {
   sendNotice()
 })
 
-window.preload = {
-  ...require('./utils/utools')
+function createTask(task) {
+  console.log(mainId, task)
+  ipcRenderer.sendTo(mainId, 'createTask', task)
+}
+
+window.noticePreload = {
+  createTask
 }

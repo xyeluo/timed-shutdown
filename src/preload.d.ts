@@ -18,11 +18,17 @@ interface Preload {
   addNotice(notice: Task): Promise<void>
   switchNoticeState(partPlan: PartPlan): Promise<void>
   deleteNotice(name: string): Promise<void>
+  clearJobs(): Promise<void>
+}
+interface NoticePreload {
+  createTask(task: Task): void
 }
 
 declare global {
   interface Window {
     preload: Preload
+    noticePreload: NoticePreload
   }
   var preload: Preload
+  var noticePreload: NoticePreload
 }

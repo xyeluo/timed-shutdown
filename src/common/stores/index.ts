@@ -1,5 +1,5 @@
 import { createPinia } from 'pinia'
-import { cloneStore } from '@panel/utils'
+import { cloneStore } from '@cmn/utils'
 
 const pinia = createPinia()
 

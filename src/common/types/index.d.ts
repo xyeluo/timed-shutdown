@@ -1,5 +1,5 @@
-import type { CycleKey, PlanKey, otherDateKey } from '@panel/hooks'
-import { type PlanOption, type CycleOption } from '@panel/hooks'
+import type { CycleKey, PlanKey, otherDateKey } from '@cmn/hooks'
+import { type PlanOption, type CycleOption } from '@cmn/hooks'
 export interface Task {
   name: string
   plan: PlanKey

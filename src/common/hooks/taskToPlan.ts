@@ -6,7 +6,7 @@ import {
   type PlanKey,
   type CycleKey,
   type OtherDateOption
-} from '@panel/hooks'
+} from '@cmn/hooks'
 
 type OtherDateValue = OtherDateOption['label']
 

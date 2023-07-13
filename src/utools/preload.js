@@ -7,7 +7,7 @@ class ScheNotification {
   constructor() {
     throw new Error('Cannot instantiate this class')
   }
-  static async createWindow() {
+  static async #createWindow() {
     const { width, height } = utools.getPrimaryDisplay().workArea
     const options = {
       width,
@@ -28,18 +28,19 @@ class ScheNotification {
     // const noticeHtml='./notice/index.html'
     const win = utools.createBrowserWindow(noticeHtml, options)
 
-    // win.webContents.openDevTools({ mode: 'detach' })
-
     ScheNotification.#win = win
     ScheNotification.#windowId = win.webContents.id
+
+    ipcRenderer.sendTo(ScheNotification.#windowId, 'init', '')
+    win.webContents.openDevTools({ mode: 'detach' })
   }
 
-  static async #sendNotice(taskName) {
+  static async #sendNotice(task) {
     // 被alt+f4关闭时重新创建窗口
     if (!ScheNotification.#win || ScheNotification.#win.isDestroyed()) {
-      await ScheNotification.createWindow()
+      await ScheNotification.#createWindow()
     }
-    ipcRenderer.sendTo(ScheNotification.#windowId, 'notice', taskName)
+    ipcRenderer.sendTo(ScheNotification.#windowId, 'notice', task)
   }
 
   static async #getJob(name) {
@@ -55,7 +56,7 @@ class ScheNotification {
       options.startAt = new Date(task.notice.dateTime)
     }
     const job = Cron(task.notice.cron, options, () => {
-      ScheNotification.#sendNotice(task.name)
+      ScheNotification.#sendNotice(task)
     })
     console.log(new Date(job.nextRun()).toLocaleString())
   }
@@ -72,12 +73,42 @@ class ScheNotification {
     const job = await ScheNotification.#getJob(name)
     job.stop()
   }
+  static async clearJobs() {
+    scheduledJobs.forEach((j) => {
+      j.stop()
+    })
+    console.log(scheduledJobs)
+  }
 }
+
+ipcRenderer.on('createTask', (_, task) => {
+  window.createTask(task)
+})
+
+/**
+ * @example
+ */
+// let cron = '30 32 21 */1 * *'
+// let task = {
+// name: 'TS_1718-2023-07-13',
+// plan: 'dormancy',
+// cycle: {
+//   autoDelete: true,
+//   date: '2023-07-13',
+//   otherDate: [],
+//   type: 'daily',
+//   time: '17:18'
+// },
+// state: true,
+// notice: { cron, dateTime: '2023-7-13 17:16' }
+// }
+// ScheNotification.addNotice(task)
 
 window.preload = {
   ...require('./platform/win'),
   ...require('./utils/utools'),
   addNotice: ScheNotification.addNotice,
   switchNoticeState: ScheNotification.switchNoticeState,
-  deleteNotice: ScheNotification.deleteNotice
+  deleteNotice: ScheNotification.deleteNotice,
+  clearJobs: ScheNotification.clearJobs
 }

@@ -1,19 +1,44 @@
-import { usePlansStore } from '@/common/stores'
-import type { PlanValue } from '@/common/types'
-import { noticeBeep } from '@/panel/utils'
+import type { PlanValue, Task } from '@cmn/types'
+import { useDateCompute, useConvertTaskPlan } from '@cmn/hooks'
+import { cloneStore } from '@cmn/utils'
+import type { PropType } from 'vue'
 
 declare global {
   interface Window {
-    receiveNotice(parms: any): void
+    receiveNotice(task: Task): void
   }
 }
 
 const Action = defineComponent({
-  setup() {
+  props: {
+    task: Object as PropType<Task>
+  },
+  setup(props) {
+    const delayTask = () => {
+      const { date, time } = useDateCompute(props.task!.cycle, 10, '+')
+      const task: Task = {
+        name: '',
+        plan: props.task!.plan,
+        cycle: {
+          type: 'once',
+          date,
+          time,
+          otherDate: props.task!.cycle.otherDate,
+          autoDelete: true
+        },
+        state: true
+      }
+      noticePreload.createTask(cloneStore(task))
+    }
+    const stopState = () => {}
     return () => (
       <n-space>
-        <n-button size="small">推迟十分钟</n-button>
-        <n-button size="small">暂停本次执行</n-button>
+        <n-button size="small" onClick={delayTask}>
+          推迟十分钟
+        </n-button>
+        <n-button size="small" onClick={stopState}>
+          暂停执行
+        </n-button>
         <n-button size="small">已读</n-button>
       </n-space>
     )
@@ -22,36 +47,30 @@ const Action = defineComponent({
 
 export default defineComponent({
   setup() {
-    interface noticeType {
-      name: string
-      plan: PlanValue
-    }
     const { info } = useNotification()
-    const { plans } = usePlansStore()
-    const getPlan = (name: string) => plans.find((plan) => plan.name === name)
 
-    const notify = (parms: noticeType) => {
+    let task = ref<Task>()
+    const notify = (parms: { name: string; plan: PlanValue }) => {
       const n = info({
-        title: '关机/休眠/重启通知',
-        content: ' 您的电脑将在3分钟后自动关机/休眠/重启',
-        description: `uTools定时关机插件:`,
         // duration: 2500,
         keepAliveOnHover: true,
-        action: () => <Action />
+        action: () => <Action task={task.value} />
       })
       n.title = () => <p>{parms.plan}通知</p>
       n.content = () => (
         <p>
-          您的电脑将在5分钟后自动<b>{parms.plan}</b>
+          您的电脑预计在5分钟后自动<b>{parms.plan}</b>
         </p>
       )
-      n.description = `uTools定时关机插件: ${parms.name}`
+      n.description = `来自uTools定时关机插件: ${parms.name}`
     }
-    window.receiveNotice = (name: string) => {
-      const plan = getPlan(name)
 
-      noticeBeep()
-      notify({ name: plan!.name, plan: plan!.plan })
+    window.receiveNotice = (noticeTask) => {
+      notify({
+        name: noticeTask.name,
+        plan: useConvertTaskPlan(noticeTask.plan)
+      })
+      task.value = noticeTask
     }
   }
 })

@@ -1,5 +1,5 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
-import { usePlanOptions } from '@panel/hooks'
+import { usePlanOptions } from '@cmn/hooks'
 import { RowItem } from '@panel/components/common'
 import { PanelSelect } from '@panel/components/common'
 import { useTaskStore } from '@cmn/stores'
