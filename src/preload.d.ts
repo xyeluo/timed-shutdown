@@ -1,4 +1,4 @@
-import type { Task } from '@cmn/types'
+import type { Task, Plan } from '@cmn/types'
 
 type PartPlan = { name: string; state: boolean }
 interface Preload {
@@ -18,10 +18,10 @@ interface Preload {
   addNotice(notice: Task): Promise<void>
   switchNoticeState(partPlan: PartPlan): Promise<void>
   deleteNotice(name: string): Promise<void>
-  clearJobs(): Promise<void>
 }
 interface NoticePreload {
   createTask(task: Task): void
+  stopPlan(task: Task | Plan): void
 }
 
 declare global {

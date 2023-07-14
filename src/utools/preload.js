@@ -73,16 +73,14 @@ class ScheNotification {
     const job = await ScheNotification.#getJob(name)
     job.stop()
   }
-  static async clearJobs() {
-    scheduledJobs.forEach((j) => {
-      j.stop()
-    })
-    console.log(scheduledJobs)
-  }
 }
 
 ipcRenderer.on('createTask', (_, task) => {
   window.createTask(task)
+})
+
+ipcRenderer.on('stopPlan', (_, plan) => {
+  window.stopPlan(plan)
 })
 
 /**

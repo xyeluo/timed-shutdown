@@ -20,10 +20,14 @@ ipcRenderer.on('notice', (_, task) => {
 })
 
 function createTask(task) {
-  console.log(mainId, task)
   ipcRenderer.sendTo(mainId, 'createTask', task)
 }
 
+function stopPlan(plan) {
+  ipcRenderer.sendTo(mainId, 'stopPlan', plan)
+}
+
 window.noticePreload = {
-  createTask
+  createTask,
+  stopPlan
 }

@@ -61,11 +61,19 @@ export const usePlansStore = defineStore('PlansStore', () => {
     await preload.switchNoticeState(partPlan)
 
     plan.state = state
-    taskDB.some((task) => {
+
+    const callback = (task: Plan | Task) => {
       if (task.name !== plan.name) return false
       task.state = state
       return true
-    })
+    }
+
+    // 通知视图传递过来的数据不是响应式，需要手动修改plans的state
+    if (!isProxy(plan)) {
+      plans.value.some(callback)
+    }
+    taskDB.some(callback)
+
     preload.dbStorageSave(taskDB)
     return stdout
   }

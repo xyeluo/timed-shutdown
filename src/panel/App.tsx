@@ -8,11 +8,12 @@ import { useRegisteMsg, useRegisteDlg } from '@cmn/hooks'
 import SettingView from '@panel/components/SettingView'
 import { usePlansStore, useTaskStore } from '@cmn/stores'
 import type { Task } from '@cmn/types'
-const HomeUrl = 'https://github.com/xyeluo/'
 
+const HomeUrl = 'https://github.com/xyeluo/'
 declare global {
   interface Window {
     createTask(task: Task): void
+    stopPlan(task: Task): void
   }
 }
 const PanelHeader = defineComponent({
@@ -131,11 +132,15 @@ const Setting = defineComponent({
 
 export default defineComponent({
   setup() {
+    // 给通知视图暴露的api
     const taskStore = useTaskStore()
-    const plansStore = usePlansStore()
+    const { switchState } = usePlansStore()
     window.createTask = (task) => {
       taskStore.task = task
       taskStore.createTask()
+    }
+    window.stopPlan = (plan) => {
+      switchState(plan)
     }
 
     const Main = () => {

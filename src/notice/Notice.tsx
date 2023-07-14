@@ -30,7 +30,14 @@ const Action = defineComponent({
       }
       noticePreload.createTask(cloneStore(task))
     }
-    const stopState = () => {}
+
+    let isStop = true
+    const stopState = () => {
+      // 当任务暂停后不能再切换状态
+      if (!isStop) return
+      isStop = false
+      noticePreload.stopPlan(cloneStore(props.task) as Task)
+    }
     return () => (
       <n-space>
         <n-button size="small" onClick={delayTask}>
