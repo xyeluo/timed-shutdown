@@ -1,5 +1,5 @@
 const TaskXml = require('./taskXml')
-const { xmlPath } = require('../../utils/config')
+const { XML_PATH } = require('../../utils/config')
 const { execCmd } = require('../../utils/common')
 
 function getXmlObj(cycle) {
@@ -92,7 +92,7 @@ async function createTask(task) {
   await TaskXml.createTaskXML(xmlObj)
 
   // 导入创建好的xml文件
-  const cmd = `schtasks /create /tn "${name}" /xml "${xmlPath}"`
+  const cmd = `schtasks /create /tn "${name}" /xml "${XML_PATH}"`
   return await execCmd(cmd)
 }
 

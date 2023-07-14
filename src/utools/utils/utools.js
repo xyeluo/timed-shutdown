@@ -1,11 +1,11 @@
-const { ID } = require('./config')
+const { PLANS_STORE } = require('./config')
 
 /**
  * 存储计划任务
  * @param {object} data
  */
 async function dbStorageSave(data) {
-  await utools.dbStorage.setItem(ID, data)
+  await utools.dbStorage.setItem(PLANS_STORE, data)
 }
 
 /**
@@ -13,7 +13,7 @@ async function dbStorageSave(data) {
  * @returns data
  */
 async function dbStorageRead() {
-  const plans = await utools.dbStorage.getItem(ID)
+  const plans = await utools.dbStorage.getItem(PLANS_STORE)
   if (plans === null) {
     return []
   }

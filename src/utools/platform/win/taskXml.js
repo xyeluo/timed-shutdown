@@ -3,7 +3,7 @@
  */
 const { writeFile, access, unlink } = require('fs/promises')
 const { getType, firstLetterUpper } = require('../../utils/common')
-const { xmlPath } = require('../../utils/config')
+const { XML_PATH } = require('../../utils/config')
 
 function reduceXmlObj(xmlObj, callback, options = {}) {
   const config = {
@@ -120,7 +120,7 @@ function expandXmlObj(xmlObj) {
 }
 
 /**
- * create xml file in xmlPath
+ * create xml file in XML_PATH
  * @param {object} xmlObj similar to 'test' variable in the Test example
  */
 async function createTaskXML(xmlObj) {
@@ -133,15 +133,15 @@ async function createTaskXML(xmlObj) {
     }
   }
   const xml = `${xmlHead}\n${objToXml(xmlObjPre, 0)}`
-  await writeFile(xmlPath, xml)
+  await writeFile(XML_PATH, xml)
 }
 
 /**
  * delete xml file
  */
 async function deleteTaskXML() {
-  await access(xmlPath, 0)
-  await unlink(xmlPath)
+  await access(XML_PATH, 0)
+  await unlink(XML_PATH)
 }
 
 module.exports = {
@@ -169,6 +169,6 @@ module.exports = {
 // let after = expandXmlObj(befor)
 // console.log(JSON.stringify(after, null, 2))
 // const { resolve } = require('path')
-// const xmlPath = resolve(__dirname, 'timed-shutdonw_UtoolsPlugin.xml')
+// const XML_PATH = resolve(__dirname, 'timed-shutdonw_UtoolsPlugin.xml')
 // createTaskXML(befor)
 // deleteTaskXML()

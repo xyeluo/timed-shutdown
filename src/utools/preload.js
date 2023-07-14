@@ -1,6 +1,6 @@
 const { ipcRenderer } = require('electron')
 const { Cron, scheduledJobs } = require('./lib/croner')
-const { timezone } = require('./utils/config')
+const { TIMEZONE } = require('./utils/config')
 class ScheNotification {
   static #win
   static #windowId
@@ -50,7 +50,7 @@ class ScheNotification {
   static async addNotice(task) {
     let options = {
       name: task.name,
-      timezone
+      TIMEZONE
     }
     if (task.cycle.type === 'once') {
       options.startAt = new Date(task.notice.dateTime)
