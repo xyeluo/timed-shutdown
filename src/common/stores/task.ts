@@ -25,7 +25,8 @@ export const useTaskStore = defineStore('TaskStore', () => {
     notice: {
       cron: '',
       dateTime: ''
-    }
+    },
+    skip: false
   }
   const { addPlan, addTaskDB } = usePlansStore()
 

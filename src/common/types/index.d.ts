@@ -15,6 +15,7 @@ export interface Task {
     cron: string
     dateTime: string
   }
+  skip: boolean
 }
 
 export type PlanValue = PlanOption['label']

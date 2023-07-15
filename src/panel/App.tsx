@@ -13,7 +13,7 @@ const HomeUrl = 'https://github.com/xyeluo/'
 declare global {
   interface Window {
     createTask(task: Task): void
-    stopPlan(task: Task): void
+    switchState(task: Task): void
   }
 }
 const PanelHeader = defineComponent({
@@ -134,13 +134,13 @@ export default defineComponent({
   setup() {
     // 给通知视图暴露的api
     const taskStore = useTaskStore()
-    const { switchState } = usePlansStore()
+    const plansStore = usePlansStore()
     window.createTask = (task) => {
       taskStore.task = task
       taskStore.createTask()
     }
-    window.stopPlan = (plan) => {
-      switchState(plan)
+    window.switchState = (plan) => {
+      plansStore.switchState(plan)
     }
 
     const Main = () => {

@@ -1,6 +1,9 @@
 const { ipcRenderer } = require('electron')
 const { Cron, scheduledJobs } = require('./lib/croner')
 const { TIMEZONE } = require('./utils/config')
+const { dbStorageRead, dbStorageSave, deletePlan } = require('./utils/utools')
+const { waitWindowPrpperty } = require('./utils/common')
+
 class ScheNotification {
   static #win
   static #windowId
@@ -50,14 +53,19 @@ class ScheNotification {
   static async addNotice(task) {
     let options = {
       name: task.name,
-      TIMEZONE
+      timezone: TIMEZONE,
+      context: task
     }
     if (task.cycle.type === 'once') {
       options.startAt = new Date(task.notice.dateTime)
+      options.maxRuns = 1
     }
-    const job = Cron(task.notice.cron, options, () => {
-      ScheNotification.#sendNotice(task)
+    const job = Cron(task.notice.cron, options, (_, context) => {
+      ScheNotification.#sendNotice(context)
     })
+    if (!task.state) {
+      job.pause()
+    }
     console.log(new Date(job.nextRun()).toLocaleString())
   }
 
@@ -79,34 +87,87 @@ ipcRenderer.on('createTask', (_, task) => {
   window.createTask(task)
 })
 
-ipcRenderer.on('stopPlan', (_, plan) => {
-  window.stopPlan(plan)
+ipcRenderer.on('stopPlan', async (_, plan) => {
+  window.switchState(plan)
+
+  const options = {
+    timezone: TIMEZONE,
+    startAt: new Date(plan.notice.dateTime),
+    maxRuns: 1,
+    context: plan
+  }
+  let skipStore = await dbStorageRead('skipPlans')
+  skipStore.push(plan)
+  dbStorageSave('skipPlans', skipStore)
+
+  Cron(plan.notice.cron, options, async (self, context) => {
+    self.stop()
+
+    const task = skipStore.find((task) => task.name === context.name)
+    // 当skipPlans的数据中存在plan相关才继续往下执行
+    if (!task) return
+    deletePlan('skipPlans', task.name)
+
+    const plansStore = await dbStorageRead('plans')
+    const p = plansStore.find((p) => p.name === context.name)
+    // 当plans数据中存在plan任务且该任务skip为true，state为false时才重新启动
+    if (!p && !p.skip && p.state) return
+    p.skip = false
+    window.switchState(p)
+  })
 })
 
-/**
- * @example
- */
-// let cron = '30 32 21 */1 * *'
-// let task = {
-// name: 'TS_1718-2023-07-13',
-// plan: 'dormancy',
-// cycle: {
-//   autoDelete: true,
-//   date: '2023-07-13',
-//   otherDate: [],
-//   type: 'daily',
-//   time: '17:18'
-// },
-// state: true,
-// notice: { cron, dateTime: '2023-7-13 17:16' }
-// }
-// ScheNotification.addNotice(task)
+// 重新启动插件时对跳过本次任务的处理
+async function initEnableSkipPlan() {
+  const skipStore = await dbStorageRead('skipPlans')
+  let options = {
+    timezone: TIMEZONE,
+    maxRuns: 1
+  }
+  skipStore.forEach(async (skipPlan) => {
+    const plansStore = await dbStorageRead('plans')
+    const p = plansStore.find((p) => p.name === skipPlan.name)
+    if (p && p.skip && !p.state) {
+      p.skip = false
+
+      // 检测skipPlan是否过期。小于等于当前时间注册Cron无效，则直接切换任务状态;大于当前时间则注册Cron，由设定时间后切换任务状态
+      if (new Date(skipPlan.notice.dateTime) <= new Date()) {
+        waitWindowPrpperty('switchState', () => window.switchState(p))
+        deletePlan('skipPlans', skipPlan.name)
+      } else {
+        options.startAt = new Date(skipPlan.notice.dateTime)
+        options.context = p
+        Cron(skipPlan.notice.cron, options, (self, context) => {
+          self.stop()
+          waitWindowPrpperty('switchState', () => window.switchState(context))
+          deletePlan('skipPlans', skipPlan.name)
+        })
+      }
+    } else deletePlan('skipPlans', skipPlan.name)
+  })
+}
+initEnableSkipPlan()
 
 window.preload = {
   ...require('./platform/win'),
-  ...require('./utils/utools'),
+  dbStorageRead,
+  dbStorageSave,
   addNotice: ScheNotification.addNotice,
   switchNoticeState: ScheNotification.switchNoticeState,
   deleteNotice: ScheNotification.deleteNotice,
   clearJobs: ScheNotification.clearJobs
 }
+/**
+ * @example
+ */
+// let cron = '30 32 21 */1 * *'
+// let task = {name: 'TS_1718-2023-07-13',
+// plan: 'dormancy',
+// cycle: {autoDelete: true,
+//   date: '2023-07-13',
+//   otherDate: [],
+//   type: 'daily',
+//   time: '17:18'},
+// state: true,
+// notice: { cron, dateTime: '2023-7-13 17:16' }}
+// ScheNotification.addNotice(task)

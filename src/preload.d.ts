@@ -1,10 +1,11 @@
 import type { Task, Plan } from '@cmn/types'
 
 type PartPlan = { name: string; state: boolean }
+type DBName = 'plans' | 'skipPlans' | 'settings'
 interface Preload {
   // utools
-  dbStorageSave<T>(data: T): Promise<void>
-  dbStorageRead(): Promise<Task[]>
+  dbStorageSave<T>(dbName: DBName, data: T): Promise<void>
+  dbStorageRead(dbName: DBName): Promise<Task[]>
 
   // win
   createTask(task: Task): Promise<any>

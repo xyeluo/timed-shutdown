@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron')
+const { waitWindowPrpperty } = require('./utils/common')
 
 let mainId
 ipcRenderer.once('init', (event) => {
@@ -6,17 +7,10 @@ ipcRenderer.once('init', (event) => {
 })
 
 ipcRenderer.on('notice', (_, task) => {
-  let timed = false
-  const sendNotice = () => {
-    if (window.receiveNotice) {
-      utools.shellBeep()
-      window.receiveNotice(task)
-      timed && cancelAnimationFrame(timed)
-      return
-    }
-    timed = requestAnimationFrame(sendNotice)
-  }
-  sendNotice()
+  waitWindowPrpperty('receiveNotice', () => {
+    utools.shellBeep()
+    window.receiveNotice(task)
+  })
 })
 
 function createTask(task) {

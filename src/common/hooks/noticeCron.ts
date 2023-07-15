@@ -57,10 +57,11 @@ const useDateToCron = (parms: DateType) => {
 
 export const useNoticeCron = (
   parms: DateType,
-  minute: number
+  minute: number,
+  operator: '-' | '+' = '-'
 ): Task['notice'] => {
   // 设置通知时间，执行任务前${minute}分钟通知
-  const noticeDate = useDateCompute(parms, minute)
+  const noticeDate = useDateCompute(parms, minute, operator)
   const cron = useDateToCron(noticeDate)
   return {
     cron,
