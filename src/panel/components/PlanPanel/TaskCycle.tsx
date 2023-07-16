@@ -2,7 +2,7 @@ import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 import { useCycleOptions, useCycleWeeklyOptions } from '@cmn/hooks'
 import { RowItem, SwitchComponet } from '@panel/components/common'
 import { PanelSelect } from '@panel/components/common'
-import { useTaskStore } from '@cmn/stores'
+import { useTaskStore } from '@panel/stores'
 
 const dateTimeCommonAttr = {
   size: 'small',

@@ -6,7 +6,7 @@ import '@cmn/styles/index.scss'
 import { showModal } from '@panel/view/PlanPanel'
 import { useRegisteMsg, useRegisteDlg } from '@cmn/hooks'
 import SettingView from '@panel/components/SettingView'
-import { usePlansStore, useTaskStore } from '@cmn/stores'
+import { usePlansStore, useTaskStore } from '@panel/stores'
 import type { Task } from '@cmn/types'
 
 const HomeUrl = 'https://github.com/xyeluo/'

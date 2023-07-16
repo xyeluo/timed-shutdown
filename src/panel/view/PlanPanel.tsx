@@ -1,6 +1,6 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 import { RowItem } from '@panel/components/common'
-import { useTaskStore } from '@cmn/stores'
+import { useTaskStore } from '@panel/stores'
 import { useErrorMsg, useSuccessMsg, useTaskInvalid } from '@cmn/hooks'
 
 let modalState = ref(false)

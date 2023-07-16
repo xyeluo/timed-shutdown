@@ -23,3 +23,7 @@ export const cloneStore = <T>(parms: T): T => {
 }
 
 export const isDarkMode = () => utools.isDarkColors()
+
+export const pluginEnter = (
+  callback: (action: { code: string; type: string; payload: any }) => void
+) => utools.onPluginEnter(callback)
