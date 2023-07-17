@@ -5,7 +5,7 @@ import { openUrl } from '@cmn/utils'
 import '@cmn/styles/index.scss'
 import { showModal } from '@panel/view/PlanPanel'
 import { useRegisteMsg, useRegisteDlg } from '@cmn/hooks'
-import SettingView from '@panel/components/SettingView'
+import SettingsView from '@/panel/view/SettingsView'
 import { usePlansStore, useTaskStore } from '@panel/stores'
 import type { Task } from '@cmn/types'
 
@@ -124,7 +124,7 @@ const Setting = defineComponent({
             )
           }}
         </n-popover>
-        <SettingView v-model:active={active.value} />
+        <SettingsView v-model:active={active.value} />
       </>
     )
   }

@@ -1,5 +1,8 @@
 import type { CycleKey, PlanKey, otherDateKey } from '@cmn/hooks'
 import { type PlanOption, type CycleOption } from '@cmn/hooks'
+import type { Settings as _Settings } from '@panel/stores'
+
+export type Settings = _Settings
 export interface Task {
   name: string
   plan: PlanKey

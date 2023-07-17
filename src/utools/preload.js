@@ -66,7 +66,7 @@ class ScheNotification {
     if (!task.state) {
       job.pause()
     }
-    console.log(new Date(job.nextRun()).toLocaleString())
+    return new Date(job.nextRun()).toLocaleString()
   }
 
   static async switchNoticeState(partPlan) {
@@ -80,6 +80,17 @@ class ScheNotification {
   static async deleteNotice(name) {
     const job = await ScheNotification.#getJob(name)
     job.stop()
+  }
+
+  static clearNotices() {
+    return new Promise((resolve) => {
+      const clearJobs = () => {
+        scheduledJobs.forEach((j) => j.stop())
+        if (scheduledJobs.length !== 0) clearJobs()
+        else resolve(true)
+      }
+      clearJobs()
+    })
   }
 }
 
@@ -155,7 +166,7 @@ window.preload = {
   addNotice: ScheNotification.addNotice,
   switchNoticeState: ScheNotification.switchNoticeState,
   deleteNotice: ScheNotification.deleteNotice,
-  clearJobs: ScheNotification.clearJobs
+  clearNotices: ScheNotification.clearNotices
 }
 /**
  * @example

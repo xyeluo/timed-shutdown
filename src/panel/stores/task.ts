@@ -8,7 +8,7 @@ import {
 } from '@cmn/hooks'
 import type { Task } from '@cmn/types'
 import { cloneStore } from '@cmn/utils'
-import { usePlansStore } from '@panel/stores'
+import { usePlansStore, useSettingsStore } from '@panel/stores'
 
 export const useTaskStore = defineStore('TaskStore', () => {
   const init: Task = {
@@ -29,6 +29,7 @@ export const useTaskStore = defineStore('TaskStore', () => {
     skip: false
   }
   const { addPlan, addTaskDB } = usePlansStore()
+  const settingsStore = useSettingsStore()
 
   let task = ref<Task>(cloneStore(init))
 
@@ -51,7 +52,10 @@ export const useTaskStore = defineStore('TaskStore', () => {
 
     const stdout = await preload.createTask(cloneStore(task.value))
 
-    task.value.notice = useNoticeCron(cloneStore(task.value.cycle), 5)
+    task.value.notice = useNoticeCron(
+      cloneStore(task.value.cycle),
+      settingsStore.settings.advanceNotice
+    )
     addPlan(cloneStore(task.value))
     addTaskDB(cloneStore(task.value))
     reset()

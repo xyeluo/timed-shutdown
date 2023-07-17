@@ -1,11 +1,13 @@
-import type { Task, Plan } from '@cmn/types'
+import type { Task, Plan, Settings } from '@cmn/types'
 
 type PartPlan = { name: string; state: boolean }
 type DBName = 'plans' | 'skipPlans' | 'settings'
 interface Preload {
   // utools
   dbStorageSave<T>(dbName: DBName, data: T): Promise<void>
-  dbStorageRead(dbName: DBName): Promise<Task[]>
+  dbStorageRead<T extends DBName>(
+    dbName: T
+  ): Promise<T extends 'settings' ? Settings : Task[]>
 
   // win
   createTask(task: Task): Promise<any>
@@ -16,9 +18,10 @@ interface Preload {
   openRemote(): Promise<any>
 
   // preload
-  addNotice(notice: Task): Promise<void>
+  addNotice(notice: Task): Promise<string>
   switchNoticeState(partPlan: PartPlan): Promise<void>
   deleteNotice(name: string): Promise<void>
+  clearNotices(): Promise<void>
 }
 interface NoticePreload {
   createTask(task: Task): void

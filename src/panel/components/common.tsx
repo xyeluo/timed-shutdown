@@ -11,14 +11,19 @@ import type { Plan } from '@cmn/types'
 export const PanelSelect = defineComponent({
   props: {
     value: String,
-    options: Object as PropType<SelectOption[]>
+    options: Object as PropType<SelectOption[]>,
+    onUpdateValue: Object as PropType<Function>
   },
   emits: ['update:value'],
   setup(props, { emit }) {
     return () => (
       <n-select
         v-model:value={ref(props.value).value}
-        onUpdateValue={(value: string) => emit('update:value', value)}
+        onUpdateValue={(value: string) =>
+          props.onUpdateValue
+            ? props.onUpdateValue(value)
+            : emit('update:value', value)
+        }
         size="small"
         style={{ width: '90px' }}
         options={props.options}

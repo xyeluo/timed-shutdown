@@ -12,8 +12,13 @@ export const usePlansStore = defineStore('PlansStore', () => {
 
   let taskDB: Task[] = []
 
+  const getTaskDBStore = async () => preload.dbStorageRead('plans')
+
+  const setTaskDBStore = async (db: Task[]) =>
+    preload.dbStorageSave('plans', db)
+
   // 初始化时加载taskDB，并据此转换到任务列表(plans)显示
-  preload.dbStorageRead('plans').then((value) => {
+  getTaskDBStore().then((value) => {
     taskDB = value
     taskDB.forEach((task) => {
       addPlan(task)
@@ -23,7 +28,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
   const addTaskDB = (task: Task) => {
     let rawTask = cloneStore(task)
     taskDB.push(rawTask)
-    preload.dbStorageSave('plans', taskDB)
+    setTaskDBStore(taskDB)
   }
 
   const addPlan = (task: Task) => {
@@ -36,7 +41,9 @@ export const usePlansStore = defineStore('PlansStore', () => {
       },
       dateTime: useSetDateTime(task.cycle)
     }
-    preload.addNotice(cloneStore(task))
+    preload.addNotice(cloneStore(task)).then((nextRunTime) => {
+      console.log(nextRunTime)
+    })
     plans.value.unshift(plan)
   }
 
@@ -45,7 +52,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
     preload.deleteNotice(plan.name)
     plans.value = plans.value.filter(callback)
     taskDB = taskDB.filter(callback)
-    preload.dbStorageSave('plans', taskDB)
+    setTaskDBStore(taskDB)
   }
 
   const deletePlan = async (plan: Plan) => {
@@ -75,11 +82,15 @@ export const usePlansStore = defineStore('PlansStore', () => {
     }
     taskDB.some(callback)
 
-    preload.dbStorageSave('plans', taskDB)
+    setTaskDBStore(taskDB)
     return stdout
   }
 
   const runPlan = async (plan: Plan) => await preload.runPlan(plan.name)
+
+  const clearTaskDBCache = () => {
+    taskDB = []
+  }
 
   return {
     plans,
@@ -88,6 +99,9 @@ export const usePlansStore = defineStore('PlansStore', () => {
     deletePlan,
     switchState,
     deletePlanFromTaskDb,
-    runPlan
+    runPlan,
+    getTaskDBStore,
+    clearTaskDBCache,
+    setTaskDBStore
   }
 })

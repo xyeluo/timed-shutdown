@@ -15,3 +15,4 @@ export default pinia
 
 export * from './task'
 export * from './plans'
+export * from './settings'
