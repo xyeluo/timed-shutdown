@@ -136,8 +136,7 @@ export default defineComponent({
     const taskStore = useTaskStore()
     const plansStore = usePlansStore()
     window.createTask = (task) => {
-      taskStore.task = task
-      taskStore.createTask()
+      taskStore.createTask(task)
     }
     window.switchState = (plan) => {
       plansStore.switchState(plan)

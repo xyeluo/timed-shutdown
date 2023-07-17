@@ -46,18 +46,20 @@ export const useTaskStore = defineStore('TaskStore', () => {
     task.value = cloneStore(init)
   }
 
-  const createTask = async () => {
-    useCompleteDate(task.value)
-    useCompleteName(task.value)
+  const createTask = async (parms?: Task) => {
+    let _task = parms ?? task.value
 
-    const stdout = await preload.createTask(cloneStore(task.value))
+    useCompleteDate(_task)
+    useCompleteName(_task)
 
-    task.value.notice = useNoticeCron(
-      cloneStore(task.value.cycle),
+    const stdout = await preload.createTask(cloneStore(_task))
+
+    _task.notice = useNoticeCron(
+      cloneStore(_task.cycle),
       settingsStore.settings.advanceNotice
     )
-    addPlan(cloneStore(task.value))
-    addTaskDB(cloneStore(task.value))
+    addPlan(cloneStore(_task))
+    addTaskDB(cloneStore(_task))
     reset()
     return stdout
   }
