@@ -16,10 +16,8 @@ export const useSettingsStore = defineStore('SettingsStore', () => {
     advanceNotice: 5
   })
   const { clearTaskDBCache, getTaskDBStore, setTaskDBStore } = usePlansStore()
-  let taskDBStore: Task[] = []
 
   const init = async () => {
-    taskDBStore = await getTaskDBStore()
     settings.value = await preload.dbStorageRead('settings')
     _changeTheme(settings.value.currentTheme)
   }
@@ -45,6 +43,7 @@ export const useSettingsStore = defineStore('SettingsStore', () => {
     clearTaskDBCache()
     await preload.clearNotices()
 
+    const taskDBStore = await getTaskDBStore()
     const taskDB = taskDBStore.map((task): Task => {
       let tempTask = {
         ...task,

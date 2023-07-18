@@ -1,5 +1,5 @@
 import { Page } from '@cmn/Page'
-import Notice from '@notice/Notice'
+import Notice from '@notice/components/Notice'
 import '@cmn/styles/index.scss'
 
 export default defineComponent({

@@ -1,20 +1,15 @@
 import type { Task } from '@cmn/types'
-import { useDateCompute, useConvertTaskPlan, useNoticeCron } from '@cmn/hooks'
+import { useDateCompute, useNoticeCron } from '@cmn/hooks'
 import { cloneStore } from '@cmn/utils'
-import type { PropType } from 'vue'
+import type { NotificationReactive } from 'naive-ui'
 
-declare global {
-  interface Window {
-    receiveNotice(task: Task): void
-  }
-}
-
-const Action = defineComponent({
+export const Actions = defineComponent({
   props: {
     task: {
       type: Object as PropType<Task>,
       required: true
-    }
+    },
+    noticeHandle: Object as PropType<NotificationReactive>
   },
   setup(props) {
     const delayTask = () => {
@@ -43,7 +38,9 @@ const Action = defineComponent({
       noticePreload.stopPlan(
         cloneStore({ ...props.task, skip: true, notice: enableCron }) as Task
       )
+      props.noticeHandle?.destroy()
     }
+    const read = () => props.noticeHandle?.destroy()
 
     let clickState = ref(true)
     const once = (callback: Function) => {
@@ -68,34 +65,10 @@ const Action = defineComponent({
         >
           暂停本次执行
         </n-button>
-        <n-button size="small">已读</n-button>
+        <n-button size="small" onClick={() => once(read)}>
+          已读
+        </n-button>
       </n-space>
     )
-  }
-})
-
-export default defineComponent({
-  setup() {
-    const { info } = useNotification()
-
-    const notify = (parms: Task) => {
-      const planLabel = useConvertTaskPlan(parms.plan)
-      const n = info({
-        // duration: 2500,
-        keepAliveOnHover: true,
-        action: () => <Action task={parms} />
-      })
-      n.title = () => <p>{planLabel}通知</p>
-      n.content = () => (
-        <p>
-          您的电脑预计在5分钟后自动<b>{planLabel}</b>
-        </p>
-      )
-      n.description = `来自uTools定时关机插件: ${parms.name}`
-    }
-
-    window.receiveNotice = (noticeTask) => {
-      notify(noticeTask)
-    }
   }
 })

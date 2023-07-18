@@ -168,17 +168,3 @@ window.preload = {
   deleteNotice: ScheNotification.deleteNotice,
   clearNotices: ScheNotification.clearNotices
 }
-/**
- * @example
- */
-// let cron = '30 32 21 */1 * *'
-// let task = {name: 'TS_1718-2023-07-13',
-// plan: 'dormancy',
-// cycle: {autoDelete: true,
-//   date: '2023-07-13',
-//   otherDate: [],
-//   type: 'daily',
-//   time: '17:18'},
-// state: true,
-// notice: { cron, dateTime: '2023-7-13 17:16' }}
-// ScheNotification.addNotice(task)
