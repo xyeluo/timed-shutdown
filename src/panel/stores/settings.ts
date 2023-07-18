@@ -11,19 +11,24 @@ export interface Settings {
 }
 
 export const useSettingsStore = defineStore('SettingsStore', () => {
-  const settings = ref<Settings>({
-    currentTheme: 'auto',
-    advanceNotice: 5
-  })
+  let settings = ref<Partial<Settings>>({})
   const { clearTaskDBCache, getTaskDBStore, setTaskDBStore } = usePlansStore()
 
   const init = async () => {
     settings.value = await preload.dbStorageRead('settings')
-    _changeTheme(settings.value.currentTheme)
+    // 安装插件时初始化设置
+    if (settings.value === null) {
+      const _settings: Settings = {
+        currentTheme: 'auto',
+        advanceNotice: 5
+      }
+      preload.dbStorageSave('settings', _settings)
+      settings.value = _settings
+    }
+    _changeTheme(settings.value.currentTheme as Settings['currentTheme'])
   }
 
   init()
-
   // bug:使用watch对部分属性监听无效，可能是改变setting的部分方法是async的原因
   watchEffect(() => {
     if (settings.value.advanceNotice === null) return

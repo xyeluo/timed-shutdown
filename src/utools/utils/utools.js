@@ -23,7 +23,7 @@ async function dbStorageSave(dbName, data) {
 async function dbStorageRead(dbName) {
   const plans = await utools.dbStorage.getItem(dbNameList[dbName])
   if (plans === null) {
-    if (dbName === 'settings') return {}
+    if (dbName === 'settings') return null
     return []
   }
   return plans
