@@ -8,6 +8,7 @@ import { cloneStore } from '@cmn/utils'
 export interface Settings {
   currentTheme: themeType
   advanceNotice: number
+  tipSound: boolean
 }
 
 export const useSettingsStore = defineStore('SettingsStore', () => {
@@ -17,20 +18,22 @@ export const useSettingsStore = defineStore('SettingsStore', () => {
   const init = async () => {
     settings.value = await preload.dbStorageRead('settings')
     // 安装插件时初始化设置
-    if (settings.value === null) {
+    if (settings.value === null || Object.keys(settings.value).length === 0) {
       const _settings: Settings = {
         currentTheme: 'auto',
-        advanceNotice: 5
+        advanceNotice: 5,
+        tipSound: true
       }
       preload.dbStorageSave('settings', _settings)
       settings.value = _settings
     }
     _changeTheme(settings.value.currentTheme as Settings['currentTheme'])
   }
-
   init()
-  // bug:使用watch对部分属性监听无效，可能是改变setting的部分方法是async的原因
+
+  // bug:使用watch对部分属性监听无效，可能是改变setting的部分方法是async的原因？
   watchEffect(() => {
+    // 清空时间输入框也会触发watch，此时值为null，因此没必要存储
     if (settings.value.advanceNotice === null) return
     preload.dbStorageSave('settings', cloneStore(settings.value))
   })
@@ -62,5 +65,9 @@ export const useSettingsStore = defineStore('SettingsStore', () => {
     setTaskDBStore(taskDB)
   }
 
-  return { settings, changeTheme, setAdvanceNotice }
+  const tipSoundSwitch = async (flag: boolean) => {
+    settings.value.tipSound = flag
+  }
+
+  return { settings, changeTheme, setAdvanceNotice, tipSoundSwitch }
 })

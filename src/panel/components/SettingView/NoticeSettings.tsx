@@ -1,7 +1,8 @@
 import { useSettingsStore } from '@/panel/stores'
 import { RowItem } from '@panel/components/common'
+import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 
-export default defineComponent({
+const AdvanceMinutes = defineComponent({
   setup() {
     const settingsStore = useSettingsStore()
     let loading = ref(false)
@@ -12,7 +13,7 @@ export default defineComponent({
         .then(() => (loading.value = !loading.value))
     }
     return () => (
-      <RowItem label="通知时间：" style={{ textAlign: 'right', width: 'auto' }}>
+      <RowItem label="时间：" style={{ textAlign: 'right', width: '70px' }}>
         <div>
           提前&ensp;
           <n-input-number
@@ -27,6 +28,39 @@ export default defineComponent({
           &ensp;分钟
         </div>
       </RowItem>
+    )
+  }
+})
+
+const TipSound = defineComponent({
+  setup() {
+    const settingsStore = useSettingsStore()
+
+    return () => (
+      <RowItem label="提示音：" style={{ textAlign: 'right', width: '70px' }}>
+        <n-switch
+          class={PPanelScss.extra}
+          default-value={true}
+          onUpdateValue={settingsStore.tipSoundSwitch}
+        >
+          {{
+            checked: () => '打开',
+            unchecked: () => '关闭'
+          }}
+        </n-switch>
+      </RowItem>
+    )
+  }
+})
+
+export default defineComponent({
+  setup() {
+    return () => (
+      <>
+        <RowItem label="通知" style={{ textAlign: 'left' }} />
+        <AdvanceMinutes />
+        <TipSound />
+      </>
     )
   }
 })

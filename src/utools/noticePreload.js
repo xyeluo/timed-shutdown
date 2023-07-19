@@ -1,15 +1,16 @@
 const { ipcRenderer } = require('electron')
 const { waitWindowPrpperty } = require('./utils/common')
 const IpcDispatch = require('./utils/ipcDispatch')
-
+const { dbStorageRead } = require('./utils/utools')
 let mainId
 ipcRenderer.once('init', (event) => {
   mainId = event.senderId
 })
 
 ipcRenderer.on('notice', (_, task) => {
+  const settings = dbStorageRead('settings')
   waitWindowPrpperty('receiveNotice', () => {
-    utools.shellBeep()
+    settings.tipSound && utools.shellBeep()
     window.receiveNotice(task)
   })
 })

@@ -12,13 +12,16 @@ const Themes = defineComponent({
     ]
 
     return () => (
-      <RowItem label="主题：" style={{ textAlign: 'right', width: '70px' }}>
-        <PanelSelect
-          options={themesData}
-          v-model:value={settingsStore.settings.currentTheme}
-          onUpdateValue={settingsStore.changeTheme}
-        ></PanelSelect>
-      </RowItem>
+      <>
+        <RowItem label="全局" style={{ textAlign: 'left' }} />
+        <RowItem label="主题：" style={{ textAlign: 'right', width: '70px' }}>
+          <PanelSelect
+            options={themesData}
+            v-model:value={settingsStore.settings.currentTheme}
+            onUpdateValue={settingsStore.changeTheme}
+          ></PanelSelect>
+        </RowItem>
+      </>
     )
   }
 })
@@ -41,6 +44,7 @@ export default defineComponent({
             default: () => (
               <>
                 <Themes />
+                <hr style={{ marginTop: '10px' }} />
                 <NoticeMinutes />
               </>
             )

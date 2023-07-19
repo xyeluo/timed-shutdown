@@ -116,7 +116,6 @@ export default defineComponent({
 
     const extraCpt = {
       once: (
-        // todo:once event
         <n-switch
           class={PPanelScss.extra}
           default-value={taskStore.task.cycle.autoDelete}

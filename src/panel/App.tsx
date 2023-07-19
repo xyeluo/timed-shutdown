@@ -110,7 +110,7 @@ const Question = defineComponent({
 
 const Setting = defineComponent({
   setup() {
-    let active = ref(false)
+    let settingActive = ref(false)
 
     return () => (
       <>
@@ -118,13 +118,13 @@ const Setting = defineComponent({
           {{
             default: () => <>设置</>,
             trigger: () => (
-              <n-icon size="20px" onClick={() => (active.value = true)}>
+              <n-icon size="20px" onClick={() => (settingActive.value = true)}>
                 <SettingIcon />
               </n-icon>
             )
           }}
         </n-popover>
-        <SettingsView v-model:active={active.value} />
+        <SettingsView v-model:active={settingActive.value} />
       </>
     )
   }
