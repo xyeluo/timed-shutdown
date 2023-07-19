@@ -2,13 +2,16 @@ export const openUrl = (url: string) => {
   utools.shellOpenExternal(url)
 }
 
-export const getDateTimeParts = (date: Date) => ({
-  year: date.getFullYear(),
-  month: date.getMonth() + 1,
-  day: date.getDate(),
-  hour: date.getHours(),
-  minute: date.getMinutes()
-})
+export const getDateTimeParts = (date: Date = new Date()) => {
+  return {
+    year: date.getFullYear(),
+    month: date.getMonth() + 1,
+    day: date.getDate(),
+    hour: date.getHours(),
+    minute: date.getMinutes(),
+    seconds: date.getSeconds()
+  }
+}
 
 export const getNowDate = () => {
   const date = new Date()

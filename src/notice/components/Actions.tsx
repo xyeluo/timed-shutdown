@@ -18,7 +18,7 @@ export const Actions = defineComponent({
       const { date, time } = useDateCompute(props.task!.cycle, 10, '+')
       const task: Task = {
         ...props.task,
-        name: '',
+        name: `推迟${props.task.name}`,
         cycle: {
           type: 'once',
           date,
