@@ -22,10 +22,12 @@ interface Preload {
   switchNoticeState(partPlan: PartPlan): Promise<void>
   deleteNotice(name: string): Promise<void>
   clearNotices(): Promise<void>
+  noticeError(error: string): void
 }
+
 interface NoticePreload {
-  createTask(task: Task): void
-  stopPlan(task: Task | Plan): void
+  createTask(task: Task): Promise<any>
+  stopPlan(task: Task | Plan): Promise<any>
 }
 
 declare global {

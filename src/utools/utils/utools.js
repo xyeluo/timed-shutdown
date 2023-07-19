@@ -34,7 +34,7 @@ async function dbStorageRead(dbName) {
  * @param {"plans"|"skipPlans"} dbName
  * @param {string} name
  */
-async function deletePlan(dbName, name) {
+async function deleteStorePlan(dbName, name) {
   let store = await dbStorageRead(dbName)
   store = store.filter((s) => s.name !== name)
   dbStorageSave(dbName, store)
@@ -43,5 +43,5 @@ async function deletePlan(dbName, name) {
 module.exports = {
   dbStorageSave,
   dbStorageRead,
-  deletePlan
+  deleteStorePlan
 }

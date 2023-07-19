@@ -1,8 +1,13 @@
 const { ipcRenderer } = require('electron')
 const { Cron, scheduledJobs } = require('./lib/croner')
 const { TIMEZONE } = require('./utils/config')
-const { dbStorageRead, dbStorageSave, deletePlan } = require('./utils/utools')
+const {
+  dbStorageRead,
+  dbStorageSave,
+  deleteStorePlan
+} = require('./utils/utools')
 const { waitWindowPrpperty } = require('./utils/common')
+const IpcDispatch = require('./utils/ipcDispatch')
 
 class ScheNotification {
   static #win
@@ -26,9 +31,11 @@ class ScheNotification {
         preload: './noticePreload.js'
       }
     }
-    // dev
-    const noticeHtml = '../../dist/notice/index.html'
-    // const noticeHtml='./notice/index.html'
+
+    const pathSuffix = '/notice/index.html'
+    const noticeHtml = utools.isDev
+      ? `../../dist${pathSuffix}`
+      : `.${pathSuffix}`
     const win = utools.createBrowserWindow(noticeHtml, options)
 
     ScheNotification.#win = win
@@ -38,12 +45,16 @@ class ScheNotification {
     win.webContents.openDevTools({ mode: 'detach' })
   }
 
+  static async sendmessage(name, msg) {
+    ipcRenderer.sendTo(ScheNotification.#windowId, name, msg)
+  }
+
   static async #sendNotice(task) {
     // 被alt+f4关闭时重新创建窗口
     if (!ScheNotification.#win || ScheNotification.#win.isDestroyed()) {
       await ScheNotification.#createWindow()
     }
-    ipcRenderer.sendTo(ScheNotification.#windowId, 'notice', task)
+    ScheNotification.sendmessage('notice', task)
   }
 
   static async #getJob(name) {
@@ -94,40 +105,41 @@ class ScheNotification {
   }
 }
 
-ipcRenderer.on('createTask', (_, task) => {
-  window.createTask(task)
-})
+IpcDispatch.on('createTask', async (task) => await window.createTask(task))
 
-ipcRenderer.on('stopPlan', async (_, plan) => {
-  window.switchState(plan)
-
+IpcDispatch.on('stopPlan', async (plan) => {
+  const result = await window.switchState(plan)
   const options = {
     timezone: TIMEZONE,
     startAt: new Date(plan.notice.dateTime),
     maxRuns: 1,
     context: plan
   }
-  let skipStore = await dbStorageRead('skipPlans')
-  skipStore.push(plan)
-  dbStorageSave('skipPlans', skipStore)
 
   Cron(plan.notice.cron, options, async (self, context) => {
     self.stop()
 
+    let skipStore = await dbStorageRead('skipPlans')
+    skipStore.push(plan)
+    dbStorageSave('skipPlans', skipStore)
     const task = skipStore.find((task) => task.name === context.name)
     // 当skipPlans的数据中存在plan相关才继续往下执行
     if (!task) return
-    deletePlan('skipPlans', task.name)
+    deleteStorePlan('skipPlans', task.name)
 
     const plansStore = await dbStorageRead('plans')
     const p = plansStore.find((p) => p.name === context.name)
     // 当plans数据中存在plan任务且该任务skip为true，state为false时才重新启动
-    if (!p && !p.skip && p.state) return
+    if (!p || !p?.skip || p?.state) return
     p.skip = false
     window.switchState(p)
   })
+  return result
 })
 
+function noticeError(error) {
+  ScheNotification.sendmessage('noticeError', error)
+}
 // 重新启动插件时对跳过本次任务的处理
 async function initEnableSkipPlan() {
   const skipStore = await dbStorageRead('skipPlans')
@@ -144,17 +156,17 @@ async function initEnableSkipPlan() {
       // 检测skipPlan是否过期。小于等于当前时间注册Cron无效，则直接切换任务状态;大于当前时间则注册Cron，由设定时间后切换任务状态
       if (new Date(skipPlan.notice.dateTime) <= new Date()) {
         waitWindowPrpperty('switchState', () => window.switchState(p))
-        deletePlan('skipPlans', skipPlan.name)
+        deleteStorePlan('skipPlans', skipPlan.name)
       } else {
         options.startAt = new Date(skipPlan.notice.dateTime)
         options.context = p
         Cron(skipPlan.notice.cron, options, (self, context) => {
           self.stop()
           waitWindowPrpperty('switchState', () => window.switchState(context))
-          deletePlan('skipPlans', skipPlan.name)
+          deleteStorePlan('skipPlans', skipPlan.name)
         })
       }
-    } else deletePlan('skipPlans', skipPlan.name)
+    } else deleteStorePlan('skipPlans', skipPlan.name)
   })
 }
 initEnableSkipPlan()
@@ -166,5 +178,6 @@ window.preload = {
   addNotice: ScheNotification.addNotice,
   switchNoticeState: ScheNotification.switchNoticeState,
   deleteNotice: ScheNotification.deleteNotice,
-  clearNotices: ScheNotification.clearNotices
+  clearNotices: ScheNotification.clearNotices,
+  noticeError
 }

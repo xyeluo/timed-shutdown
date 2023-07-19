@@ -12,8 +12,8 @@ import type { Task } from '@cmn/types'
 const HomeUrl = 'https://github.com/xyeluo/'
 declare global {
   interface Window {
-    createTask(task: Task): void
-    switchState(task: Task): void
+    createTask(task: Task): Promise<any>
+    switchState(task: Task): Promise<any>
   }
 }
 const PanelHeader = defineComponent({
@@ -135,11 +135,23 @@ export default defineComponent({
     // 给通知视图暴露的api
     const taskStore = useTaskStore()
     const plansStore = usePlansStore()
-    window.createTask = (task) => {
-      taskStore.createTask(task)
+
+    window.createTask = async (task) => {
+      try {
+        return await taskStore.createTask(task)
+      } catch (error: any) {
+        const e = error?.stack || error
+        preload.noticeError(e.toString())
+      }
     }
-    window.switchState = (plan) => {
-      plansStore.switchState(plan)
+
+    window.switchState = async (plan) => {
+      try {
+        return await plansStore.switchState(plan)
+      } catch (error: any) {
+        const e = error?.stack || error
+        preload.noticeError(e.toString())
+      }
     }
 
     const Main = () => {

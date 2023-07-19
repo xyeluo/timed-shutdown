@@ -1,5 +1,6 @@
 const { ipcRenderer } = require('electron')
 const { waitWindowPrpperty } = require('./utils/common')
+const IpcDispatch = require('./utils/ipcDispatch')
 
 let mainId
 ipcRenderer.once('init', (event) => {
@@ -13,12 +14,16 @@ ipcRenderer.on('notice', (_, task) => {
   })
 })
 
-function createTask(task) {
-  ipcRenderer.sendTo(mainId, 'createTask', task)
+ipcRenderer.on('noticeError', (_, error) => {
+  waitWindowPrpperty('noticeError', () => window.noticeError(error))
+})
+
+async function createTask(task) {
+  return IpcDispatch.sendTo(mainId, 'createTask', task)
 }
 
-function stopPlan(plan) {
-  ipcRenderer.sendTo(mainId, 'stopPlan', plan)
+async function stopPlan(plan) {
+  return IpcDispatch.sendTo(mainId, 'stopPlan', plan)
 }
 
 window.noticePreload = {

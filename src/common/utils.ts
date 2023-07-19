@@ -24,6 +24,13 @@ export const cloneStore = <T>(parms: T): T => {
 
 export const isDarkMode = () => utools.isDarkColors()
 
+let firstEnter = true
 export const pluginEnter = (
-  callback: (action: { code: string; type: string; payload: any }) => void
-) => utools.onPluginEnter(callback)
+  callback: (action?: { code: string; type: string; payload: any }) => void
+) => {
+  if (firstEnter) {
+    firstEnter = false
+    callback()
+  }
+  utools.onPluginEnter(callback)
+}

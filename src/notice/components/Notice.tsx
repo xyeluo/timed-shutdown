@@ -5,54 +5,38 @@ import { Actions } from '@notice/components/Actions'
 declare global {
   interface Window {
     receiveNotice(task: Task): void
+    noticeError(error: string): void
   }
 }
 
 const Title = defineComponent({
   props: {
-    options: Object as PropType<{ planLabel: PlanValue; duration: number }>
+    planLabel: Object as PropType<PlanValue>
   },
   setup(props) {
-    return () => (
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <p>{props.options!.planLabel}通知</p>
-        <p style={{ color: '#61656a' }}>{props.options!.duration}</p>
-      </div>
-    )
+    return () => <p>{props.planLabel}通知</p>
   }
 })
 
 export default defineComponent({
   setup() {
-    const { info } = useNotification()
+    const { info, error } = useNotification()
 
     const notify = (parms: Task) => {
-      let duration = ref(5)
       const planLabel = useConvertTaskPlan(parms.plan)
       const n = info({
-        title: () => (
-          <Title options={{ planLabel, duration: duration.value }} />
-        ),
+        title: () => <Title planLabel={planLabel} />,
         keepAliveOnHover: true,
         closable: false,
-        action: () => <Actions task={parms} noticeHandle={n} />
+        action: () => <Actions task={parms} noticeHandle={n} />,
+        description: `来自uTools定时关机插件: ${parms.name}`,
+        duration: 100000
       })
       n.content = () => (
         <p>
           您的电脑预计在5分钟后自动<b>{planLabel}</b>
         </p>
       )
-      n.description = `来自uTools定时关机插件: ${parms.name}`
-      n.onAfterEnter = () => {
-        const timed = setInterval(() => {
-          duration.value--
-          if (duration.value < 0) {
-            clearInterval(timed)
-            n.destroy()
-            return
-          }
-        }, 1000)
-      }
     }
     /**
      * @example
@@ -72,8 +56,19 @@ export default defineComponent({
     //   notice: { cron: '30 32 21 */1 * *', dateTime: '2023-7-13 17:16' }
     // }
     // notify(task)
+
     window.receiveNotice = (noticeTask) => {
       notify(noticeTask)
+
+      window.noticeError = (err) => {
+        error({
+          title: () => (
+            <Title planLabel={useConvertTaskPlan(noticeTask.plan)} />
+          ),
+          description: `来自uTools定时关机插件: ${noticeTask.name}`,
+          content: err
+        })
+      }
     }
   }
 })
