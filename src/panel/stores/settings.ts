@@ -12,24 +12,8 @@ export interface Settings {
 }
 
 export const useSettingsStore = defineStore('SettingsStore', () => {
-  let settings = ref<Partial<Settings>>({})
-  const { clearTaskDBCache, getTaskDBStore, setTaskDBStore } = usePlansStore()
-
-  const init = async () => {
-    settings.value = await preload.dbStorageRead('settings')
-    // 安装插件时初始化设置
-    if (settings.value === null || Object.keys(settings.value).length === 0) {
-      const _settings: Settings = {
-        currentTheme: 'auto',
-        advanceNotice: 5,
-        tipSound: true
-      }
-      preload.dbStorageSave('settings', _settings)
-      settings.value = _settings
-    }
-    _changeTheme(settings.value.currentTheme as Settings['currentTheme'])
-  }
-  init()
+  let settings = ref<Settings>(preload.dbStorageRead('settings'))
+  const { clearTaskDBCache, setTaskDBStore } = usePlansStore()
 
   // bug:使用watch对部分属性监听无效，可能是改变setting的部分方法是async的原因？
   watchEffect(() => {
@@ -51,7 +35,7 @@ export const useSettingsStore = defineStore('SettingsStore', () => {
     clearTaskDBCache()
     await preload.clearNotices()
 
-    const taskDBStore = await getTaskDBStore()
+    const taskDBStore = preload.dbStorageRead('plans')
     const taskDB = taskDBStore.map((task): Task => {
       let tempTask = {
         ...task,
@@ -68,6 +52,16 @@ export const useSettingsStore = defineStore('SettingsStore', () => {
   const tipSoundSwitch = async (flag: boolean) => {
     settings.value.tipSound = flag
   }
+
+  // 安装插件时初始化设置
+  if (settings.value === null || Object.keys(settings.value).length === 0) {
+    settings.value = {
+      currentTheme: 'auto',
+      advanceNotice: 5,
+      tipSound: true
+    }
+  }
+  changeTheme(settings.value.currentTheme)
 
   return { settings, changeTheme, setAdvanceNotice, tipSoundSwitch }
 })

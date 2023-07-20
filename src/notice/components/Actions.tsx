@@ -11,7 +11,8 @@ export const Actions = defineComponent({
     },
     noticeHandle: Object as PropType<NotificationReactive>
   },
-  setup(props) {
+  emits: ['removeNotice'],
+  setup(props, { emit }) {
     let delayBtnLoading = ref(false)
     let skipBtnLoading = ref(false)
     const delayTask = async () => {
@@ -34,6 +35,7 @@ export const Actions = defineComponent({
     }
 
     const skipCurrentPlan = async (flag: boolean = true) => {
+      // skipCurrentPlan的loading状态，点击推迟按钮时不会触发该状态改变
       flag && (skipBtnLoading.value = !skipBtnLoading.value)
       const enableCron = useNoticeCron(
         { ...props.task!.cycle, type: 'once' },
@@ -41,22 +43,26 @@ export const Actions = defineComponent({
         '+'
       )
 
-      return noticePreload
+      noticePreload
         .stopPlan(
           cloneStore({ ...props.task, skip: true, notice: enableCron }) as Task
         )
         .then(() => flag && (skipBtnLoading.value = !skipBtnLoading.value))
     }
-    const read = () => props.noticeHandle?.destroy()
+    const read = () => {
+      emit('removeNotice')
+      props.noticeHandle?.destroy()
+    }
 
     let clickState = ref(true)
-    const once = (callback: () => Promise<boolean>) => {
+    const once = (callback: () => Promise<any>) => {
       // 推迟和暂停只能点击一次
       if (!clickState) return
-      callback().then(() => {
+      callback().finally(() => {
+        emit('removeNotice')
+        clickState.value = false
         props.noticeHandle?.destroy()
       })
-      clickState.value = false
     }
     return () => (
       <n-space>

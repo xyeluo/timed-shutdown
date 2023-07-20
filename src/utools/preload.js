@@ -41,7 +41,11 @@ class ScheNotification {
     ScheNotification.#win = win
     ScheNotification.#windowId = win.webContents.id
 
-    ipcRenderer.sendTo(ScheNotification.#windowId, 'init', '')
+    ipcRenderer.sendTo(ScheNotification.#windowId, 'init')
+    ipcRenderer.on('closeWindow', () => {
+      ScheNotification.#win.destroy()
+    })
+
     win.webContents.openDevTools({ mode: 'detach' })
   }
 
@@ -105,6 +109,8 @@ class ScheNotification {
   }
 }
 
+// ScheNotification.createWindow()
+
 IpcDispatch.on('createTask', async (task) => await window.createTask(task))
 
 IpcDispatch.on('stopPlan', async (plan) => {
@@ -115,22 +121,23 @@ IpcDispatch.on('stopPlan', async (plan) => {
     maxRuns: 1,
     context: plan
   }
+  let skipStore = dbStorageRead('skipPlans')
+  skipStore.push({ name: plan.name, notice: plan.notice })
+  dbStorageSave('skipPlans', skipStore)
 
   Cron(plan.notice.cron, options, async (self, context) => {
     self.stop()
 
-    let skipStore = await dbStorageRead('skipPlans')
-    skipStore.push(plan)
-    dbStorageSave('skipPlans', skipStore)
     const task = skipStore.find((task) => task.name === context.name)
     // 当skipPlans的数据中存在plan相关才继续往下执行
     if (!task) return
     deleteStorePlan('skipPlans', task.name)
 
-    const plansStore = await dbStorageRead('plans')
+    const plansStore = dbStorageRead('plans')
     const p = plansStore.find((p) => p.name === context.name)
-    // 当plans数据中存在plan任务且该任务skip为true，state为false时才重新启动
     if (!p || !p?.skip || p?.state) return
+
+    // 当plans数据中存在plan任务且该任务skip为true，state为false时才切换运行状态
     p.skip = false
     window.switchState(p)
   })
@@ -142,13 +149,13 @@ function noticeError(error) {
 }
 // 重新启动插件时对跳过本次任务的处理
 async function initEnableSkipPlan() {
-  const skipStore = await dbStorageRead('skipPlans')
+  let skipStore = dbStorageRead('skipPlans')
   let options = {
     timezone: TIMEZONE,
     maxRuns: 1
   }
   skipStore.forEach(async (skipPlan) => {
-    const plansStore = await dbStorageRead('plans')
+    const plansStore = dbStorageRead('plans')
     const p = plansStore.find((p) => p.name === skipPlan.name)
     if (p && p.skip && !p.state) {
       p.skip = false

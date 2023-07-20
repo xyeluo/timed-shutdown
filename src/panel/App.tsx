@@ -142,6 +142,7 @@ export default defineComponent({
       } catch (error: any) {
         const e = error?.stack || error
         preload.noticeError(e.toString())
+        return e
       }
     }
 
@@ -151,6 +152,7 @@ export default defineComponent({
       } catch (error: any) {
         const e = error?.stack || error
         preload.noticeError(e.toString())
+        return e
       }
     }
 

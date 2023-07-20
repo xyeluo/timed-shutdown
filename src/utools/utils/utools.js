@@ -12,7 +12,7 @@ const dbNameList = {
  * @param {object} data
  */
 async function dbStorageSave(dbName, data) {
-  await utools.dbStorage.setItem(dbNameList[dbName], data)
+  utools.dbStorage.setItem(dbNameList[dbName], data)
 }
 
 /**
@@ -20,13 +20,13 @@ async function dbStorageSave(dbName, data) {
  * @param {"plans"|"skipPlans"|"settings"} dbName
  * @returns data
  */
-async function dbStorageRead(dbName) {
-  const plans = await utools.dbStorage.getItem(dbNameList[dbName])
-  if (plans === null) {
+function dbStorageRead(dbName) {
+  const store = utools.dbStorage.getItem(dbNameList[dbName])
+  if (store === null) {
     if (dbName === 'settings') return null
     return []
   }
-  return plans
+  return store
 }
 
 /**
@@ -35,7 +35,7 @@ async function dbStorageRead(dbName) {
  * @param {string} name
  */
 async function deleteStorePlan(dbName, name) {
-  let store = await dbStorageRead(dbName)
+  let store = dbStorageRead(dbName)
   store = store.filter((s) => s.name !== name)
   dbStorageSave(dbName, store)
 }

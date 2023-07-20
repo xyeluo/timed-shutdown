@@ -1,13 +1,16 @@
 import type { Task, Plan, Settings } from '@cmn/types'
 
 type PartPlan = { name: string; state: boolean }
+
 type DBName = 'plans' | 'skipPlans' | 'settings'
+type DBStorageRead = <T extends DBName>(
+  dbName: T
+) => T extends 'settings' ? Settings : Task[]
+
 interface Preload {
   // utools
   dbStorageSave<T>(dbName: DBName, data: T): Promise<void>
-  dbStorageRead<T extends DBName>(
-    dbName: T
-  ): Promise<T extends 'settings' ? Settings : Task[]>
+  dbStorageRead: DBStorageRead
 
   // win
   createTask(task: Task): Promise<any>
@@ -26,8 +29,15 @@ interface Preload {
 }
 
 interface NoticePreload {
+  //win
   createTask(task: Task): Promise<any>
+
+  // noticePreload
   stopPlan(task: Task | Plan): Promise<any>
+  closeWindow(): void
+
+  //utools
+  dbStorageRead: DBStorageRead
 }
 
 declare global {

@@ -38,7 +38,6 @@ const AdvanceMinutes = defineComponent({
 const TipSound = defineComponent({
   setup() {
     const settingsStore = useSettingsStore()
-
     return () => (
       <RowItem
         label="提示音："
@@ -46,7 +45,7 @@ const TipSound = defineComponent({
       >
         <n-switch
           class={PPanelScss.extra}
-          default-value={true}
+          default-value={settingsStore.settings.tipSound}
           onUpdateValue={settingsStore.tipSoundSwitch}
         >
           {{

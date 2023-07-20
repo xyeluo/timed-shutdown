@@ -10,20 +10,10 @@ import {
 export const usePlansStore = defineStore('PlansStore', () => {
   let plans = ref<Plan[]>([])
 
-  let taskDB: Task[] = []
-
-  const getTaskDBStore = async () => preload.dbStorageRead('plans')
+  let taskDB: Task[] = preload.dbStorageRead('plans')
 
   const setTaskDBStore = async (db: Task[]) =>
     preload.dbStorageSave('plans', db)
-
-  // 初始化时加载taskDB，并据此转换到任务列表(plans)显示
-  getTaskDBStore().then((value) => {
-    taskDB = value
-    taskDB.forEach((task) => {
-      addPlan(task)
-    })
-  })
 
   const addTaskDB = (task: Task) => {
     let rawTask = cloneStore(task)
@@ -92,6 +82,11 @@ export const usePlansStore = defineStore('PlansStore', () => {
     taskDB = []
   }
 
+  // 初始化时加载taskDB，并据此转换到任务列表(plans)显示
+  taskDB.forEach((task) => {
+    addPlan(task)
+  })
+
   return {
     plans,
     addPlan,
@@ -100,7 +95,6 @@ export const usePlansStore = defineStore('PlansStore', () => {
     switchState,
     deletePlanFromTaskDb,
     runPlan,
-    getTaskDBStore,
     clearTaskDBCache,
     setTaskDBStore
   }
