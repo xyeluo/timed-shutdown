@@ -2,6 +2,7 @@ import { usePlansStore } from '@panel/stores'
 import { pluginEnter } from '@cmn/utils'
 import PlanCard from '@panel/components/PlanList/PlanCard'
 import PListScss from '@panel/styles/PlanList.module.scss'
+import { TransitionGroup } from 'vue'
 
 export default defineComponent({
   name: 'PlanList',
@@ -30,9 +31,19 @@ export default defineComponent({
         return <n-empty description="列表为空" size="huge" />
       return (
         <div class={PListScss.list}>
-          {plansStore.plans.map((p) => (
-            <PlanCard plan={p} key={p.name} />
-          ))}
+          <TransitionGroup
+            enterFromClass={PListScss.listTrFrom}
+            enterToClass={PListScss.listTrTo}
+            leaveFromClass={PListScss.listTrTo}
+            leaveToClass={PListScss.listTrFrom}
+            enterActiveClass={PListScss.listTransition}
+            leaveActiveClass={PListScss.listTransitionLeave}
+            moveClass={PListScss.listTransition}
+          >
+            {plansStore.plans.map((p) => (
+              <PlanCard plan={p} key={p.name} />
+            ))}
+          </TransitionGroup>
         </div>
       )
     }

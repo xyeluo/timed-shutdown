@@ -3,6 +3,14 @@ import { RowItem } from '@panel/components/common'
 import StateBtn from './StateBtn'
 import Actions from './Actions'
 
+const LabelText = defineComponent({
+  props: {
+    text: String
+  },
+  setup(props) {
+    return () => <n-text depth="3">{props.text}</n-text>
+  }
+})
 export default defineComponent({
   props: {
     plan: Object as PropType<Plan>
@@ -17,22 +25,28 @@ export default defineComponent({
             default: () => (
               <>
                 <RowItem
-                  label="任务类型："
+                  label={() => <LabelText text="任务类型：" />}
                   style={{ marginTop: 0 }}
                   labelStyle={{ width: 'auto' }}
                 >
                   {props.plan?.plan}
                 </RowItem>
-                <RowItem label="执行周期：" labelStyle={{ width: 'auto' }}>
+                <RowItem
+                  label={() => <LabelText text="执行周期：" />}
+                  labelStyle={{ width: 'auto' }}
+                >
                   {props.plan?.cycle.type}
                 </RowItem>
                 <RowItem
-                  label={() => <p>状态：</p>}
+                  label={() => <LabelText text="状态：" />}
                   labelStyle={{ width: '70px' }}
                 >
                   <StateBtn row={props.plan} />
                 </RowItem>
-                <RowItem label="执行日期：" labelStyle={{ width: 'auto' }}>
+                <RowItem
+                  label={() => <LabelText text="执行日期：" />}
+                  labelStyle={{ width: 'auto' }}
+                >
                   {date ? <>&emsp;{date}&emsp;</> : ''}
                   <u>{time}</u>
                 </RowItem>
