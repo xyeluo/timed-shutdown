@@ -13,7 +13,10 @@ const AdvanceMinutes = defineComponent({
         .then(() => (loading.value = !loading.value))
     }
     return () => (
-      <RowItem label="时间：" style={{ textAlign: 'right', width: '70px' }}>
+      <RowItem
+        label="时间："
+        labelStyle={{ textAlign: 'right', width: '70px' }}
+      >
         <div>
           提前&ensp;
           <n-input-number
@@ -37,7 +40,10 @@ const TipSound = defineComponent({
     const settingsStore = useSettingsStore()
 
     return () => (
-      <RowItem label="提示音：" style={{ textAlign: 'right', width: '70px' }}>
+      <RowItem
+        label="提示音："
+        labelStyle={{ textAlign: 'right', width: '70px' }}
+      >
         <n-switch
           class={PPanelScss.extra}
           default-value={true}
@@ -57,7 +63,7 @@ export default defineComponent({
   setup() {
     return () => (
       <>
-        <RowItem label="通知" style={{ textAlign: 'left' }} />
+        <RowItem label="通知" labelStyle={{ textAlign: 'left' }} />
         <AdvanceMinutes />
         <TipSound />
       </>

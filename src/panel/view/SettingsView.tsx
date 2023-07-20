@@ -13,8 +13,11 @@ const Themes = defineComponent({
 
     return () => (
       <>
-        <RowItem label="全局" style={{ textAlign: 'left' }} />
-        <RowItem label="主题：" style={{ textAlign: 'right', width: '70px' }}>
+        <RowItem label="全局" labelStyle={{ textAlign: 'left' }} />
+        <RowItem
+          label="主题："
+          labelStyle={{ textAlign: 'right', width: '70px' }}
+        >
           <PanelSelect
             options={themesData}
             v-model:value={settingsStore.settings.currentTheme}

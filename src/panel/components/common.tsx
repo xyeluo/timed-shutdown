@@ -3,8 +3,8 @@ import type { SelectOption } from 'naive-ui'
 import {
   createVNode,
   type Component,
-  type PropType,
-  type StyleValue
+  type StyleValue,
+  type VNodeChild
 } from 'vue'
 import type { Plan } from '@cmn/types'
 
@@ -35,14 +35,17 @@ export const PanelSelect = defineComponent({
 
 export const RowItem = defineComponent({
   props: {
-    label: String,
+    label: Object as PropType<String | (() => VNodeChild)>,
+    labelStyle: Object as PropType<StyleValue>,
     style: Object as PropType<StyleValue>
   },
   setup(props, { slots }) {
     return () => (
-      <div class={PPanelScss.item}>
-        <label class={PPanelScss.itemLabel} style={props.style}>
-          {props.label}
+      <div class={PPanelScss.item} style={props.style}>
+        <label class={PPanelScss.itemLabel} style={props.labelStyle}>
+          {typeof props.label === 'string'
+            ? props.label
+            : (props.label as Function)?.()}
         </label>
         <div class={PPanelScss.itemContent}>{slots.default?.()}</div>
         {slots.extra?.()}

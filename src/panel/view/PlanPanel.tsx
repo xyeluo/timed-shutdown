@@ -35,7 +35,6 @@ const Confirm = defineComponent({
           <n-button
             loading={loading.value}
             type="info"
-            color="#409eff"
             onClick={createTask}
             disabled={loading.value}
           >

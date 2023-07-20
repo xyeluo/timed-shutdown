@@ -11,6 +11,23 @@ import { isDarkMode } from '@cmn/utils'
 
 type naiveThemeType = GlobalTheme | null
 
+type CustomeStyleOptionsCmn = {
+  footerBg: string
+}
+type CustomeStyleOptions = {
+  light: CustomeStyleOptionsCmn
+  dark: CustomeStyleOptionsCmn
+}
+const customeStyleOptions: CustomeStyleOptions = {
+  light: {
+    footerBg: '#f5f5f7'
+  },
+  dark: {
+    footerBg: '#303133'
+  }
+}
+let customeStyleNow = ref<CustomeStyleOptionsCmn>()
+
 const themes = { dark: darkTheme, light: null, auto: 'auto' }
 export type themeType = keyof typeof themes
 
@@ -19,10 +36,8 @@ let currentTheme = ref<themeType>('auto')
 
 export const changeTheme = (crtTheme: themeType): void => {
   currentTheme.value = crtTheme
-  if (crtTheme === 'auto') {
-    theme.value = isDarkMode() ? themes.dark : themes.light
-    return
-  }
+  if (crtTheme === 'auto') crtTheme = isDarkMode() ? 'dark' : 'light'
+  customeStyleNow.value = customeStyleOptions[crtTheme]
   theme.value = themes[crtTheme]
 }
 export const getCurrentTheme = () => currentTheme.value
@@ -33,22 +48,27 @@ export const Page = defineComponent({
     bodyColor: String
   },
   setup(props, { slots }) {
-    const primaryColor = '#69b2feFF'
+    const color = {
+      infoColor: '#409eff',
+      primaryColor: '#69b2feFF'
+    }
     const common: GlobalThemeOverrides['common'] = {
-      primaryColor,
-      primaryColorHover: primaryColor,
-      primaryColorPressed: primaryColor,
-      successColorPressed: primaryColor,
+      primaryColor: color.primaryColor,
+      primaryColorHover: color.primaryColor,
+      primaryColorPressed: color.primaryColor,
+      successColorPressed: color.primaryColor,
       borderRadius: '6px',
       borderRadiusSmall: '5px'
     }
     const button: GlobalThemeOverrides['Button'] = {
-      borderHover: `1px solid ${primaryColor}`,
-      textColorHover: primaryColor,
-      textColorPressed: primaryColor,
-      textColorFocus: primaryColor,
-      borderPressed: `1px solid ${primaryColor}`,
-      borderFocus: `1px solid ${primaryColor}`
+      borderHover: `1px solid ${color.primaryColor}`,
+      textColorHover: color.primaryColor,
+      textColorPressed: color.primaryColor,
+      textColorFocus: color.primaryColor,
+      borderPressed: `1px solid ${color.primaryColor}`,
+      borderFocus: `1px solid ${color.primaryColor}`,
+      colorInfo: color.infoColor,
+      borderInfo: `1px solid ${color.infoColor}`
     }
 
     const themeOverrides: GlobalThemeOverrides = {
@@ -56,27 +76,30 @@ export const Page = defineComponent({
         colorFocus: '#69B2FE1A'
       },
       Dropdown: {
-        optionTextColorActive: primaryColor,
-        optionTextColorChildActive: primaryColor,
+        optionTextColorActive: color.primaryColor,
+        optionTextColorChildActive: color.primaryColor,
         optionColorActive: '#69B2FE33'
       },
       Switch: {
-        railColorActive: primaryColor
+        railColorActive: color.primaryColor
       },
       Alert: useAlertTheme()
     }
 
-    if (props.bodyColor) {
-      common.bodyColor = props.bodyColor
-    }
     const lightThemeOverrides: GlobalThemeOverrides = {
       ...themeOverrides,
-      common,
+      common: {
+        ...common,
+        bodyColor: props.bodyColor ?? customeStyleOptions.light.footerBg
+      },
       Button: button
     }
     const darkThemeOverrides: GlobalThemeOverrides = {
       ...themeOverrides,
-      common: { ...common, bodyColor: props.bodyColor || '#303133' },
+      common: {
+        ...common,
+        bodyColor: props.bodyColor ?? customeStyleOptions.dark.footerBg
+      },
       Button: { ...button, textColorHover: '#fffFF' }
     }
 
@@ -99,7 +122,14 @@ export const Page = defineComponent({
             <n-dialog-provider>
               <main>{slots.default?.()}</main>
             </n-dialog-provider>
-            <footer>{slots.footer?.()}</footer>
+            <footer
+              style={{
+                backgroundColor:
+                  props.bodyColor ?? customeStyleNow.value?.footerBg
+              }}
+            >
+              {slots.footer?.()}
+            </footer>
           </n-notification-provider>
         </n-message-provider>
       </n-config-provider>

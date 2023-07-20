@@ -52,38 +52,25 @@ export default defineComponent({
 
     return () => (
       <n-space justify="space-around">
-        {/* 立即运行 */}
         <n-button
-          size="tiny"
-          tertiary
-          circle
+          size="small"
+          secondary
           type="info"
           onClick={() => runPlanClick(props.row)}
         >
-          {{
-            icon: () => (
-              <n-icon>
-                <PlayIcon />
-              </n-icon>
-            )
-          }}
+          立即运行
         </n-button>
-        {/* 删除任务 */}
+
         <n-button
-          size="tiny"
-          tertiary
-          circle
+          size="small"
+          secondary
           type="error"
           color="#f56c6c"
           onClick={() => deletePlanClick(props.row)}
         >
-          {{
-            icon: () => (
-              <n-icon>
-                <TrashIcon />
-              </n-icon>
-            )
-          }}
+          {props.row.cycle.type === '仅一次' && props.row.cycle.autoDelete
+            ? '自动删除'
+            : '删除'}
         </n-button>
       </n-space>
     )
