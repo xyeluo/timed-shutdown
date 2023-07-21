@@ -1,6 +1,4 @@
 .container {
-  display: flex;
-  flex-direction: column;
   height: 100%;
   $footer_h: 30px;
   header {
@@ -13,10 +11,9 @@
   }
   main {
     margin: 15px;
-    flex: 1;
     &::after {
       content: '';
-      position: absolute;
+      position: relative;
       width: 100%;
       height: $footer_h;
       display: inline-block;
@@ -24,7 +21,6 @@
   }
   footer {
     padding: 0 15px;
-
     height: $footer_h;
     width: 100%;
     position: fixed;

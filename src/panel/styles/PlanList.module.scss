@@ -33,6 +33,11 @@
     #{&}TransitionLeave {
       position: absolute;
     }
+    @media screen and (max-width: 800px) {
+      #{&}TransitionLeave {
+        width: 241px;
+      }
+    }
     #{&}TrFrom {
       transform: scale(0);
     }
