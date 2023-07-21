@@ -30,4 +30,5 @@ export interface Plan extends Omit<Omit<Task, 'plan'>, 'cycle'> {
     autoDelete: boolean
   }
   dateTime: string // 执行日期
+  nextRun?: string
 }

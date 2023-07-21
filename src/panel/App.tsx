@@ -14,6 +14,7 @@ declare global {
   interface Window {
     createTask(task: Task): Promise<any>
     switchState(task: Task): Promise<any>
+    updateNextRunTime(parms: { name: string; nextRun: string }): void
   }
 }
 const PanelHeader = defineComponent({
@@ -154,6 +155,14 @@ export default defineComponent({
         preload.noticeError(e.toString())
         return e
       }
+    }
+
+    window.updateNextRunTime = ({ name, nextRun }) => {
+      plansStore.plans.some((p) => {
+        if (p.name !== name) return false
+        p.nextRun = nextRun
+        return true
+      })
     }
 
     const Main = () => {

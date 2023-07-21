@@ -13,7 +13,7 @@ export interface Settings {
 
 export const useSettingsStore = defineStore('SettingsStore', () => {
   let settings = ref<Settings>(preload.dbStorageRead('settings'))
-  const { clearTaskDBCache, setTaskDBStore } = usePlansStore()
+  const { clearTaskDBCache, setTaskDBStore, addPlan } = usePlansStore()
 
   // bug:使用watch对部分属性监听无效，可能是改变setting的部分方法是async的原因？
   watchEffect(() => {
@@ -41,9 +41,7 @@ export const useSettingsStore = defineStore('SettingsStore', () => {
         ...task,
         notice: useNoticeCron(cloneStore(task.cycle), minutes)
       }
-      preload.addNotice(cloneStore(tempTask)).then((nextRunTime) => {
-        console.log(nextRunTime)
-      })
+      addPlan(cloneStore(tempTask))
       return tempTask
     })
     setTaskDBStore(taskDB)

@@ -21,7 +21,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
     setTaskDBStore(taskDB)
   }
 
-  const addPlan = (task: Task) => {
+  const addPlan = async (task: Task) => {
     let plan: Plan = {
       ...cloneStore(task),
       plan: useConvertTaskPlan(task.plan),
@@ -31,9 +31,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
       },
       dateTime: useSetDateTime(task.cycle)
     }
-    preload.addNotice(cloneStore(task)).then((nextRunTime) => {
-      console.log(nextRunTime)
-    })
+    plan.nextRun = await preload.addNotice(cloneStore(task))
     plans.value.unshift(plan)
   }
 
@@ -79,13 +77,12 @@ export const usePlansStore = defineStore('PlansStore', () => {
   const runPlan = async (plan: Plan) => await preload.runPlan(plan.name)
 
   const clearTaskDBCache = () => {
+    plans.value = []
     taskDB = []
   }
 
   // 初始化时加载taskDB，并据此转换到任务列表(plans)显示
-  taskDB.forEach((task) => {
-    addPlan(task)
-  })
+  taskDB.forEach((task) => addPlan(task))
 
   return {
     plans,

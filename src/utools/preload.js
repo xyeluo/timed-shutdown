@@ -75,7 +75,15 @@ class ScheNotification {
       options.startAt = new Date(task.notice.dateTime)
       options.maxRuns = 1
     }
-    const job = Cron(task.notice.cron, options, (_, context) => {
+    const job = Cron(task.notice.cron, options, (self, context) => {
+      let nextRun = self.nextRun()
+      nextRun = nextRun === null ? '' : new Date(nextRun).toLocaleString()
+      waitWindowPrpperty('updateNextRunTime', () =>
+        window.updateNextRunTime({
+          name: context.name,
+          nextRun
+        })
+      )
       ScheNotification.#sendNotice(context)
     })
     if (!task.state) {

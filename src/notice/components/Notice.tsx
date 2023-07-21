@@ -67,6 +67,8 @@ export default defineComponent({
         })
       }
     }
+
+    // 无通知时关闭窗口
     setInterval(() => {
       console.log(noticeArray)
       if (noticeArray.length !== 0) return

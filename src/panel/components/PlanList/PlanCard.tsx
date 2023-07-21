@@ -50,6 +50,20 @@ export default defineComponent({
                   {date ? <>&emsp;{date}&emsp;</> : ''}
                   <u>{time}</u>
                 </RowItem>
+                {props.plan?.nextRun === null ? null : (
+                  <RowItem
+                    label={() => <LabelText text="下次通知时间：" />}
+                    labelStyle={{ width: '100px' }}
+                  >
+                    &emsp;
+                    {/* 状态是暂停则给"下次执行时间"加删除线 */}
+                    {props.plan?.state ? (
+                      props.plan?.nextRun
+                    ) : (
+                      <del>{props.plan?.nextRun}</del>
+                    )}
+                  </RowItem>
+                )}
               </>
             ),
             action: () => <Actions row={props.plan} />
