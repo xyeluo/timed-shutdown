@@ -43,7 +43,9 @@ class ScheNotification {
 
     ipcRenderer.sendTo(ScheNotification.#windowId, 'init')
     ipcRenderer.on('closeWindow', () => {
-      ScheNotification.#win.destroy()
+      try {
+        ScheNotification.#win.destroy()
+      } catch (error) {}
     })
 
     win.webContents.openDevTools({ mode: 'detach' })

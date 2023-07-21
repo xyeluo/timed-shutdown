@@ -12,10 +12,17 @@ declare global {
 
 const Title = defineComponent({
   props: {
-    planLabel: Object as PropType<PlanValue>
+    options: Object as PropType<{ planLabel: PlanValue; duration?: number }>
   },
   setup(props) {
-    return () => <p>{props.planLabel}通知</p>
+    return () => (
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <p>{props.options!.planLabel}通知</p>
+        {props.options?.duration ? (
+          <p style={{ color: '#61656a' }}>{props.options!.duration}</p>
+        ) : null}
+      </div>
+    )
   }
 })
 
@@ -28,6 +35,7 @@ export default defineComponent({
     let noticeArray: string[] = []
 
     const notify = (parms: Task) => {
+      let duration = ref(25) //设置通知自动关闭时间，单位s
       settings.tipSound && utools.shellBeep()
 
       const planLabel = useConvertTaskPlan(parms.plan)
@@ -36,8 +44,9 @@ export default defineComponent({
         noticeArray = noticeArray.filter((name) => parms.name !== name)
       }
       const n = info({
-        title: () => <Title planLabel={planLabel} />,
-        keepAliveOnHover: true,
+        title: () => (
+          <Title options={{ planLabel, duration: duration.value }} />
+        ),
         closable: false,
         action: () => (
           <Actions
@@ -46,19 +55,30 @@ export default defineComponent({
             onRemoveNotice={removeNotice}
           />
         ),
-        description: `来自uTools定时关机插件: ${parms.name}`,
-        duration: 60000
+        description: `来自uTools定时关机插件: ${parms.name}`
       })
       n.content = () => (
         <p>
           您的电脑预计在5分钟后自动<b>{planLabel}</b>
         </p>
       )
+      n.onAfterEnter = () => {
+        const timed = setInterval(() => {
+          duration.value--
+          if (duration.value < 0) {
+            clearInterval(timed)
+            n.destroy()
+            return
+          }
+        }, 1000)
+      }
       window.noticeError = (err) => {
         const _name = `error:${parms.name}`
         noticeArray.push(_name)
         error({
-          title: () => <Title planLabel={useConvertTaskPlan(parms.plan)} />,
+          title: () => (
+            <Title options={{ planLabel: useConvertTaskPlan(parms.plan) }} />
+          ),
           description: `来自uTools定时关机插件: ${parms.name}`,
           content: err,
           onClose() {
