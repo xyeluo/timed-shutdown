@@ -1,11 +1,23 @@
-import type { Task, Plan, Settings } from '@cmn/types'
+import type { Task, Plan, Settings, PlanValue } from '@cmn/types'
 
 type PartPlan = { name: string; state: boolean }
 
-type DBName = 'plans' | 'skipPlans' | 'settings'
+export type V1Store = {
+  type: PlanValue
+  name: string
+  cycle: string
+  day: string
+  daysOfMonth: string[]
+  weekly: string[]
+  datetime: string
+  autoDelete: boolean
+  tempName: string
+  status: boolean
+}
+type DBName = 'plans' | 'skipPlans' | 'settings' | 'v1Store'
 type DBStorageRead = <T extends DBName>(
   dbName: T
-) => T extends 'settings' ? Settings : Task[]
+) => T extends 'settings' ? Settings : T extends 'v1Store' ? V1Store[] : Task[]
 
 interface Preload {
   // utools
@@ -26,6 +38,7 @@ interface Preload {
   deleteNotice(name: string): Promise<void>
   clearNotices(): Promise<void>
   noticeError(error: string): void
+  removeDBStore(v1: 'v1Store'): void
 }
 
 interface NoticePreload {

@@ -18,7 +18,7 @@ export const useSettingsStore = defineStore('SettingsStore', () => {
   // bug:使用watch对部分属性监听无效，可能是改变setting的部分方法是async的原因？
   watchEffect(() => {
     // 清空时间输入框也会触发watch，此时值为null，因此没必要存储
-    if (settings.value.advanceNotice === null) return
+    if (!settings.value?.advanceNotice) return
     preload.dbStorageSave('settings', cloneStore(settings.value))
   })
 

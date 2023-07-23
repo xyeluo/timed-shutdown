@@ -1,9 +1,15 @@
-const { PLANS_STORE, SKIP_PLANS_STORE, SETTINGS_STORE } = require('./config')
+const {
+  PLANS_STORE,
+  SKIP_PLANS_STORE,
+  SETTINGS_STORE,
+  V1_STORE
+} = require('./config')
 
 const dbNameList = {
   plans: PLANS_STORE,
   skipPlans: SKIP_PLANS_STORE,
-  settings: SETTINGS_STORE
+  settings: SETTINGS_STORE,
+  v1Store: V1_STORE
 }
 
 /**
@@ -17,7 +23,7 @@ async function dbStorageSave(dbName, data) {
 
 /**
  * 读取本地数据
- * @param {"plans"|"skipPlans"|"settings"} dbName
+ * @param {"plans"|"skipPlans"|"settings"|"v1Store"} dbName
  * @returns data
  */
 function dbStorageRead(dbName) {
@@ -40,8 +46,17 @@ async function deleteStorePlan(dbName, name) {
   dbStorageSave(dbName, store)
 }
 
+/**
+ * 删除键值对(删除文档)
+ * @param {"v1Store"} dbName
+ */
+async function removeDBStore(dbName) {
+  utools.dbStorage.removeItem(dbNameList[dbName])
+}
+
 module.exports = {
   dbStorageSave,
   dbStorageRead,
-  deleteStorePlan
+  deleteStorePlan,
+  removeDBStore
 }

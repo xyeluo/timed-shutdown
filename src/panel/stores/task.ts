@@ -56,7 +56,7 @@ export const useTaskStore = defineStore('TaskStore', () => {
 
     _task.notice = useNoticeCron(
       cloneStore(_task.cycle),
-      settingsStore.settings.advanceNotice as number
+      settingsStore.settings.advanceNotice
     )
     addPlan(cloneStore(_task))
     addTaskDB(cloneStore(_task))

@@ -5,9 +5,10 @@ import { openUrl } from '@cmn/utils'
 import '@cmn/styles/index.scss'
 import { showModal } from '@panel/view/PlanPanel'
 import { useRegisteMsg, useRegisteDlg } from '@cmn/hooks'
-import SettingsView from '@/panel/view/SettingsView'
+import SettingsView from '@panel/view/SettingsView'
 import { usePlansStore, useTaskStore } from '@panel/stores'
 import type { Task } from '@cmn/types'
+import updateData from '@panel/updateVersion'
 
 const HomeUrl = 'https://github.com/xyeluo/'
 declare global {
@@ -133,6 +134,8 @@ const Setting = defineComponent({
 
 export default defineComponent({
   setup() {
+    updateData()
+
     // 给通知视图暴露的api
     const taskStore = useTaskStore()
     const plansStore = usePlansStore()

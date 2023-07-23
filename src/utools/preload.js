@@ -4,7 +4,8 @@ const { TIMEZONE } = require('./utils/config')
 const {
   dbStorageRead,
   dbStorageSave,
-  deleteStorePlan
+  deleteStorePlan,
+  removeDBStore
 } = require('./utils/utools')
 const { waitWindowPrpperty } = require('./utils/common')
 const IpcDispatch = require('./utils/ipcDispatch')
@@ -196,5 +197,6 @@ window.preload = {
   switchNoticeState: ScheNotification.switchNoticeState,
   deleteNotice: ScheNotification.deleteNotice,
   clearNotices: ScheNotification.clearNotices,
-  noticeError
+  noticeError,
+  removeDBStore
 }

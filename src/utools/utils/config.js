@@ -4,6 +4,8 @@ const VERSION_HEAD = 'V2'
 
 const NATIVE_ID = utools.getNativeId()
 
+const V1_STORE = `${NATIVE_ID}TimedPlan`
+
 // 所有的任务数据存储位置
 const PLANS_STORE = `${NATIVE_ID}_${VERSION_HEAD}`
 
@@ -23,5 +25,6 @@ module.exports = {
   XML_PATH,
   TIMEZONE,
   SKIP_PLANS_STORE,
-  SETTINGS_STORE
+  SETTINGS_STORE,
+  V1_STORE
 }
