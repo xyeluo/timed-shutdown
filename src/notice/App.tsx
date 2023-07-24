@@ -1,7 +1,13 @@
-import { defineComponent } from 'vue'
+import { Page } from '@cmn/Page'
+import Notice from '@notice/components/Notice'
+import '@cmn/styles/index.scss'
 
 export default defineComponent({
   setup() {
-    return () => <n-button>Notice</n-button>
+    return () => (
+      <Page bodyColor="transparent">
+        <Notice />
+      </Page>
+    )
   }
 })

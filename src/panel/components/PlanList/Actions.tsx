@@ -1,34 +1,32 @@
-import { PlayIcon, TrashIcon } from '@panel/icons'
 import { usePlansStore } from '@panel/stores'
-import type { Plan } from '@/common/types'
-import {
-  useWarningDlg,
-  useSuccessMsg,
-  useforceDelete,
-  useErrorMsg
-} from '@panel/hooks'
+import type { Plan } from '@cmn/types'
+import { useWarningDlg, useSuccessMsg, useforceDelete } from '@cmn/hooks'
 import { rowProps } from '@panel/components/common'
 
 export default defineComponent({
   props: rowProps,
   setup(props) {
-    const { deletePlan, runPlan } = usePlansStore()
+    const { runPlan, deletePlan } = usePlansStore()
 
     // 运行按钮的loading
-    const runLoading = ref(false)
     const runPlanClick = (row: Plan) => {
-      runLoading.value = !runLoading.value
-      runPlan(row)
-        .then((stdout) => {
-          useSuccessMsg(stdout)
-        })
-        .catch((error) => {
-          const e: string = error?.stack || error
-          useErrorMsg(e)
-        })
-        .finally(() => {
-          runLoading.value = !runLoading.value
-        })
+      useWarningDlg({
+        text: (
+          <>
+            确定立即执行<b> {props.row.name} </b>计划吗？
+          </>
+        ),
+        okFn() {
+          runPlan(row)
+            .then((stdout) => {
+              useSuccessMsg(stdout)
+            })
+            .catch((error) => {
+              const e: string = error?.stack || error
+              useforceDelete(e, row)
+            })
+        }
+      })
     }
 
     const deletePlanClick = (row: Plan) => {
@@ -53,40 +51,25 @@ export default defineComponent({
 
     return () => (
       <n-space justify="space-around">
-        {/* 立即运行 */}
         <n-button
-          size="tiny"
-          tertiary
-          circle
+          size="small"
+          secondary
           type="info"
           onClick={() => runPlanClick(props.row)}
-          loading={runLoading.value}
-          disabled={runLoading.value}
         >
-          {{
-            icon: () => (
-              <n-icon>
-                <PlayIcon />
-              </n-icon>
-            )
-          }}
+          立即运行
         </n-button>
-        {/* 删除任务 */}
+
         <n-button
-          size="tiny"
-          tertiary
-          circle
+          size="small"
+          secondary
           type="error"
           color="#f56c6c"
           onClick={() => deletePlanClick(props.row)}
         >
-          {{
-            icon: () => (
-              <n-icon>
-                <TrashIcon />
-              </n-icon>
-            )
-          }}
+          {props.row.cycle.type === '仅一次' && props.row.cycle.autoDelete
+            ? '自动删除'
+            : '删除'}
         </n-button>
       </n-space>
     )

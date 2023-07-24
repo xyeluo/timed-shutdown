@@ -26,31 +26,44 @@ export const useAlertTheme = (): AlertThemeOverrides => {
     bgColor: '#fdf6ec',
     fontColor: '#e6a23c'
   }
+  const closeColor = {
+    base: '#c4c4cc',
+    active: '#959a9f'
+  }
   return {
     padding: '8px 28px',
     iconMargin: '10px 8px 0 12px',
-    closeMargin: '9px 8px 0 12px',
+    closeMargin: '10px 8px 0 12px',
     iconSize: '19px',
 
     // success color
     colorSuccess: success.bgColor,
     contentTextColorSuccess: success.fontColor,
     iconColorSuccess: success.fontColor,
+    closeIconColorSuccess: closeColor.base,
+    closeIconColorHoverSuccess: closeColor.active,
+    closeIconColorPressedSuccess: closeColor.active,
 
     // error color
     colorError: error.bgColor,
     contentTextColorError: error.fontColor,
     iconColorError: error.fontColor,
+    closeIconColorError: closeColor.base,
+    closeIconColorHoverError: closeColor.active,
+    closeIconColorPressedError: closeColor.active,
 
     // warning color
     colorWarning: warning.bgColor,
     contentTextColorWarning: warning.fontColor,
-    iconColorWarning: warning.fontColor
+    iconColorWarning: warning.fontColor,
+    closeIconColorWarning: closeColor.base,
+    closeIconColorHoverWarning: closeColor.active,
+    closeIconColorPressedWarning: closeColor.active
   }
 }
 
-const Alert = (type: AlertType) => {
-  return (props: RenderMessageProps) => (
+const Alert = (type: AlertType) => (props: RenderMessageProps) =>
+  (
     <n-alert
       type={type}
       v-slots={{
@@ -63,7 +76,6 @@ const Alert = (type: AlertType) => {
       closable={props.closable}
     />
   )
-}
 
 const useMsg = (options: MessageOptions, msg: string): void => {
   message.create(msg, {

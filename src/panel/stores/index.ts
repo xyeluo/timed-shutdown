@@ -1,5 +1,5 @@
 import { createPinia } from 'pinia'
-import { cloneStore } from '@panel/utils'
+import { cloneStore } from '@cmn/utils'
 
 const pinia = createPinia()
 
@@ -13,5 +13,6 @@ pinia.use(({ store }) => {
 
 export default pinia
 
-export * from '@/panel/stores/task'
-export * from '@/panel/stores/plans'
+export * from './task'
+export * from './plans'
+export * from './settings'

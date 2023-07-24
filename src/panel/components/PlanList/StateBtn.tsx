@@ -1,17 +1,16 @@
 import { PlayIcon, StopIcon } from '@panel/icons'
 import PListScss from '@panel/styles/PlanList.module.scss'
 import { usePlansStore } from '@panel/stores'
-import type { Plan } from '@/common/types'
-import { useSuccessMsg, useforceDelete } from '@panel/hooks'
+import type { Plan } from '@cmn/types'
+import { useSuccessMsg, useforceDelete } from '@cmn/hooks'
 import { rowProps } from '@panel/components/common'
 
 export default defineComponent({
   props: rowProps,
   setup(props) {
-    const plansStore = usePlansStore()
-    const switchState = (row: Plan) => {
-      plansStore
-        .switchState(row)
+    const { switchState } = usePlansStore()
+    const switchStateClick = (row: Plan) => {
+      switchState(row)
         .then((stdout) => {
           useSuccessMsg(stdout)
         })
@@ -26,7 +25,7 @@ export default defineComponent({
           PListScss.stateBtn,
           props.row.state ? PListScss.play : PListScss.stop
         ]}
-        onClick={() => switchState(props.row)}
+        onClick={() => switchStateClick(props.row)}
       >
         {props.row.state ? (
           <>

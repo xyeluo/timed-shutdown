@@ -1,6 +1,6 @@
 import type { Task } from '@cmn/types'
-import { getNowDate } from '@panel/utils'
-import { useWarningMsg } from '@panel/hooks'
+import { getDateTimeParts, getNowDate } from '@cmn/utils'
+import { useWarningMsg } from '@cmn/hooks'
 
 // 除周期‘仅一次’外,date仅在点击‘确定’后获取
 export const useCompleteDate = (task: Task) => {
@@ -10,9 +10,13 @@ export const useCompleteDate = (task: Task) => {
 
 export const useCompleteName = (task: Task) => {
   task.name = task.name.trim()
+
+  // 长度为空才生成name
   if (task.name.length !== 0) return
-  let tempName = task.cycle.time?.split(':').join('')
-  task.name = `TS_${tempName}-${task.cycle.date}`
+  const { seconds, minute } = getDateTimeParts()
+  // 10-1000
+  let tempName = Math.floor(Math.random() * (1000 - 10 + 1)) + 10
+  task.name = `TS_${tempName}-${seconds}-${minute}`
 }
 
 export const useTaskInvalid = (task: Task) => {

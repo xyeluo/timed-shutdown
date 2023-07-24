@@ -1,4 +1,4 @@
-import type { Task } from '@/common/types'
+import type { Task } from '@cmn/types'
 import {
   useCycleWeeklyOptions,
   usePlanOptions,
@@ -6,7 +6,7 @@ import {
   type PlanKey,
   type CycleKey,
   type OtherDateOption
-} from '@panel/hooks'
+} from '@cmn/hooks'
 
 type OtherDateValue = OtherDateOption['label']
 

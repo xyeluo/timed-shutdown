@@ -1,7 +1,6 @@
 .container {
-  display: flex;
-  flex-direction: column;
   height: 100%;
+  $footer_h: 30px;
   header {
     display: flex;
     justify-content: space-between;
@@ -12,14 +11,25 @@
   }
   main {
     margin: 15px;
-    flex: 1;
+    &::after {
+      content: '';
+      position: relative;
+      width: 100%;
+      height: $footer_h;
+      display: inline-block;
+    }
   }
   footer {
-    margin: 0 15px 15px;
-    height: 25px;
+    padding: 0 15px;
+    height: $footer_h;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    box-sizing: border-box;
     i {
       cursor: pointer;
       margin: 0 5px;
+      line-height: $footer_h + 5;
       &:hover {
         color: $btn-color;
       }

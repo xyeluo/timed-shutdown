@@ -1,0 +1,28 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.n-notification-container {
+  > .n-scrollbar > .n-scrollbar-container .n-scrollbar-content {
+    padding: 0;
+  }
+  .n-notification-wrapper {
+    padding-top: 13px;
+    margin-bottom: 0;
+  }
+  &#{&}--top-right .n-notification {
+    margin-left: 0;
+  }
+}

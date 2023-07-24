@@ -1,13 +1,23 @@
 import type { SelectGroupOption } from 'naive-ui'
-import { Page, changeTheme, type themeType } from '@/panel/components/Page'
-import { GithubIcon, QuestionIcon, SettingIcon, AddIcon } from '@panel/icons'
-import { openUrl } from '@/panel/utils'
-import '@panel/styles/index.scss'
+import { Page } from '@cmn/Page'
+import { GithubIcon, QuestionIcon, AddIcon, SettingIcon } from '@panel/icons'
+import { openUrl } from '@cmn/utils'
+import '@cmn/styles/index.scss'
 import { showModal } from '@panel/view/PlanPanel'
-import { useRegisteMsg, useRegisteDlg } from '@panel/hooks'
+import { useRegisteMsg, useRegisteDlg } from '@cmn/hooks'
+import SettingsView from '@panel/view/SettingsView'
+import { usePlansStore, useTaskStore } from '@panel/stores'
+import type { Task } from '@cmn/types'
+import updateData from '@panel/updateVersion'
 
 const HomeUrl = 'https://github.com/xyeluo/'
-
+declare global {
+  interface Window {
+    createTask(task: Task): Promise<any>
+    switchState(task: Task): Promise<any>
+    updateNextRunTime(parms: { name: string; nextRun: string }): void
+  }
+}
 const PanelHeader = defineComponent({
   setup() {
     let btnState = ref(false)
@@ -102,53 +112,21 @@ const Question = defineComponent({
 
 const Setting = defineComponent({
   setup() {
-    let active = ref(false)
-    let selectedTheme = ref<themeType>('light')
-    const themesData = [
-      { txt: '白天', value: 'light' },
-      { txt: '黑夜', value: 'dark' }
-    ]
-    const activate = () => {
-      active.value = true
-    }
-    watch<themeType>(selectedTheme, (nValue) => {
-      changeTheme(nValue)
-    })
+    let settingActive = ref(false)
+
     return () => (
       <>
         <n-popover>
           {{
             default: () => <>设置</>,
             trigger: () => (
-              <n-icon size="20px" onClick={activate}>
+              <n-icon size="20px" onClick={() => (settingActive.value = true)}>
                 <SettingIcon />
               </n-icon>
             )
           }}
         </n-popover>
-
-        <n-drawer v-model:show={active.value} width="300">
-          <n-drawer-content closable>
-            {{
-              header: () => <div>header</div>,
-              default: () =>
-                themesData.map((theme) => {
-                  return (
-                    <label for={theme.value}>
-                      <input
-                        type="radio"
-                        v-model={selectedTheme.value}
-                        name="theme"
-                        value={theme.value}
-                        id={theme.value}
-                      />
-                      {theme.txt}
-                    </label>
-                  )
-                })
-            }}
-          </n-drawer-content>
-        </n-drawer>
+        <SettingsView v-model:active={settingActive.value} />
       </>
     )
   }
@@ -156,15 +134,49 @@ const Setting = defineComponent({
 
 export default defineComponent({
   setup() {
+    updateData()
+
+    // 给通知视图暴露的api
+    const taskStore = useTaskStore()
+    const plansStore = usePlansStore()
+
+    window.createTask = async (task) => {
+      try {
+        return await taskStore.createTask(task)
+      } catch (error: any) {
+        const e = error?.stack || error
+        preload.noticeError(e.toString())
+        return e
+      }
+    }
+
+    window.switchState = async (plan) => {
+      try {
+        return await plansStore.switchState(plan)
+      } catch (error: any) {
+        const e = error?.stack || error
+        preload.noticeError(e.toString())
+        return e
+      }
+    }
+
+    window.updateNextRunTime = ({ name, nextRun }) => {
+      plansStore.plans.some((p) => {
+        if (p.name !== name) return false
+        p.nextRun = nextRun
+        return true
+      })
+    }
+
     const Main = () => {
       // 注册全局信息弹窗
       useRegisteMsg()
       useRegisteDlg()
       const PlanList = defineAsyncComponent(
-        () => import('@/panel/view/PlanList')
+        () => import('@panel/view/PlanList')
       )
       const PlanPanel = defineAsyncComponent(
-        () => import('@/panel/view/PlanPanel')
+        () => import('@panel/view/PlanPanel')
       )
       return (
         <>
@@ -177,7 +189,7 @@ export default defineComponent({
       <Page>
         {{
           header: () => <PanelHeader />,
-          main: () => <Main />,
+          default: () => <Main />,
           footer: () => (
             <>
               <Github />

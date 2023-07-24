@@ -4,9 +4,7 @@
   align-items: center;
   cursor: default;
   user-select: none;
-  $width: 65px;
-  width: $width;
-  margin: 0 calc((100px - $width) / 2);
+  width: 65px;
   border-bottom: 1px solid transparent;
   cursor: pointer;
   i {
@@ -20,5 +18,31 @@
   }
   &:hover {
     border-bottom: 1px solid;
+  }
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 15px 20px;
+  @at-root {
+    #{&}TransitionLeave,
+    #{&}Transition {
+      transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+    }
+    #{&}TransitionLeave {
+      position: absolute;
+    }
+    @media screen and (max-width: 800px) {
+      #{&}TransitionLeave {
+        width: 241px;
+      }
+    }
+    #{&}TrFrom {
+      transform: scale(0);
+    }
+    #{&}TrTo {
+      transform: scale(1);
+    }
   }
 }

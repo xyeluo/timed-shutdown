@@ -42,9 +42,27 @@ function getType(params) {
   return str
 }
 
+/**
+ * @description 等待property挂载到window上后执行callback
+ * @param {string} property
+ * @param {Function} callback
+ */
+function waitWindowPrpperty(property, callback) {
+  let timed = false
+  const wait = async () => {
+    if (window.hasOwnProperty(property)) {
+      callback()
+      timed && cancelAnimationFrame(timed)
+      return
+    }
+    timed = requestAnimationFrame(wait)
+  }
+  wait()
+}
 module.exports = {
   execCmd,
   getType,
   firstLetterLower,
-  firstLetterUpper
+  firstLetterUpper,
+  waitWindowPrpperty
 }

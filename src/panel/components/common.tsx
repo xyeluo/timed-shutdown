@@ -1,19 +1,29 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 import type { SelectOption } from 'naive-ui'
-import { createVNode, type Component, type PropType } from 'vue'
-import type { Plan } from '@/common/types'
+import {
+  createVNode,
+  type Component,
+  type StyleValue,
+  type VNodeChild
+} from 'vue'
+import type { Plan } from '@cmn/types'
 
 export const PanelSelect = defineComponent({
   props: {
     value: String,
-    options: Object as PropType<SelectOption[]>
+    options: Object as PropType<SelectOption[]>,
+    onUpdateValue: Object as PropType<Function>
   },
   emits: ['update:value'],
   setup(props, { emit }) {
     return () => (
       <n-select
         v-model:value={ref(props.value).value}
-        onUpdateValue={(value: string) => emit('update:value', value)}
+        onUpdateValue={(value: string) =>
+          props.onUpdateValue
+            ? props.onUpdateValue(value)
+            : emit('update:value', value)
+        }
         size="small"
         style={{ width: '90px' }}
         options={props.options}
@@ -25,12 +35,18 @@ export const PanelSelect = defineComponent({
 
 export const RowItem = defineComponent({
   props: {
-    label: String
+    label: Object as PropType<String | (() => VNodeChild)>,
+    labelStyle: Object as PropType<StyleValue>,
+    style: Object as PropType<StyleValue>
   },
   setup(props, { slots }) {
     return () => (
-      <div class={PPanelScss.item}>
-        <label class={PPanelScss.itemLabel}>{props.label}</label>
+      <div class={PPanelScss.item} style={props.style}>
+        <label class={PPanelScss.itemLabel} style={props.labelStyle}>
+          {typeof props.label === 'string'
+            ? props.label
+            : (props.label as Function)?.()}
+        </label>
         <div class={PPanelScss.itemContent}>{slots.default?.()}</div>
         {slots.extra?.()}
       </div>
