@@ -14,6 +14,7 @@ const SKIP_PLANS_STORE = `${NATIVE_ID}_SKIP_PLANS_${VERSION_HEAD}`
 
 // 设置
 const SETTINGS_STORE = `SETTINGS_${VERSION_HEAD}`
+
 const XML_PATH = resolve(
   utools.getPath('temp'),
   'timed-shutdonw_UtoolsPlugin.xml'

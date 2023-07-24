@@ -17,14 +17,15 @@ export interface PlanOption extends SelectOption {
   value: PlanKey
 }
 
-export const usePlanOptions = (): PlanOption[] => {
-  const types = [
-    ['关机', 'shutdown'],
-    ['重启', 'reboot'],
-    ['休眠', 'dormancy']
-  ]
-  return createOptoins(types) as PlanOption[]
-}
+export const usePlanOptions = (): PlanOption[] =>
+  computed(() => {
+    const types = [
+      ['关机', 'shutdown'],
+      ['重启', 'reboot'],
+      ['休眠', 'dormancy']
+    ]
+    return createOptoins(types) as PlanOption[]
+  }).value
 
 type CycleLabels = {
   once: '仅一次'
@@ -37,15 +38,16 @@ export interface CycleOption extends SelectOption {
   label: CycleLabels[CycleKey]
   value: CycleKey
 }
-export const useCycleOptions = (): CycleOption[] => {
-  const cycle = [
-    ['仅一次', 'once'],
-    ['每天', 'daily'],
-    ['每周', 'weekly'],
-    ['每月', 'monthly']
-  ]
-  return createOptoins(cycle) as CycleOption[]
-}
+export const useCycleOptions = (): CycleOption[] =>
+  computed(() => {
+    const cycle = [
+      ['仅一次', 'once'],
+      ['每天', 'daily'],
+      ['每周', 'weekly'],
+      ['每月', 'monthly']
+    ]
+    return createOptoins(cycle) as CycleOption[]
+  }).value
 
 type otherDateLabels = {
   sunday: '日'
@@ -61,22 +63,23 @@ export interface OtherDateOption extends SelectOption {
   label: otherDateLabels[otherDateKey]
   value: otherDateKey
 }
-export const useCycleWeeklyOptions = () => {
-  const weekly = [
-    ['日', 'sunday'],
-    ['一', 'monday'],
-    ['二', 'tuesday'],
-    ['三', 'wednesday'],
-    ['四', 'thursday'],
-    ['五', 'friday'],
-    ['六', 'saturday']
-  ]
-  return createOptoins(
-    weekly.map((w) => {
-      return [`星期${w[0]}`, w[1]]
-    })
-  )
-}
+export const useCycleWeeklyOptions = () =>
+  computed(() => {
+    const weekly = [
+      ['日', 'sunday'],
+      ['一', 'monday'],
+      ['二', 'tuesday'],
+      ['三', 'wednesday'],
+      ['四', 'thursday'],
+      ['五', 'friday'],
+      ['六', 'saturday']
+    ]
+    return createOptoins(
+      weekly.map((w) => {
+        return [`星期${w[0]}`, w[1]]
+      })
+    )
+  }).value
 
 export const useFirstType = () => {
   const all = usePlanOptions()

@@ -53,9 +53,7 @@ function getXmlObj(cycle) {
         ...commonXmlObj,
         ScheduleByMonth: {
           DaysOfMonth: {
-            Day: {
-              _repeat: cycle.otherDate
-            }
+            Day: { _repeat: cycle.otherDate }
           },
           Months: [
             'January',
