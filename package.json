@@ -1,6 +1,6 @@
 {
-  "name": "powerplan",
-  "version": "0.0.0",
+  "name": "timed-shutdown",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "analyze": "set ANALYZE=true && vite build",
