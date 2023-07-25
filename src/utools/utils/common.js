@@ -59,10 +59,21 @@ function waitWindowPrpperty(property, callback) {
   }
   wait()
 }
+
+/**
+ * 返回日期对象字符串
+ * @param {Date} date
+ * @returns YYYY/M/D hh:mm:ss
+ */
+function localeString(date) {
+  return new Date(date).toLocaleString()
+}
+
 module.exports = {
   execCmd,
   getType,
   firstLetterLower,
   firstLetterUpper,
-  waitWindowPrpperty
+  waitWindowPrpperty,
+  localeString
 }

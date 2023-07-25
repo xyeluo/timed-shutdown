@@ -7,7 +7,7 @@ const {
   deleteStorePlan,
   removeDBStore
 } = require('./utils/utools')
-const { waitWindowPrpperty } = require('./utils/common')
+const { waitWindowPrpperty, localeString } = require('./utils/common')
 const IpcDispatch = require('./utils/ipcDispatch')
 
 class ScheNotification {
@@ -80,7 +80,7 @@ class ScheNotification {
     }
     const job = Cron(task.notice.cron, options, (self, context) => {
       let nextRun = self.nextRun()
-      nextRun = nextRun === null ? '' : new Date(nextRun).toLocaleString()
+      nextRun = nextRun === null ? '' : localeString(nextRun)
       waitWindowPrpperty('updateNextRunTime', () =>
         window.updateNextRunTime({
           name: context.name,
@@ -92,13 +92,14 @@ class ScheNotification {
     if (!task.state) {
       job.pause()
     }
-    return new Date(job.nextRun()).toLocaleString()
+    return localeString(job.nextRun())
   }
 
   static async switchNoticeState(partPlan) {
     const job = await ScheNotification.#getJob(partPlan.name)
     if (partPlan.state) {
       job.resume()
+      return localeString(job.nextRun())
     }
     job.pause()
   }

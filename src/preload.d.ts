@@ -34,7 +34,7 @@ interface Preload {
 
   // preload
   addNotice(notice: Task): Promise<string>
-  switchNoticeState(partPlan: PartPlan): Promise<void>
+  switchNoticeState(partPlan: PartPlan): Promise<string | undefined>
   deleteNotice(name: string): Promise<void>
   clearNotices(): Promise<void>
   noticeError(error: string): void

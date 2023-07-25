@@ -12,13 +12,10 @@ export const usePlansStore = defineStore('PlansStore', () => {
 
   let taskDB: Task[] = preload.dbStorageRead('plans')
 
-  const setTaskDBStore = async (db: Task[]) =>
-    preload.dbStorageSave('plans', db)
-
   const addTaskDB = (task: Task) => {
     let rawTask = cloneStore(task)
     taskDB.push(rawTask)
-    setTaskDBStore(taskDB)
+    preload.dbStorageSave('plans', taskDB)
   }
 
   const addPlan = async (task: Task) => {
@@ -46,7 +43,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
     store = store.filter(callback)
     preload.dbStorageSave('skipPlans', store)
 
-    setTaskDBStore(taskDB)
+    preload.dbStorageSave('plans', taskDB)
   }
 
   const deletePlan = async (plan: Plan) => {
@@ -59,8 +56,9 @@ export const usePlansStore = defineStore('PlansStore', () => {
     const state = !plan.state
     const partPlan = { name: plan.name, state }
     const stdout = await preload.switchState(partPlan)
-    await preload.switchNoticeState(partPlan)
-
+    if ('nextRun' in plan) {
+      plan.nextRun = await preload.switchNoticeState(partPlan)
+    }
     plan.state = state
 
     const callback = (task: Plan | Task) => {
@@ -76,7 +74,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
     }
     taskDB.some(callback)
 
-    setTaskDBStore(taskDB)
+    preload.dbStorageSave('plans', taskDB)
     return stdout
   }
 
@@ -98,7 +96,6 @@ export const usePlansStore = defineStore('PlansStore', () => {
     switchState,
     deletePlanFromTaskDb,
     runPlan,
-    clearTaskDBCache,
-    setTaskDBStore
+    clearTaskDBCache
   }
 })

@@ -21,7 +21,7 @@ export const useCompleteName = (task: Task) => {
 }
 
 export const useTaskInvalid = (task: Task) => {
-  let { date, otherDate, time, type } = task.cycle
+  const { date, otherDate, time, type } = task.cycle
   const warning = (msg: string) => {
     useWarningMsg(msg)
     return true
@@ -33,11 +33,8 @@ export const useTaskInvalid = (task: Task) => {
     return warning('执行周期缺少"星期"！')
   if (type === 'monthly' && otherDate.length === 0)
     return warning('执行周期缺少"日期"！')
-
-  if (!date) date = getNowDateString()
-  if (new Date() >= new Date(`${date} ${time}`))
+  if (type === 'once' && new Date() >= new Date(`${date} ${time}`))
     return warning('任务时间小于当前时间')
-
   const { plans } = usePlansStore()
   if (plans.find((p) => p.name === task.name))
     return warning(`“${task.name}”任务已存在`)
