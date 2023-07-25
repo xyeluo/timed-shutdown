@@ -35,10 +35,20 @@ export default defineComponent({
     let noticeArray: string[] = []
 
     const notify = (parms: Task) => {
+      const planLabel = useConvertTaskPlan(parms.plan)
+
+      // 系统通知模式
+      if (settings.mode === 'system') {
+        utools.showNotification(
+          `您的电脑预计在${settings.advanceNotice}分钟后自动${planLabel}`,
+          'shutdown'
+        )
+        return
+      }
+
       let duration = ref(25) //设置通知自动关闭时间，单位s
       settings.tipSound && utools.shellBeep()
 
-      const planLabel = useConvertTaskPlan(parms.plan)
       noticeArray.push(parms.name)
       const removeNotice = () => {
         noticeArray = noticeArray.filter((name) => parms.name !== name)
@@ -59,7 +69,7 @@ export default defineComponent({
       })
       n.content = () => (
         <p>
-          您的电脑预计在5分钟后自动<b>{planLabel}</b>
+          您的电脑预计在{settings.advanceNotice}分钟后自动<b>{planLabel}</b>
         </p>
       )
       n.onAfterEnter = () => {

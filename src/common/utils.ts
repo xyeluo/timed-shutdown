@@ -13,7 +13,7 @@ export const getDateTimeParts = (date: Date = new Date()) => {
   }
 }
 
-export const getNowDate = () => {
+export const getNowDateString = () => {
   const date = new Date()
   let { year, month, day } = getDateTimeParts(date)
   return `${year}-${month.toString().padStart(2, '0')}-${day

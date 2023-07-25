@@ -124,8 +124,8 @@ export default defineComponent({
           }}
         >
           {{
-            checked: () => '执行后删除',
-            unchecked: () => '执行后保留'
+            checked: () => '过期后删除',
+            unchecked: () => '过期后保留'
           }}
         </n-switch>
       ),
@@ -176,6 +176,7 @@ export default defineComponent({
             v-model:formatted-value={taskStore.task.cycle.time}
             placeholder="执行时间"
             format="HH:mm"
+            placement="right"
           />
         </RowItem>
       </>

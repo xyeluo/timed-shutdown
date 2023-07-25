@@ -83,7 +83,11 @@ export const Page = defineComponent({
       Switch: {
         railColorActive: color.primaryColor
       },
-      Alert: useAlertTheme()
+      Alert: useAlertTheme(),
+      Notification: {
+        boxShadow:
+          '0 2px 3px -2px rgba(0, 0, 0, .12), 0 4px 8px 0 rgba(0, 0, 0, .08), 0 5px 14px 4px rgba(0, 0, 0, .05)'
+      }
     }
 
     const lightThemeOverrides: GlobalThemeOverrides = {

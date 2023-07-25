@@ -34,7 +34,7 @@ class ScheNotification {
     }
 
     const pathSuffix = '/notice/index.html'
-    const noticeHtml = utools.isDev
+    const noticeHtml = utools.isDev()
       ? `../../dist${pathSuffix}`
       : `.${pathSuffix}`
     const win = utools.createBrowserWindow(noticeHtml, options)
@@ -111,6 +111,7 @@ class ScheNotification {
   static clearNotices() {
     return new Promise((resolve) => {
       const clearJobs = () => {
+        // bug:stop执行似乎有延迟，多次执行clearJobs确保scheduledJobs为空为止
         scheduledJobs.forEach((j) => j.stop())
         if (scheduledJobs.length !== 0) clearJobs()
         else resolve(true)
@@ -137,20 +138,21 @@ IpcDispatch.on('stopPlan', async (plan) => {
   dbStorageSave('skipPlans', skipStore)
 
   Cron(plan.notice.cron, options, async (self, context) => {
-    self.stop()
-
+    // 暂停本次执行期间存在任务被删除的可能(plans.ts~deletePlanFromTaskDb)，所以重新读取
+    skipStore = dbStorageRead('skipPlans')
     const task = skipStore.find((task) => task.name === context.name)
-    // 当skipPlans的数据中存在plan相关才继续往下执行
-    if (!task) return
-    deleteStorePlan('skipPlans', task.name)
+    if (task) {
+      deleteStorePlan('skipPlans', task.name)
 
-    const plansStore = dbStorageRead('plans')
-    const p = plansStore.find((p) => p.name === context.name)
-    if (!p || !p?.skip || p?.state) return
+      const plansStore = dbStorageRead('plans')
+      const p = plansStore.find((p) => p.name === context.name)
+      if (!p || !p?.skip || p?.state) return
 
-    // 当plans数据中存在plan任务且该任务skip为true，state为false时才切换运行状态
-    p.skip = false
-    window.switchState(p)
+      // 当plans数据中存在plan任务且该任务skip为true，state为false时才切换运行状态
+      p.skip = false
+      window.switchState(p)
+    }
+    self.stop()
   })
   return result
 })
@@ -158,6 +160,7 @@ IpcDispatch.on('stopPlan', async (plan) => {
 function noticeError(error) {
   ScheNotification.sendmessage('noticeError', error)
 }
+
 // 重新启动插件时对跳过本次任务的处理
 async function initEnableSkipPlan() {
   let skipStore = dbStorageRead('skipPlans')
@@ -174,17 +177,16 @@ async function initEnableSkipPlan() {
       // 检测skipPlan是否过期。小于等于当前时间注册Cron无效，则直接切换任务状态;大于当前时间则注册Cron，由设定时间后切换任务状态
       if (new Date(skipPlan.notice.dateTime) <= new Date()) {
         waitWindowPrpperty('switchState', () => window.switchState(p))
-        deleteStorePlan('skipPlans', skipPlan.name)
       } else {
         options.startAt = new Date(skipPlan.notice.dateTime)
         options.context = p
         Cron(skipPlan.notice.cron, options, (self, context) => {
-          self.stop()
           waitWindowPrpperty('switchState', () => window.switchState(context))
-          deleteStorePlan('skipPlans', skipPlan.name)
+          self.stop()
         })
       }
-    } else deleteStorePlan('skipPlans', skipPlan.name)
+    }
+    deleteStorePlan('skipPlans', skipPlan.name)
   })
 }
 initEnableSkipPlan()

@@ -7,7 +7,7 @@ import {
   type otherDateKey
 } from '@cmn/hooks'
 import type { Task } from '@cmn/types'
-import { cloneStore, getNowDate } from '@cmn/utils'
+import { cloneStore, getNowDateString } from '@cmn/utils'
 import type { V1Store } from '@/preload'
 import { usePlansStore, useSettingsStore } from '@panel/stores'
 
@@ -42,7 +42,7 @@ function once(old_task: V1Store): OnceCycle {
 function daily(old_task: V1Store): CycleBase {
   return {
     type: 'daily',
-    date: getNowDate(),
+    date: getNowDateString(),
     time: parseTime(old_task.datetime)
   }
 }
@@ -62,7 +62,7 @@ function weekly(old_task: V1Store): WeeklyCycle {
   ]
   return {
     type: 'weekly',
-    date: getNowDate(),
+    date: getNowDateString(),
     time: parseTime(old_task.datetime),
     otherDate: old_task.weekly.map((old_w) =>
       week.find((new_w) => new_w.startsWith(old_w))
@@ -76,7 +76,7 @@ interface MonthlyCycle extends CycleBase {
 function monthly(old_task: V1Store): MonthlyCycle {
   return {
     type: 'monthly',
-    date: getNowDate(),
+    date: getNowDateString(),
     time: parseTime(old_task.datetime),
     otherDate: old_task.daysOfMonth.map((old_m) => old_m.slice(0, -1))
   }

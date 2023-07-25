@@ -40,6 +40,12 @@ export const usePlansStore = defineStore('PlansStore', () => {
     preload.deleteNotice(plan.name)
     plans.value = plans.value.filter(callback)
     taskDB = taskDB.filter(callback)
+
+    // 删除暂停本次执行的任务
+    let store = preload.dbStorageRead('skipPlans')
+    store = store.filter(callback)
+    preload.dbStorageSave('skipPlans', store)
+
     setTaskDBStore(taskDB)
   }
 

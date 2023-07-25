@@ -1,4 +1,4 @@
-import { usePlansStore } from '@panel/stores'
+import { usePlansStore, useSettingsStore } from '@panel/stores'
 import { pluginEnter } from '@cmn/utils'
 import PlanCard from '@panel/components/PlanList/PlanCard'
 import PListScss from '@panel/styles/PlanList.module.scss'
@@ -8,6 +8,7 @@ export default defineComponent({
   name: 'PlanList',
   setup() {
     const plansStore = usePlansStore()
+    const settingsStore = useSettingsStore()
 
     // 删除过期任务(任务周期为仅一次且开启自动删除选项的任务)
     const deleteExpiredPlan = () => {
@@ -24,11 +25,14 @@ export default defineComponent({
         }
       }
     }
-    pluginEnter(deleteExpiredPlan)
+    pluginEnter(() => {
+      settingsStore.changeTheme(settingsStore.settings.currentTheme)
+      deleteExpiredPlan()
+    })
 
     return () => {
       if (plansStore.plans.length === 0)
-        return <n-empty description="列表为空" size="huge" />
+        return <n-empty description="任务为空" size="huge" />
       return (
         <div class={PListScss.list}>
           <TransitionGroup

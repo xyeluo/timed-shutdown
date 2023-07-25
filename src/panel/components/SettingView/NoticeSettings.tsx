@@ -2,6 +2,38 @@ import { useSettingsStore } from '@/panel/stores'
 import { RowItem } from '@panel/components/common'
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 
+const NoticeMode = defineComponent({
+  setup() {
+    const settingsStore = useSettingsStore()
+    const modeLabel = {
+      true: 'plugin',
+      false: 'system'
+    }
+
+    return () => (
+      <RowItem
+        label="模式："
+        labelStyle={{ textAlign: 'right', width: '70px' }}
+      >
+        <n-switch
+          class={PPanelScss.extra}
+          default-value={
+            settingsStore.settings.mode === 'plugin' ? true : false
+          }
+          onUpdateValue={(value: boolean) => {
+            settingsStore.modeSwitch(Reflect.get(modeLabel, String(value)))
+          }}
+        >
+          {{
+            checked: () => '插件通知',
+            unchecked: () => '系统通知'
+          }}
+        </n-switch>
+      </RowItem>
+    )
+  }
+})
+
 const AdvanceMinutes = defineComponent({
   setup() {
     const settingsStore = useSettingsStore()
@@ -60,11 +92,17 @@ const TipSound = defineComponent({
 
 export default defineComponent({
   setup() {
+    const settingsStore = useSettingsStore()
     return () => (
       <>
         <RowItem label="通知" labelStyle={{ textAlign: 'left' }} />
-        <AdvanceMinutes />
-        <TipSound />
+        <NoticeMode />
+        {settingsStore.settings.mode === 'plugin' ? (
+          <>
+            <AdvanceMinutes />
+            <TipSound />
+          </>
+        ) : null}
       </>
     )
   }

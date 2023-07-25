@@ -6,6 +6,7 @@ import { useNoticeCron } from '@cmn/hooks'
 import { cloneStore } from '@cmn/utils'
 
 export interface Settings {
+  mode: 'system' | 'plugin'
   currentTheme: themeType
   advanceNotice: number
   tipSound: boolean
@@ -51,9 +52,14 @@ export const useSettingsStore = defineStore('SettingsStore', () => {
     settings.value.tipSound = flag
   }
 
+  const modeSwitch = (mode: Settings['mode']) => {
+    settings.value.mode = mode
+  }
+
   // 安装插件时初始化设置
   if (settings.value === null || Object.keys(settings.value).length === 0) {
     settings.value = {
+      mode: 'plugin',
       currentTheme: 'auto',
       advanceNotice: 5,
       tipSound: true
@@ -61,5 +67,11 @@ export const useSettingsStore = defineStore('SettingsStore', () => {
   }
   changeTheme(settings.value.currentTheme)
 
-  return { settings, changeTheme, setAdvanceNotice, tipSoundSwitch }
+  return {
+    settings,
+    changeTheme,
+    setAdvanceNotice,
+    tipSoundSwitch,
+    modeSwitch
+  }
 })
