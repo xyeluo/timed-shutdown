@@ -1,16 +1,14 @@
 # timed-shutdown
 
-### 简介
+### 使用
 
 设置完任务类型、名字、执行时间后点击创建任务，就可以添加到计划列表（插件的实现也是依托于 windows 系统的任务计划程序），已创建的任务可以在插件的计划列表移除。
 
 **使用前请先阅读[注意](#notic)**
 
-### 截图
+![1690204818336](./images/1690204818336.png)
 
-![未添加](images/1662088739000.png)
-
-![1667102290537](./images/1667102290537.png)
+![通知效果](./images/1690295561656.gif)
 
 ### 关键词
 
@@ -22,24 +20,11 @@
 
 <span id='notic'></span>
 
-- 插件暂不支持执行任务前通知，使用者要及时保存文件，以免关机造成文件丢失
+- ~~插件暂不支持执行任务前通知，使用者要及时保存文件，以免关机造成文件丢失~~ V2 版本以上已支持
 - win11 可能出现休眠时间过长后会变成关机（命令执行确实是休眠），其他 windows 系统未测试
 - 创建时要确保系统的任务计划程序没有与要添加的任务同名，否则点击创建会无反应
 - 该插件仅支持 windows 系统
 
-### 开发
-
-```
-git clone https://github.com/tk914/timed-shutdown.git
-cd timed-shutdown
-//安装依赖
-yarn ready
-//运行项目
-yarn start
-//打包
-yarn utools
-```
-
 ### 安装
 
-[GitHub Release](https://github.com/tk914/timed-shutdown/releases)
+插件市场搜索或者[GitHub Release](https://github.com/xyeluo/timed-shutdown/releases)
