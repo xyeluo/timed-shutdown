@@ -17,8 +17,9 @@ export interface Task {
     type: _CycleKey
     date: string | null
     time: string | null
-    otherDate: _otherDateKey[] | string[]
-    autoDelete: boolean
+    otherDate?: _otherDateKey[] | string[]
+    autoDelete?: boolean
+    interval?: number
   }
   state: boolean
   notice?: {

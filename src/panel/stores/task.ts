@@ -19,7 +19,8 @@ export const useTaskStore = defineStore('TaskStore', () => {
       date: null,
       time: null,
       otherDate: [],
-      autoDelete: true
+      autoDelete: true,
+      interval: 2
     },
     state: true,
     notice: {

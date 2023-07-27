@@ -47,7 +47,7 @@ export default defineComponent({
                   label={() => <LabelText text="执行日期：" />}
                   labelStyle={{ width: 'auto' }}
                 >
-                  {date ? <>&emsp;{date}&emsp;</> : ''}
+                  {date ? <>{date}&emsp;</> : ''}
                   <u>{time}</u>
                 </RowItem>
                 {props.plan?.state ? (

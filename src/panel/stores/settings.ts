@@ -1,7 +1,6 @@
 import { type themeType, changeTheme as _changeTheme } from '@cmn/Page'
 import { defineStore } from 'pinia'
 import { usePlansStore } from './index'
-import type { Task } from '@cmn/types'
 import { useNoticeCron } from '@cmn/hooks'
 import { cloneStore } from '@cmn/utils'
 

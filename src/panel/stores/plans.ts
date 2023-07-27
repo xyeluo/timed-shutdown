@@ -24,7 +24,7 @@ export const usePlansStore = defineStore('PlansStore', () => {
       plan: useConvertTaskPlan(task.plan),
       cycle: {
         type: useConvertTaskCycleType(task.cycle.type),
-        autoDelete: task.cycle.autoDelete
+        autoDelete: task.cycle.autoDelete as boolean
       },
       dateTime: useSetDateTime(task.cycle)
     }
