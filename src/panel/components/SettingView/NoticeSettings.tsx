@@ -1,5 +1,5 @@
 import { useSettingsStore } from '@/panel/stores'
-import { RowItem } from '@panel/components/common'
+import { RowItem } from '@cmn/components/Other'
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
 
 const NoticeMode = defineComponent({

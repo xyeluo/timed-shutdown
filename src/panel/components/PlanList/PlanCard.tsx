@@ -1,5 +1,5 @@
 import type { Plan } from '@cmn/types'
-import { RowItem } from '@panel/components/common'
+import { RowItem } from '@cmn/components/Other'
 import StateBtn from './StateBtn'
 import Actions from './Actions'
 

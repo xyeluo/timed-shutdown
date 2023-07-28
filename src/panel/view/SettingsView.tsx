@@ -1,5 +1,5 @@
 import { useSettingsStore } from '@/panel/stores'
-import { RowItem, PanelSelect } from '@panel/components/common'
+import { RowItem, PanelSelect } from '@cmn/components/Other'
 import NoticeMinutes from '@/panel/components/SettingView/NoticeSettings'
 
 const Themes = defineComponent({

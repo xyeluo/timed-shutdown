@@ -1,4 +1,4 @@
-import { Page } from '@cmn/Page'
+import { Page } from '@cmn/components/Page'
 import Notice from '@notice/components/Notice'
 import '@cmn/styles/index.scss'
 

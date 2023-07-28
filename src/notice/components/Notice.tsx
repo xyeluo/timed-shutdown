@@ -1,7 +1,7 @@
 import type { Task, PlanValue } from '@cmn/types'
 import { useConvertTaskPlan } from '@cmn/hooks'
 import { Actions } from '@notice/components/Actions'
-import { changeTheme } from '@/common/Page'
+import { changeTheme } from '@cmn/components/Page'
 
 declare global {
   interface Window {

@@ -5,6 +5,32 @@ const { writeFile, access, unlink } = require('fs/promises')
 const { getType, firstLetterUpper } = require('../../utils/common')
 const { XML_PATH } = require('../../utils/config')
 
+/**
+ * @example
+ */
+// 除对象以外属性值必须是字符串！
+// let befor = {
+// Triggers: {
+//   // 存在子标签及文本，则赋值对象，key为标签名，value存子标签，_text存文本
+//   CalendarTrigger: {
+//     _text: '这是文本1',
+//     // 如果标签只存在文本可以直接赋值字符串
+//     StartBoundary: '这是文本2',
+//     Enabled: 'true',
+//     // 以+号开头的key是xml的属性
+//     '+context': 'Author',
+//     // 处理相邻相同标签(必须大写)，必须有值且值存数组
+//     Day: { _repeat: ['1', '2'] },
+//     // 标签无文本、子标签，可以通过数组设置多个单标签
+//     DaysOfWeek: ['Sunday', 'Tuesday', 'Thursday']
+// }}}
+// let after = expandXmlObj(befor)
+// console.log(JSON.stringify(after, null, 2))
+// const { resolve } = require('path')
+// const XML_PATH = resolve(__dirname, 'timed-shutdonw_UtoolsPlugin.xml')
+// createTaskXML(befor)
+// // deleteTaskXML()
+
 function reduceXmlObj(xmlObj, callback, options = {}) {
   const config = {
     titleCase: false,
@@ -148,27 +174,3 @@ module.exports = {
   createTaskXML,
   deleteTaskXML
 }
-/**
- * @example
- */
-// let befor = {
-// Triggers: {
-//   // 存在子标签及文本，则赋值对象，key为标签名，value存子标签，_text存文本
-//   CalendarTrigger: {
-//     _text: '这是文本1',
-//     // 如果标签只存在文本可以直接赋值字符串
-//     StartBoundary: '这是文本2',
-//     Enabled: 'true',
-//     // 以+号开头的key是xml的属性
-//     '+context': 'Author',
-//     // 处理相邻相同标签(必须大写)，必须有值且值存数组
-//     Day: { _repeat: ['1', '2'] },
-//     // 标签无文本、子标签，可以通过数组设置多个单标签
-//     DaysOfWeek: ['Sunday', 'Tuesday', 'Thursday']
-// }}}
-// let after = expandXmlObj(befor)
-// console.log(JSON.stringify(after, null, 2))
-// const { resolve } = require('path')
-// const XML_PATH = resolve(__dirname, 'timed-shutdonw_UtoolsPlugin.xml')
-// createTaskXML(befor)
-// deleteTaskXML()

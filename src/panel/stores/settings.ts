@@ -1,4 +1,7 @@
-import { type themeType, changeTheme as _changeTheme } from '@cmn/Page'
+import {
+  type themeType,
+  changeTheme as _changeTheme
+} from '@cmn/components/Page'
 import { defineStore } from 'pinia'
 import { usePlansStore } from './index'
 import { useNoticeCron } from '@cmn/hooks'

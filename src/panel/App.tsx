@@ -1,5 +1,5 @@
 import type { SelectGroupOption } from 'naive-ui'
-import { Page } from '@cmn/Page'
+import { Page } from '@cmn/components/Page'
 import { GithubIcon, QuestionIcon, AddIcon, SettingIcon } from '@panel/icons'
 import { openUrl } from '@cmn/utils'
 import '@cmn/styles/index.scss'

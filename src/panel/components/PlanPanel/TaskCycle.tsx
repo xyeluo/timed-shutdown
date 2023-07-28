@@ -4,8 +4,7 @@ import {
   useCycleWeeklyOptions,
   type CycleKey
 } from '@cmn/hooks'
-import { RowItem, SwitchComponet } from '@panel/components/common'
-import { PanelSelect } from '@panel/components/common'
+import { RowItem, SwitchComponet, PanelSelect } from '@cmn/components/Other'
 import { useTaskStore } from '@panel/stores'
 
 const dateTimeCommonAttr = {

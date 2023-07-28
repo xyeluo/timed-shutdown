@@ -3,7 +3,7 @@ import PListScss from '@panel/styles/PlanList.module.scss'
 import { usePlansStore } from '@panel/stores'
 import type { Plan } from '@cmn/types'
 import { useSuccessMsg, useforceDelete } from '@cmn/hooks'
-import { rowProps } from '@panel/components/common'
+import { rowProps } from '@cmn/components/Other'
 
 export default defineComponent({
   props: rowProps,

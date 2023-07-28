@@ -1,5 +1,5 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
-import { RowItem } from '@panel/components/common'
+import { RowItem } from '@cmn/components/Other'
 import { useTaskStore } from '@panel/stores'
 import { useErrorMsg, useSuccessMsg, useTaskInvalid } from '@cmn/hooks'
 

@@ -1,9 +1,10 @@
 import type {
   CycleKey as _CycleKey,
   PlanKey as _PlanKey,
-  otherDateKey as _otherDateKey
+  otherDateKey as _otherDateKey,
+  type PlanOption,
+  type CycleOption
 } from '@cmn/hooks'
-import { type PlanOption, type CycleOption } from '@cmn/hooks'
 import type { Settings as _Settings } from '@panel/stores'
 
 export type Settings = _Settings
