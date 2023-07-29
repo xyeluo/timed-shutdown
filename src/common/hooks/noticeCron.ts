@@ -19,21 +19,15 @@ export const useDateCompute = (
 
   result = result.split(' ') // ['2023/5/20', '19:35:00']
   return {
-    ...parms,
+    type: parms.type,
+    otherDate: parms.otherDate,
     date: result[0].replace(/\//g, '-'),
     time: ''.padEnd(5, result[1])
   }
 }
 
 const useDateToCron = (parms: DateType) => {
-  const {
-    date,
-    time,
-    type: cycle,
-    otherDate,
-    interval
-  } = parms as Required<typeof parms>
-
+  const { date, time, type: cycle, otherDate } = parms
   const {
     month,
     day: d,
@@ -47,10 +41,7 @@ const useDateToCron = (parms: DateType) => {
       cron = `1 ${cron} ${d} ${month} *`
       break
     case 'daily':
-      cron += ' */1 * *'
-      break
-    case 'nDays':
-      cron += ` */${interval} * *`
+      cron += ` */1 * *`
       break
     case 'weekly':
       cron += ` * * ${otherDate.map((week) => week.slice(0, 3)).join(',')}`

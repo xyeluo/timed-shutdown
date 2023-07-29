@@ -30,7 +30,6 @@ export const usePlanOptions = (): PlanOption[] =>
 type CycleLabels = {
   once: '仅一次'
   daily: '每天'
-  nDays: '每N天'
   weekly: '每周'
   monthly: '每月'
 }
@@ -44,7 +43,6 @@ export const useCycleOptions = (): CycleOption[] =>
     const cycle = [
       ['仅一次', 'once'],
       ['每天', 'daily'],
-      ['每N天', 'nDays'],
       ['每周', 'weekly'],
       ['每月', 'monthly']
     ]

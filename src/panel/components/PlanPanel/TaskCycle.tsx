@@ -1,9 +1,5 @@
 import PPanelScss from '@panel/styles/PlanPanel.module.scss'
-import {
-  useCycleOptions,
-  useCycleWeeklyOptions,
-  type CycleKey
-} from '@cmn/hooks'
+import { useCycleOptions, useCycleWeeklyOptions } from '@cmn/hooks'
 import { RowItem, SwitchComponet, PanelSelect } from '@cmn/components/Other'
 import { useTaskStore } from '@panel/stores'
 
@@ -86,24 +82,6 @@ const Monthly = defineComponent({
   }
 })
 
-const NDays = defineComponent({
-  setup() {
-    const taskStore = useTaskStore()
-    return () => (
-      <n-input-number
-        style={{ width: '105px', display: 'inline-block' }}
-        size="small"
-        min="2"
-        max="30"
-        v-slots={{
-          suffix: '天'
-        }}
-        v-model:value={taskStore.task.cycle.interval}
-      />
-    )
-  }
-})
-
 export default defineComponent({
   setup() {
     const options = useCycleOptions()
@@ -111,7 +89,6 @@ export default defineComponent({
     const cycleCpt = {
       once: Once,
       daily: '',
-      nDays: NDays,
       weekly: Weekly,
       monthly: Monthly
     }
@@ -120,10 +97,9 @@ export default defineComponent({
       if (taskStore.task.cycle.type === 'daily') {
         return null
       }
-      const label: Partial<Record<CycleKey, string>> = {
+      const label = {
         monthly: '日期',
-        weekly: '星期',
-        nDays: '间隔'
+        weekly: '星期'
       }
       return (
         <RowItem

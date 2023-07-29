@@ -39,14 +39,6 @@ function getXmlObj(cycle) {
         }
       }
       break
-    case 'nDays':
-      xmlObj.Triggers.CalendarTrigger = {
-        ...commonXmlObj,
-        ScheduleByDay: {
-          DaysInterval: cycle.interval.toString()
-        }
-      }
-      break
     case 'weekly':
       xmlObj.Triggers.CalendarTrigger = {
         ...commonXmlObj,

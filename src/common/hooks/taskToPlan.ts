@@ -28,7 +28,7 @@ export const useSetDateTime = (cycle: Task['cycle']) => {
       break
     case 'weekly':
       let weekly: OtherDateValue[] = []
-      cycle!.otherDate!.forEach((week) => {
+      cycle.otherDate.forEach((week) => {
         const options = useCycleWeeklyOptions().find((o) => o.value === week)
         weekly.push(options!.label as OtherDateValue)
       })
@@ -36,13 +36,10 @@ export const useSetDateTime = (cycle: Task['cycle']) => {
       break
     case 'monthly':
       let monthly: string[] = []
-      cycle!.otherDate!.forEach((day) => {
+      cycle.otherDate.forEach((day) => {
         monthly.push(`${day}日`)
       })
       dateTime = monthly.join('，')
-      break
-    case 'nDays':
-      dateTime = `每${cycle.interval}天`
       break
     default:
       break

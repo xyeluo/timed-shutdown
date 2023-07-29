@@ -29,9 +29,9 @@ export const useTaskInvalid = (task: Task) => {
 
   if (!time) return warning('任务周期缺少"执行时间"！')
   if (type === 'once' && !date) return warning('任务周期缺少"具体日期"！')
-  if (type === 'weekly' && otherDate!.length === 0)
+  if (type === 'weekly' && otherDate.length === 0)
     return warning('执行周期缺少"星期"！')
-  if (type === 'monthly' && otherDate!.length === 0)
+  if (type === 'monthly' && otherDate.length === 0)
     return warning('执行周期缺少"日期"！')
   if (type === 'once' && new Date() >= new Date(`${date} ${time}`))
     return warning('任务时间小于当前时间')
