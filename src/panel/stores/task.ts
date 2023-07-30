@@ -8,7 +8,7 @@ import {
 } from '@cmn/hooks'
 import type { Task } from '@cmn/types'
 import { cloneStore } from '@cmn/utils'
-import { usePlansStore, useSettingsStore } from '@panel/stores'
+import { usePlansStore, useSettingsStore } from './index'
 
 export const useTaskStore = defineStore('TaskStore', () => {
   const init: Task = {
