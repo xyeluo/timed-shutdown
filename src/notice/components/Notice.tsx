@@ -3,13 +3,6 @@ import { useConvertTaskPlan } from '@cmn/hooks'
 import { Actions } from '@notice/components/Actions'
 import { changeTheme } from '@cmn/components/Page'
 
-declare global {
-  interface Window {
-    receiveNotice(task: Task): void
-    noticeError(error: string): void
-  }
-}
-
 const Title = defineComponent({
   props: {
     options: Object as PropType<{ planLabel: PlanValue; duration?: number }>

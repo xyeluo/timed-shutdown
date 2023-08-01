@@ -4,20 +4,13 @@ import { GithubIcon, QuestionIcon, AddIcon, SettingIcon } from '@panel/icons'
 import { openUrl } from '@cmn/utils'
 import '@cmn/styles/index.scss'
 import { showModal } from '@panel/view/PlanPanel'
-import { useRegisteMsg, useRegisteDlg } from '@cmn/hooks'
+import { useRegisteMsg, useRegisteDlg, useErrorMsg } from '@cmn/hooks'
 import SettingsView from '@panel/view/SettingsView'
 import { usePlansStore, useTaskStore } from '@panel/stores'
-import type { Task } from '@cmn/types'
 import updateData from '@panel/updateVersion'
 
 const HomeUrl = 'https://github.com/xyeluo/'
-declare global {
-  interface Window {
-    createTask(task: Task): Promise<any>
-    switchState(task: Task): Promise<any>
-    updateNextRunTime(parms: { name: string; nextRun: string }): void
-  }
-}
+
 const PanelHeader = defineComponent({
   setup() {
     let btnState = ref(false)
@@ -172,6 +165,15 @@ export default defineComponent({
       // 注册全局信息弹窗
       useRegisteMsg()
       useRegisteDlg()
+
+      window.onerror = (msg, url, l) => {
+        useErrorMsg(`出乎意料的错误:${msg}\n
+        URL: ${url}\n
+        Line: ${l}\n
+        `)
+        return true
+      }
+
       const PlanList = defineAsyncComponent(
         () => import('@panel/view/PlanList')
       )
