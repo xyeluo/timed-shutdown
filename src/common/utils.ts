@@ -12,7 +12,9 @@ export const getDateTimeParts = (date: Date = new Date()) => {
     seconds: date.getSeconds()
   }
 }
-
+/**
+ * @returns yyyy-MM-dd
+ */
 export const getNowDateString = () => {
   const date = new Date()
   let { year, month, day } = getDateTimeParts(date)

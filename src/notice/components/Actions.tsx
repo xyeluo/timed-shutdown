@@ -1,6 +1,6 @@
 import type { Task } from '@cmn/types'
 import { useDateCompute, useNoticeCron } from '@cmn/hooks'
-import { cloneStore } from '@cmn/utils'
+import { cloneStore, getDateTimeParts } from '@cmn/utils'
 import type { NotificationReactive } from 'naive-ui'
 
 export const Actions = defineComponent({
@@ -15,8 +15,18 @@ export const Actions = defineComponent({
   setup(props, { emit }) {
     let delayBtnLoading = ref(false)
     let skipBtnLoading = ref(false)
+
     const delayTask = async () => {
-      const { date, time } = useDateCompute(props.task!.cycle, 10, '+')
+      const { year, month, day, hour, minute } = getDateTimeParts()
+      const { date, time } = useDateCompute(
+        {
+          ...props.task.cycle,
+          date: `${year}-${month}-${day}`,
+          time: `${hour}:${minute}`
+        },
+        10,
+        '+'
+      )
       const task: Task = {
         ...props.task,
         name: `推迟${props.task.name}`,
