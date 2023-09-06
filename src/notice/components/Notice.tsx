@@ -2,6 +2,7 @@ import type { Task, PlanValue } from '@cmn/types'
 import { useConvertTaskPlan } from '@cmn/hooks'
 import { Actions } from '@notice/components/Actions'
 import { changeTheme } from '@cmn/components/Page'
+import { useSettings } from '../hooks/settings'
 
 const Title = defineComponent({
   props: {
@@ -23,7 +24,7 @@ export default defineComponent({
   setup() {
     const { info, error } = useNotification()
 
-    let settings = noticePreload.dbStorageRead('settings')
+    const settings = useSettings()
     changeTheme(settings.currentTheme)
     let noticeArray: string[] = []
 
@@ -75,20 +76,6 @@ export default defineComponent({
           }
         }, 1000)
       }
-      window.noticeError = (err) => {
-        const _name = `error:${parms.name}`
-        noticeArray.push(_name)
-        error({
-          title: () => (
-            <Title options={{ planLabel: useConvertTaskPlan(parms.plan) }} />
-          ),
-          description: `来自uTools定时关机插件: ${parms.name}`,
-          content: err,
-          onClose() {
-            noticeArray = noticeArray.filter((name) => _name !== name)
-          }
-        })
-      }
     }
 
     // 无通知时关闭窗口
@@ -96,7 +83,7 @@ export default defineComponent({
       console.log(noticeArray)
       if (noticeArray.length !== 0) return
       noticePreload.closeWindow()
-    }, 20000)
+    }, 10000)
 
     window.receiveNotice = (noticeTask) => notify(noticeTask)
 

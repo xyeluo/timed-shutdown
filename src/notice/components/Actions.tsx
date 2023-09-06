@@ -1,7 +1,8 @@
 import type { Task } from '@cmn/types'
 import { useDateCompute, useNoticeCron } from '@cmn/hooks'
-import { cloneStore, getDateTimeParts } from '@cmn/utils'
+import { cloneStore } from '@cmn/utils'
 import type { NotificationReactive } from 'naive-ui'
+import { useCurrentCycle } from '@notice/hooks'
 
 export const Actions = defineComponent({
   props: {
@@ -15,18 +16,10 @@ export const Actions = defineComponent({
   setup(props, { emit }) {
     let delayBtnLoading = ref(false)
     let skipBtnLoading = ref(false)
+    const currentCycle = useCurrentCycle(props.task.cycle)
 
     const delayTask = async () => {
-      const { year, month, day, hour, minute } = getDateTimeParts()
-      const { date, time } = useDateCompute(
-        {
-          ...props.task.cycle,
-          date: `${year}-${month}-${day}`,
-          time: `${hour}:${minute}`
-        },
-        10,
-        '+'
-      )
+      const { date, time } = useDateCompute(currentCycle, 10, '+')
       const task: Task = {
         ...props.task,
         name: `推迟${props.task.name}`,
@@ -34,7 +27,7 @@ export const Actions = defineComponent({
           type: 'once',
           date,
           time,
-          otherDate: props.task!.cycle.otherDate,
+          otherDate: currentCycle.otherDate,
           autoDelete: true
         }
       }
@@ -48,7 +41,7 @@ export const Actions = defineComponent({
       // skipCurrentPlan的loading状态，点击推迟按钮时不会触发该状态改变
       flag && (skipBtnLoading.value = !skipBtnLoading.value)
       const enableCron = useNoticeCron(
-        { ...props.task!.cycle, type: 'once' },
+        { ...currentCycle, type: 'once' },
         1,
         '+'
       )
@@ -59,6 +52,7 @@ export const Actions = defineComponent({
         )
         .then(() => flag && (skipBtnLoading.value = !skipBtnLoading.value))
     }
+
     const read = () => {
       emit('removeNotice')
       props.noticeHandle?.destroy()

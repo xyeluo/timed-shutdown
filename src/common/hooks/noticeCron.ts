@@ -1,7 +1,7 @@
 import type { Task } from '@cmn/types'
 import { getDateTimeParts } from '@cmn/utils'
 
-type DateType = Omit<Task['cycle'], 'autoDelete'>
+export type DateType = Omit<Task['cycle'], 'autoDelete'>
 
 export const useDateCompute = (
   parms: DateType,

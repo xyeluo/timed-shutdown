@@ -11,10 +11,6 @@ ipcRenderer.on('notice', (_, task) => {
   waitWindowPrpperty('receiveNotice', () => window.receiveNotice(task))
 })
 
-ipcRenderer.on('noticeError', (_, error) => {
-  waitWindowPrpperty('noticeError', () => window.noticeError(error))
-})
-
 async function createTask(task) {
   return IpcDispatch.sendTo(mainId, 'createTask', task)
 }

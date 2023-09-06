@@ -138,7 +138,7 @@ export default defineComponent({
         return await taskStore.createTask(task)
       } catch (error: any) {
         const e = error?.stack || error
-        preload.noticeError(e.toString())
+        utools.showNotification(e)
         return e
       }
     }
@@ -148,7 +148,7 @@ export default defineComponent({
         return await plansStore.switchState(plan)
       } catch (error: any) {
         const e = error?.stack || error
-        preload.noticeError(e.toString())
+        utools.showNotification(e)
         return e
       }
     }
@@ -165,14 +165,6 @@ export default defineComponent({
       // 注册全局信息弹窗
       useRegisteMsg()
       useRegisteDlg()
-
-      window.onerror = (msg, url, l) => {
-        useErrorMsg(`出乎意料的错误:${msg}\n
-        URL: ${url}\n
-        Line: ${l}\n
-        `)
-        return true
-      }
 
       const PlanList = defineAsyncComponent(
         () => import('@panel/view/PlanList')

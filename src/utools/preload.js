@@ -158,10 +158,6 @@ IpcDispatch.on('stopPlan', async (plan) => {
   return result
 })
 
-function noticeError(error) {
-  ScheNotification.sendmessage('noticeError', error)
-}
-
 // 重新启动插件时对跳过本次任务的处理
 async function initEnableSkipPlan() {
   let skipStore = dbStorageRead('skipPlans')
@@ -200,6 +196,5 @@ window.preload = {
   switchNoticeState: ScheNotification.switchNoticeState,
   deleteNotice: ScheNotification.deleteNotice,
   clearNotices: ScheNotification.clearNotices,
-  noticeError,
   removeDBStore
 }

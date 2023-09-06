@@ -8,7 +8,6 @@ declare global {
     updateNextRunTime(parms: { name: string; nextRun: string }): void
     // notice
     receiveNotice(task: Task): void
-    noticeError(error: string): void
   }
   interface UToolsApi {
     showNotification(body: string, clickFeatureCode?: string): void

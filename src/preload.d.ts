@@ -37,7 +37,6 @@ interface Preload {
   switchNoticeState(partPlan: PartPlan): Promise<string | undefined>
   deleteNotice(name: string): Promise<void>
   clearNotices(): Promise<void>
-  noticeError(error: string): void
   removeDBStore(v1: 'v1Store'): void
 }
 
